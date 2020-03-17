@@ -1155,6 +1155,9 @@ public class CodeGen {
         // aop
         writeFile(dataMap, backendCodePath + "aop/ControllerAop.java", BACKEND_PRE + "controllerAop.ftl");
 
+        // application
+        writeFile(dataMap, backendCodePath + getTablePathName(tableNameAfterPre) + "Application.java", BACKEND_PRE + "application.ftl");
+
         // entity
         generateEntity();
 

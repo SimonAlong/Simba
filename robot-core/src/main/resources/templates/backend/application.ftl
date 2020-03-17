@@ -1,16 +1,15 @@
-package com.isyscore.robot.integration;
+package ${packagePath};
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * @author shizi
- * @since 2020/3/17 下午5:14
+ * @author robot
  */
 @SpringBootApplication
-public class RobotApplication {
+public class ${tablePathName}Application {
 
     public static void main(String... args) {
-        SpringApplication.run(RobotApplication.class, args);
+        SpringApplication.run(${tablePathName}Application.class, args);
     }
 }
