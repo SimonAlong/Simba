@@ -1146,7 +1146,13 @@ public class CodeGen {
         // service
         writeFile(dataMap, backendCodePath + "service/" + getTablePathName(tableNameAfterPre) + "Service.java", BACKEND_PRE + "tableService.ftl");
 
-        // 生成实体entity
+        // dao
+        writeFile(dataMap, backendCodePath + "dao/" + getTablePathName(tableNameAfterPre) + "Dao.java", BACKEND_PRE + "dao.ftl");
+
+        // dbConfiguration
+        writeFile(dataMap, backendCodePath + "config/DbConfiguration.java", BACKEND_PRE + "dbConfiguration.ftl");
+
+        // entity
         generateEntity();
 
         System.out.println("backend generate finish");
