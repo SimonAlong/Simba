@@ -41,6 +41,9 @@ public class CodeGen {
      */
     private static final String mysqlEnumType = "ENUM";
 
+    private static final String FRONT_PRE = "front/";
+    private static final String BACKEND_PRE = "backend/";
+
     /**
      * 前端代码生成路径
      */
@@ -136,46 +139,6 @@ public class CodeGen {
         this.packagePath = packagePath;
         this.backendCodePath += packagePath.replace(".", "/") + "/";
     }
-
-    @Deprecated
-    public void setTableFieldNameMap(Map<String, Map<String, String>> tableFieldMap) {}
-
-    @Deprecated
-    public void setInsertFieldsMap(Map<String, List<String>> fieldsMap) {}
-
-    @Deprecated
-    public void setUnEditFieldsMap(Map<String, List<String>> fieldsMap) {}
-
-    @Deprecated
-    public void setExcludesFieldsMap(Map<String, List<String>> fieldMap) {}
-
-    @Deprecated
-    public void setQueryFieldsMap(Map<String, List<String>> fieldMap) {}
-
-    @Deprecated
-    public void setTableShowFieldsMap(Map<String, List<String>> fieldMap) {}
-
-    @Deprecated
-    public void setTableExpandFieldsMap(Map<String, List<String>> fieldMap) {}
-
-    @Deprecated
-    public void setIncludes(String... tables) {}
-
-    @Deprecated
-    public void setExcludes(String... tables) {}
-
-    @Deprecated
-    public void setFieldNameMap(Map<String, String> tableFieldMap, String tableName) {}
-
-    @Deprecated
-    public void setIncludeTables(List<String> includeTables) {}
-
-    @Deprecated
-    public void setExcludeTables(List<String> includeTables) {}
-
-    @Deprecated
-    public void setTableNameMap(Map<String, String> tableNameMap) {}
-
 
     /**
      * 设置表的属性和中文名的对应
@@ -1077,14 +1040,14 @@ public class CodeGen {
         String adminConstantFullPath = backendCodePath + "web/controller/BaseResponseController.java";
         if (!FileUtil.exist(adminConstantFullPath)) {
             // baseResponseController
-            writeFile(dataMap, adminConstantFullPath, "baseResponseController.ftl");
+            writeFile(dataMap, adminConstantFullPath, BACKEND_PRE + "baseResponseController.ftl");
         }
     }
 
     private void writeResponse(Map<String, Object> dataMap) {
         String adminConstantFullPath = backendCodePath + "constants/AdminConstant.java";
         if (!FileUtil.exist(adminConstantFullPath)) {
-            writeFile(dataMap, backendCodePath + "web/vo/Response.java", "response.ftl");
+            writeFile(dataMap, backendCodePath + "web/vo/Response.java", BACKEND_PRE + "response.ftl");
         }
     }
 
@@ -1098,15 +1061,15 @@ public class CodeGen {
         configDBInfo(dataMap);
 
         // List
-        writeFile(dataMap, frontCodePath + "/src/pages/" + appName + "/" + getTablePathName(tableNameAfterPre) + "List.js", "tableList.ftl");
-        writeFile(dataMap, frontCodePath + "/src/pages/" + appName + "/" + getTablePathName(tableNameAfterPre) + "List.less", "tableList.less");
+        writeFile(dataMap, frontCodePath + "/src/pages/" + appName + "/" + getTablePathName(tableNameAfterPre) + "List.js", FRONT_PRE + "tableList.ftl");
+        writeFile(dataMap, frontCodePath + "/src/pages/" + appName + "/" + getTablePathName(tableNameAfterPre) + "List.less", FRONT_PRE + "tableList.less");
         // model
-        writeFile(dataMap, frontCodePath + "/src/models/" + appName + "/" + getTablePathNameLower(tableNameAfterPre) + "Model.js", "tableModel.ftl");
+        writeFile(dataMap, frontCodePath + "/src/models/" + appName + "/" + getTablePathNameLower(tableNameAfterPre) + "Model.js", FRONT_PRE + "tableModel.ftl");
         // api
-        writeFile(dataMap, frontCodePath + "/src/services/" + appName + "/" + getTablePathNameLower(tableNameAfterPre) + "Api.js", "tableApi.ftl");
+        writeFile(dataMap, frontCodePath + "/src/services/" + appName + "/" + getTablePathNameLower(tableNameAfterPre) + "Api.js", FRONT_PRE + "tableApi.ftl");
 
         if(direct) {
-            writeFile(dataMap, frontCodePath + "/config/config.js", "frontConfig.ftl");
+            writeFile(dataMap, frontCodePath + "/config/config.js", FRONT_PRE + "frontConfig.ftl");
         }
 
         System.out.println("front generate finish");
@@ -1126,26 +1089,26 @@ public class CodeGen {
         configClassHead(dataMap);
 
         // controller
-        writeFile(dataMap, backendCodePath + "web/controller/" + getTablePathName(tableNameAfterPre) + "Controller.java", "tableController.ftl");
+        writeFile(dataMap, backendCodePath + "web/controller/" + getTablePathName(tableNameAfterPre) + "Controller.java", BACKEND_PRE + "tableController.ftl");
         writeBaseResponseController(dataMap);
 
         // dto
-        writeFile(dataMap, backendCodePath + "dto/" + getTablePathName(tableNameAfterPre) + "Dto.java", "entityDto.ftl");
+        writeFile(dataMap, backendCodePath + "dto/" + getTablePathName(tableNameAfterPre) + "Dto.java", BACKEND_PRE + "entityDto.ftl");
 
         // vo
-        writeFile(dataMap, backendCodePath + "web/vo/req/" + getTablePathName(tableNameAfterPre) + "InsertReq.java", "insertReq.ftl");
-        writeFile(dataMap, backendCodePath + "web/vo/req/" + getTablePathName(tableNameAfterPre) + "QueryReq.java", "queryReq.ftl");
-        writeFile(dataMap, backendCodePath + "web/vo/req/" + getTablePathName(tableNameAfterPre) + "UpdateReq.java", "updateReq.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/req/" + getTablePathName(tableNameAfterPre) + "InsertReq.java", BACKEND_PRE + "insertReq.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/req/" + getTablePathName(tableNameAfterPre) + "QueryReq.java", BACKEND_PRE + "queryReq.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/req/" + getTablePathName(tableNameAfterPre) + "UpdateReq.java", BACKEND_PRE + "updateReq.ftl");
 
         // QueryRsp
-        writeFile(dataMap, backendCodePath + "web/vo/rsp/" + getTablePathName(tableNameAfterPre) + "QueryRsp.java", "queryRsp.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/rsp/" + getTablePathName(tableNameAfterPre) + "QueryRsp.java", BACKEND_PRE + "queryRsp.ftl");
 
         // common entity
-        writeFile(dataMap, backendCodePath + "web/vo/Pager.java", "pager.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/Pager.java", BACKEND_PRE + "pager.ftl");
         writeResponse(dataMap);
 
         // service
-        writeFile(dataMap, backendCodePath + "service/" + getTablePathName(tableNameAfterPre) + "Service.java", "tableService.ftl");
+        writeFile(dataMap, backendCodePath + "service/" + getTablePathName(tableNameAfterPre) + "Service.java", BACKEND_PRE + "tableService.ftl");
 
         System.out.println("backend generate finish");
     }

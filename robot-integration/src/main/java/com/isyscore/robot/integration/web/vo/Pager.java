@@ -1,4 +1,4 @@
-package com.isyscore.robot.integration.vo;
+package com.isyscore.robot.integration.web.vo;
 
 import lombok.Data;
 

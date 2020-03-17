@@ -4,7 +4,7 @@ import lombok.Data;
 
 /**
  * @author zhouzhenyong
- * @since 2020/03/17 19:20:24
+ * @since 2020/03/17 19:39:28
  */
 @Data
 public class Table4UpdateReq {
