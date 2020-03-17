@@ -1,7 +1,10 @@
 package ${packagePath}.service;
 
+import com.isyscore.ibo.neo.NeoMap;
+import com.isyscore.ibo.neo.db.NeoPage;
+import ${packagePath}.dao.${tablePathName}Dao;
 import ${packagePath}.dto.${tablePathName}Dto;
-import ${packagePath}.mapper.ext.${tablePathName}ExtMapper;
+import ${packagePath}.entity.${tablePathName}DO;
 import ${packagePath}.web.vo.Pager;
 import ${packagePath}.web.vo.req.*;
 import ${packagePath}.web.vo.rsp.${tablePathName}QueryRsp;
@@ -18,29 +21,31 @@ import java.util.stream.Collectors;
 public class ${tablePathName}Service {
 
     @Autowired
-    private ${tablePathName}ExtMapper mapper;
+    private ${tablePathName}Dao dao;
 
     public Integer insert(${tablePathName}InsertReq insertReq) {
-        return mapper.insert(${tablePathName}Dto.insertReqToEntity(insertReq));
+        dao.insert(${tablePathName}Dto.insertReqToEntity(insertReq));
+        return 1;
     }
 
     public Integer delete(Long id) {
-        return mapper.deleteById(id);
+        return dao.delete(id);
     }
 
     public Integer update(${tablePathName}UpdateReq updateReq) {
-        return mapper.updateById(${tablePathName}Dto.updateReqToEntity(updateReq));
+        dao.update(${tablePathName}Dto.updateReqToEntity(updateReq));
+        return 1;
     }
 
     public List<${tablePathName}QueryRsp> pageList(Pager<${tablePathName}QueryReq> pageReq) {
-        // todo 自己在mapper中实现
-        return mapper.pageList(pageReq.getPageIndex(), pageReq.getPageSize(), pageReq.getParam())
+        return dao.page(NeoMap.from(pageReq.getPageIndex()), NeoPage.of(pageReq.getPageIndex(), pageReq.getPageSize()))
             .stream()
-            .map(${tablePathName}Dto::entityToQueryRsp).collect(Collectors.toList());
+            .map(data -> data.as(${tablePathName}DO.class))
+            .map(${tablePathName}Dto::entityToQueryRsp)
+            .collect(Collectors.toList());
     }
 
     public Integer count(${tablePathName}QueryReq pageReq) {
-        // todo 自己在mapper中实现
-         return mapper.count(pageReq);
+        return dao.count(pageReq);
     }
 }
