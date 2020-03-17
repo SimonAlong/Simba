@@ -7,7 +7,8 @@
 <dependency>
   <groupId>com.isyscore.robot</groupId>
   <artifactId>robot-core</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <!--使用时候请替换为具体的版本-->
+  <version>${latest.release.version}</version>
 </dependency>
 ```
 
