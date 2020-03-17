@@ -20,10 +20,10 @@ public class CodeGenTest {
         codeGen.setAppName("sequence");
 
         /*================================ 后端代理配置（非必填） ================================*/
-        //        // 本地直连：直连模式，则会直接修改为前端直连后端Host
-        //        codeGen.setDirect(true);
-        //        // 后端端口号：本地直连设置的后端端口号
-        //        codeGen.setBackendPort("8084");
+        // 本地直连：直连模式，则会直接修改为前端直连后端Host
+        // codeGen.setDirect(true);
+        // 后端端口号：本地直连设置的后端端口号
+        // codeGen.setBackendPort("8084");
 
         /*================================ DB配置（必填） ================================*/
         // 设置数据库信息
@@ -33,7 +33,7 @@ public class CodeGenTest {
 
         /*================================ 要展示的表基本信息（必填） ================================*/
         // 设置表前缀过滤
-        //        codeGen.setPreFix("portal_");
+        // codeGen.setPreFix("portal_");
         // 设置要输出的表
         codeGen.setTableName("snowflake_namespace");
         // 设置表的中文名，如果没有设置，则采用DB中的描述
