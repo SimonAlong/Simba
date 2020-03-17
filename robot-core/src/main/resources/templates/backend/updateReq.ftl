@@ -1,4 +1,4 @@
-package ${packagePath}.vo.req;
+package ${packagePath}.web.vo.req;
 
 <#if updateReqImport.importDate == 1>
 import java.util.Date;

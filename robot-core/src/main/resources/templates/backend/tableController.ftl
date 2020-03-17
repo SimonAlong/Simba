@@ -1,12 +1,11 @@
-package ${packagePath}.controller;
+package ${packagePath}.web.controller;
 
 import ${packagePath}.web.controller.BaseResponseController;
-import ${packagePath}.constants.AdminConstant;
 import ${packagePath}.service.${tablePathName}Service;
-import ${packagePath}.vo.Pager;
-import ${packagePath}.vo.Response;
-import ${packagePath}.vo.req.*;
-import ${packagePath}.vo.rsp.${tablePathName}QueryRsp;
+import ${packagePath}.web.vo.Pager;
+import ${packagePath}.web.vo.Response;
+import ${packagePath}.web.vo.req.*;
+import ${packagePath}.web.vo.rsp.${tablePathName}QueryRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +17,7 @@ import java.util.List;
  * @since ${time}
  */
 @Slf4j
-<#if appName!='portal'>@RequestMapping("${appName}/${tableUrlName}")
-<#else>@RequestMapping("platform/${appName}/${tableUrlName}")</#if>
+@RequestMapping("${appName}/${tableUrlName}")
 @RestController
 public class ${tablePathName}Controller extends BaseResponseController {
 

@@ -1,5 +1,7 @@
 package com.isyscore.robot.core;
 
+import com.isyscore.ibo.neo.NeoMap;
+import com.isyscore.ibo.neo.codegen.EntityCodeGen;
 import com.isyscore.robot.core.util.Maps;
 import org.junit.Test;
 
@@ -17,6 +19,12 @@ public class CodeGenTest {
         // 设置应用名字
         codeGen.setAppName("sequence");
 
+        /*==================== DB配置（必填） =======================*/
+        // 设置数据库信息
+        codeGen.setDbUrl("jdbc:mysql://localhost:3306/neo");
+        codeGen.setDbUserName("neo_test");
+        codeGen.setDbUserPassword("neo@Test123");
+
         /*========================================================================= 前端代码配置 =================*/
         // 设置前端代码路径
         codeGen.setFrontCodePath("/Users/simon/work/project/portal-front");
@@ -26,12 +34,6 @@ public class CodeGenTest {
          codeGen.setDirect(true);
         // 后端端口号：本地直连设置的后端端口号
          codeGen.setBackendPort("8084");
-
-        /*==================== DB配置（必填） =======================*/
-        // 设置数据库信息
-        codeGen.setDbUrl("jdbc:mysql://localhost:3306/neo");
-        codeGen.setDbUserName("neo_test");
-        codeGen.setDbUserPassword("neo@Test123");
 
         /*================= 要展示的表基本信息（必填） =================*/
         // 设置表前缀过滤
@@ -93,5 +95,26 @@ public class CodeGenTest {
 
         // 生成后端
         codeGen.generateBackend();
+    }
+
+    @Test
+    public void entityGen(){
+        EntityCodeGen codeGen = new EntityCodeGen()
+            // 设置DB信息
+            .setDb("neo_test", "neo@Test123", "jdbc:mysql://127.0.0.1:3306/neo?useUnicode=true&characterEncoding=UTF-8&useSSL=false")
+            // 设置项目路径
+            .setProjectPath("/Users/zhouzhenyong/project/isyscore/ibo-robot/robot-integration")
+            // 设置实体生成的包路径
+            .setEntityPath("com.isyscore.robot.integration.entity")
+            // 设置表前缀过滤
+            .setPreFix("neo_")
+            // 设置要排除的表
+            // 设置只要的表
+            .setIncludes("neo_table4")
+            // 设置属性中数据库列名字向属性名字的转换，这里设置下划线，比如：data_user_base -> dataUserBase
+            .setFieldNamingChg(NeoMap.NamingChg.UNDERLINE);
+
+        // 代码生成
+        codeGen.generate();
     }
 }

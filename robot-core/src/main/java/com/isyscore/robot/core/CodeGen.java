@@ -1,5 +1,6 @@
 package com.isyscore.robot.core;
 
+import com.isyscore.ibo.neo.codegen.EntityCodeGen;
 import com.isyscore.robot.core.entity.*;
 import com.isyscore.robot.core.util.*;
 import com.isyscore.ibo.neo.Neo;
@@ -21,12 +22,14 @@ import java.util.stream.Stream;
 
 /**
  * 前后端生成器
+ *
  * @author shizi
  * @since 2019/12/3 11:48 上午
  */
 @Setter
 @SuppressWarnings("unchecked")
 public class CodeGen {
+
     /**
      * 应用名字，用于前端创建目录用，建议用一个小写的单词
      */
@@ -48,6 +51,10 @@ public class CodeGen {
      * 前端代码生成路径
      */
     private String frontCodePath;
+    /**
+     * 后端代码的项目模块路径
+     */
+    private String projectModelPath;
     /**
      * 后端代码生成路径
      */
@@ -127,21 +134,23 @@ public class CodeGen {
      */
     private Map<String, FieldMeta> tableShowExpandFieldsMap = new HashMap<>();
 
-    public void setBackendModulePath(String codePath){
-        if(codePath.endsWith("/")){
+    public void setBackendModulePath(String codePath) {
+        this.projectModelPath = codePath;
+        if (codePath.endsWith("/")) {
             this.backendCodePath = codePath + "src/main/java/";
-        }else{
+        } else {
             this.backendCodePath = codePath + "/src/main/java/";
         }
     }
 
-    public void setBackendPackage(String packagePath){
+    public void setBackendPackage(String packagePath) {
         this.packagePath = packagePath;
         this.backendCodePath += packagePath.replace(".", "/") + "/";
     }
 
     /**
      * 设置表的属性和中文名的对应
+     *
      * @param tableFieldMap fieldName-fieldDesc
      */
     public void setFieldNameMap(Map<String, String> tableFieldMap) {
@@ -153,6 +162,7 @@ public class CodeGen {
 
     /**
      * 设置弹窗"新增"中展示的字段
+     *
      * @param fields fieldList
      */
     public void setInsertFields(String... fields) {
@@ -183,39 +193,39 @@ public class CodeGen {
         generateMap(tableShowExpandFieldsMap, fields);
     }
 
-    private void generateMap(Map<String, FieldMeta> dataMap, String ...fields){
-        if(null == fields || fields.length == 0){
+    private void generateMap(Map<String, FieldMeta> dataMap, String... fields) {
+        if (null == fields || fields.length == 0) {
             return;
         }
 
-        Stream.of(fields).forEach(f-> dataMap.put(f, FieldMeta.of(f)));
+        Stream.of(fields).forEach(f -> dataMap.put(f, FieldMeta.of(f)));
     }
 
     /**
      * config_group -> ConfigGroup
      */
-    private String getTablePathName(String tableName){
+    private String getTablePathName(String tableName) {
         return Strings.toCamelCaseAll(tableName);
     }
 
     /**
      * config_group -> config/group
      */
-    private String getTableUrlName(String tableName){
+    private String getTableUrlName(String tableName) {
         return tableName.replaceAll("_", "/");
     }
 
     /**
      * config_group -> configGroup
      */
-    private String getTablePathNameLower(String tableName){
+    private String getTablePathNameLower(String tableName) {
         return Strings.toCamelCaseStrict(tableName);
     }
 
     /**
      * config_group -> configgroup
      */
-    private String getTablePathSplitLower(String tableName){
+    private String getTablePathSplitLower(String tableName) {
         return Strings.toCamelCaseStrict(tableName);
     }
 
@@ -232,11 +242,12 @@ public class CodeGen {
     /**
      * 添加枚举类型和对应的值
      */
-    private void configEnumTypeField(Map<String, Object> dataMap, List<NeoColumn> columns){
+    private void configEnumTypeField(Map<String, Object> dataMap, List<NeoColumn> columns) {
         List<EnumInfo> infoList = new ArrayList<>();
         if (null != columns && !columns.isEmpty()) {
-            columns.stream().filter(c->c.getColumnTypeName().equals(mysqlEnumType))
-                .forEach(c-> infoList.add(EnumInfo.of(c.getColumnName(), getEnumValueList(c.getInnerColumn().getRemarks()))));
+            columns.stream()
+                .filter(c -> c.getColumnTypeName().equals(mysqlEnumType))
+                .forEach(c -> infoList.add(EnumInfo.of(c.getColumnName(), getEnumValueList(c.getInnerColumn().getRemarks()))));
         }
         dataMap.put("enumFields", infoList);
     }
@@ -262,7 +273,7 @@ public class CodeGen {
             return;
         }
 
-        columns.forEach(column -> tableFieldNameMap.computeIfAbsent(column.getColumnName(), k-> FieldInfo.of(k, getRemark(column))));
+        columns.forEach(column -> tableFieldNameMap.computeIfAbsent(column.getColumnName(), k -> FieldInfo.of(k, getRemark(column))));
     }
 
     /**
@@ -275,7 +286,7 @@ public class CodeGen {
             return;
         }
 
-        if(null == columns || columns.isEmpty()){
+        if (null == columns || columns.isEmpty()) {
             return;
         }
         List<String> dbFieldList = insertFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
@@ -300,7 +311,8 @@ public class CodeGen {
                     info.getFieldInfo().setEnumFlag(1);
                 }
                 return info;
-            }).collect(Collectors.toList());
+            })
+            .collect(Collectors.toList());
         dataMap.put("insertFields", insertFieldInfos);
     }
 
@@ -308,7 +320,7 @@ public class CodeGen {
      * 设置哪些字段是可以更新的，首先过滤排除表，然后查看展示表
      */
     private void configUpdateField(Map<String, Object> dataMap, List<NeoColumn> columns) {
-        if(updateFieldsMap.isEmpty()){
+        if (updateFieldsMap.isEmpty()) {
             return;
         }
 
@@ -341,12 +353,13 @@ public class CodeGen {
                 }
 
                 return info;
-            }).collect(Collectors.toList());
+            })
+            .collect(Collectors.toList());
         dataMap.put("updateFields", fieldInfos);
     }
 
-    private void configSearchField(Map<String, Object> dataMap, List<NeoColumn> columns){
-        if(queryFieldsMap.isEmpty()){
+    private void configSearchField(Map<String, Object> dataMap, List<NeoColumn> columns) {
+        if (queryFieldsMap.isEmpty()) {
             return;
         }
 
@@ -357,28 +370,29 @@ public class CodeGen {
         List<String> dbFieldList = queryFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
         List<String> excludeFieldList = excludesFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
         List<FieldInfo> searchFieldMapList = columns.stream()
-            .filter(column->dbFieldList.contains(column.getColumnName()))
+            .filter(column -> dbFieldList.contains(column.getColumnName()))
             .filter(column -> !excludeFieldList.contains(column.getColumnName()))
-            .map(column->{
+            .map(column -> {
                 String dbName = column.getColumnName();
                 FieldInfo info = FieldInfo.of(dbName, getFieldDesc(dbName, column.getInnerColumn().getRemarks()));
 
                 // 时间戳设置
-                if (fieldIsTimeField(info.getCodeName())){
+                if (fieldIsTimeField(info.getCodeName())) {
                     info.setTimeFlag(1);
                 }
 
                 // 枚举类型设置
-                if (fieldIsEnum(columns, dbName)){
+                if (fieldIsEnum(columns, dbName)) {
                     info.setEnumFlag(1);
                 }
                 return info;
-            }).collect(Collectors.toList());
+            })
+            .collect(Collectors.toList());
         dataMap.put("searchFields", searchFieldMapList);
     }
 
-    private void configTableShowField(Map<String, Object> dataMap, List<NeoColumn> columns){
-        if(tableShowFieldsMap.isEmpty()){
+    private void configTableShowField(Map<String, Object> dataMap, List<NeoColumn> columns) {
+        if (tableShowFieldsMap.isEmpty()) {
             return;
         }
 
@@ -389,30 +403,31 @@ public class CodeGen {
         List<String> dbFieldList = tableShowFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
         List<String> excludeFieldList = excludesFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
         List<FieldInfo> fieldInfoList = columns.stream()
-            .filter(column->dbFieldList.contains(column.getColumnName()))
+            .filter(column -> dbFieldList.contains(column.getColumnName()))
             .filter(column -> !excludeFieldList.contains(column.getColumnName()))
-            .map(column->{
+            .map(column -> {
                 String dbName = column.getColumnName();
                 FieldInfo info = FieldInfo.of(dbName, getFieldDesc(dbName, column.getInnerColumn().getRemarks()));
 
                 // 时间戳设置
-                if (fieldIsTimeField(info.getCodeName())){
+                if (fieldIsTimeField(info.getCodeName())) {
                     info.setTimeFlag(1);
                 }
 
                 // 枚举类型设置
-                if (fieldIsEnum(columns, dbName)){
+                if (fieldIsEnum(columns, dbName)) {
                     info.setEnumFlag(1);
                 }
                 return info;
-            }).collect(Collectors.toList());
+            })
+            .collect(Collectors.toList());
         dataMap.put("tableShowFields", fieldInfoList);
     }
 
     /**
      * 设置表的每一行展开字段，排除表格的字段，排除不展示的字段，其他的字段都进行展示
      */
-    private void configExpandShowField(Map<String, Object> dataMap, List<NeoColumn> columns){
+    private void configExpandShowField(Map<String, Object> dataMap, List<NeoColumn> columns) {
         if (tableShowExpandFieldsMap.isEmpty()) {
             return;
         }
@@ -424,23 +439,24 @@ public class CodeGen {
         List<String> dbFieldList = tableShowExpandFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
         List<String> excludeFieldList = excludesFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
         List<FieldInfo> fieldInfoList = columns.stream()
-            .filter(column->dbFieldList.contains(column.getColumnName()))
+            .filter(column -> dbFieldList.contains(column.getColumnName()))
             .filter(column -> !excludeFieldList.contains(column.getColumnName()))
-            .map(column->{
+            .map(column -> {
                 String dbName = column.getColumnName();
                 FieldInfo info = FieldInfo.of(dbName, getFieldDesc(dbName, column.getInnerColumn().getRemarks()));
 
                 // 时间戳设置
-                if (fieldIsTimeField(info.getCodeName())){
+                if (fieldIsTimeField(info.getCodeName())) {
                     info.setTimeFlag(1);
                 }
 
                 // 枚举类型设置
-                if (fieldIsEnum(columns, dbName)){
+                if (fieldIsEnum(columns, dbName)) {
                     info.setEnumFlag(1);
                 }
                 return info;
-            }).collect(Collectors.toList());
+            })
+            .collect(Collectors.toList());
 
         dataMap.put("expandExist", 1);
         dataMap.put("expandFields", ListUtils.split(fieldInfoList, 4));
@@ -460,9 +476,9 @@ public class CodeGen {
         List<String> dbFieldList = insertFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
         List<String> excludeFieldList = excludesFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
         List<FieldInfo> fieldInfoList = columns.stream()
-            .filter(column->dbFieldList.contains(column.getColumnName()))
+            .filter(column -> dbFieldList.contains(column.getColumnName()))
             .filter(column -> !excludeFieldList.contains(column.getColumnName()))
-            .map(column->{
+            .map(column -> {
                 String dbName = column.getColumnName();
                 FieldInfo info = FieldInfo.of(dbName, getFieldDesc(dbName, column.getInnerColumn().getRemarks()));
 
@@ -481,7 +497,8 @@ public class CodeGen {
                     info.setEnumFlag(1);
                 }
                 return info;
-            }).collect(Collectors.toList());
+            })
+            .collect(Collectors.toList());
         dataMap.put("insertReqFields", fieldInfoList);
         dataMap.put("insertReqImport", importMap);
     }
@@ -500,9 +517,9 @@ public class CodeGen {
         NeoMap importMap = NeoMap.of();
         preGenerateImport(importMap);
         List<FieldInfo> fieldInfoList = columns.stream()
-            .filter(column->dbFieldList.contains(column.getColumnName()))
+            .filter(column -> dbFieldList.contains(column.getColumnName()))
             .filter(column -> !excludeFieldList.contains(column.getColumnName()))
-            .map(column->{
+            .map(column -> {
                 String dbName = column.getColumnName();
                 FieldInfo info = FieldInfo.of(dbName, getFieldDesc(dbName, column.getInnerColumn().getRemarks()));
 
@@ -513,16 +530,17 @@ public class CodeGen {
                 generateImport(column, importMap);
 
                 // 时间戳设置
-                if (fieldIsTimeField(info.getCodeName())){
+                if (fieldIsTimeField(info.getCodeName())) {
                     info.setTimeFlag(1);
                 }
 
                 // 枚举类型设置
-                if (fieldIsEnum(columns, dbName)){
+                if (fieldIsEnum(columns, dbName)) {
                     info.setEnumFlag(1);
                 }
                 return info;
-            }).collect(Collectors.toList());
+            })
+            .collect(Collectors.toList());
         dataMap.put("updateReqFields", fieldInfoList);
         dataMap.put("updateReqImport", importMap);
     }
@@ -542,9 +560,9 @@ public class CodeGen {
         NeoMap importMap = NeoMap.of();
         preGenerateImport(importMap);
         List<FieldInfo> fieldInfoList = columns.stream()
-            .filter(column->dbFieldList.contains(column.getColumnName()))
+            .filter(column -> dbFieldList.contains(column.getColumnName()))
             .filter(column -> !excludeFieldList.contains(column.getColumnName()))
-            .map(column->{
+            .map(column -> {
                 String dbName = column.getColumnName();
                 FieldInfo info = FieldInfo.of(dbName, getFieldDesc(dbName, column.getInnerColumn().getRemarks()));
 
@@ -555,16 +573,17 @@ public class CodeGen {
                 generateImport(column, importMap);
 
                 // 时间戳设置
-                if (fieldIsTimeField(info.getCodeName())){
+                if (fieldIsTimeField(info.getCodeName())) {
                     info.setTimeFlag(1);
                 }
 
                 // 枚举类型设置
-                if (fieldIsEnum(columns, dbName)){
+                if (fieldIsEnum(columns, dbName)) {
                     info.setEnumFlag(1);
                 }
                 return info;
-            }).collect(Collectors.toList());
+            })
+            .collect(Collectors.toList());
         dataMap.put("queryReqFields", fieldInfoList);
         dataMap.put("queryReqImport", importMap);
     }
@@ -577,35 +596,33 @@ public class CodeGen {
         List<String> excludeFieldList = excludesFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
         NeoMap importMap = NeoMap.of();
         preGenerateImport(importMap);
-        List<FieldInfo> fieldInfoList = columns.stream()
-            .filter(column -> !excludeFieldList.contains(column.getColumnName()))
-            .map(column->{
-                String dbName = column.getColumnName();
-                FieldInfo info = FieldInfo.of(dbName, getFieldDesc(dbName, column.getInnerColumn().getRemarks()));
+        List<FieldInfo> fieldInfoList = columns.stream().filter(column -> !excludeFieldList.contains(column.getColumnName())).map(column -> {
+            String dbName = column.getColumnName();
+            FieldInfo info = FieldInfo.of(dbName, getFieldDesc(dbName, column.getInnerColumn().getRemarks()));
 
-                // 属性类型转换
-                fieldTypeChg(column, info);
+            // 属性类型转换
+            fieldTypeChg(column, info);
 
-                // 配置实体中配置的引用
-                generateImport(column, importMap);
+            // 配置实体中配置的引用
+            generateImport(column, importMap);
 
-                // 时间戳设置
-                if (fieldIsTimeField(info.getCodeName())){
-                    info.setTimeFlag(1);
-                }
+            // 时间戳设置
+            if (fieldIsTimeField(info.getCodeName())) {
+                info.setTimeFlag(1);
+            }
 
-                // 枚举类型设置
-                if (fieldIsEnum(columns, dbName)){
-                    info.setEnumFlag(1);
-                }
-                return info;
-            }).collect(Collectors.toList());
+            // 枚举类型设置
+            if (fieldIsEnum(columns, dbName)) {
+                info.setEnumFlag(1);
+            }
+            return info;
+        }).collect(Collectors.toList());
         dataMap.put("queryRspFields", fieldInfoList);
         dataMap.put("queryRspImport", importMap);
     }
 
     // 时间类型转换
-    private void fieldTypeChg(NeoColumn column, FieldInfo info){
+    private void fieldTypeChg(NeoColumn column, FieldInfo info) {
         String type = column.getJavaClass().getSimpleName();
         if (type.equals("BigInteger")) {
             // 针对DB中的BigInteger类型，这里采用Long类型进行转换
@@ -625,7 +642,8 @@ public class CodeGen {
 
     /**
      * 获取属性的描述，比如：user_name -> 用户名
-     * @param fieldName db中对应的属性的名字
+     *
+     * @param fieldName    db中对应的属性的名字
      * @param defaultValue 如果没有配置，则采用默认的名字
      * @return 属性对应的中文名
      */
@@ -647,13 +665,13 @@ public class CodeGen {
         return fieldName;
     }
 
-    private void configBackend(Map<String, Object> dataMap){
-        if(null == backendPort) {
+    private void configBackend(Map<String, Object> dataMap) {
+        if (null == backendPort) {
             dataMap.put("backendPort", backendPort);
         }
     }
 
-    private String getRemark(NeoColumn c){
+    private String getRemark(NeoColumn c) {
         String remarks = c.getInnerColumn().getRemarks();
         if (null != remarks) {
             if (c.getColumnTypeName().equals(mysqlEnumType)) {
@@ -676,10 +694,11 @@ public class CodeGen {
 
     /**
      * 对于枚举类型，获取其中枚举类型的描述
+     *
      * @param fieldDesc 性别用户的性别:MALE=男性;FEMALE=女性;UNKNOWN=未知
      * @return 性别用户的性别
      */
-    private String getEnumDesc(String fieldDesc){
+    private String getEnumDesc(String fieldDesc) {
         if (null == fieldDesc) {
             return null;
         }
@@ -687,9 +706,9 @@ public class CodeGen {
         return getEnumDesc(fieldDesc, Arrays.asList(":", "：", ",", "，"));
     }
 
-    private String getEnumDesc(String fieldDesc, List<String> splitStrs){
+    private String getEnumDesc(String fieldDesc, List<String> splitStrs) {
         for (String splitStr : splitStrs) {
-            if(fieldDesc.contains(splitStr)) {
+            if (fieldDesc.contains(splitStr)) {
                 return Arrays.asList(fieldDesc.split(splitStr)).get(0);
             }
         }
@@ -697,8 +716,8 @@ public class CodeGen {
     }
 
 
-    private Boolean fieldIsUnEdit(String fieldDbName){
-        if(null != unEditFieldsMap){
+    private Boolean fieldIsUnEdit(String fieldDbName) {
+        if (null != unEditFieldsMap) {
             return unEditFieldsMap.containsKey(fieldDbName);
         }
         return true;
@@ -706,10 +725,11 @@ public class CodeGen {
 
     /**
      * 获取枚举值的key和value
+     *
      * @param str 比如：性别用户的性别:MALE=男性;FEMALE=女性;UNKNOWN=未知
      * @return {MALE:男性, FEMAIL=女性, UNKNOWN=未知}
      */
-    private List<EnumMeta> getEnumValueList(String str){
+    private List<EnumMeta> getEnumValueList(String str) {
         if (null == str) {
             return null;
         }
@@ -717,7 +737,7 @@ public class CodeGen {
         return getEnumValueList(str, Arrays.asList(";", ",", "，"));
     }
 
-    private List<EnumMeta> getEnumValueList(String str, List<String> splitStrs){
+    private List<EnumMeta> getEnumValueList(String str, List<String> splitStrs) {
         for (String splitStr : splitStrs) {
             if (str.contains(splitStr)) {
                 return getEnumValueListFromSemi(str, splitStr);
@@ -729,7 +749,7 @@ public class CodeGen {
     /**
      * 判断表的某个属性是否为时间类型
      */
-    private boolean fieldIsTimeField(String field){
+    private boolean fieldIsTimeField(String field) {
         if (null != tableTimeFieldMap) {
             return tableTimeFieldMap.containsKey(field);
         }
@@ -739,14 +759,14 @@ public class CodeGen {
     /**
      * 分号
      */
-    private List<EnumMeta> getEnumValueListFromSemi(String string, String splitStr){
+    private List<EnumMeta> getEnumValueListFromSemi(String string, String splitStr) {
         List<EnumMeta> metaLis = new ArrayList<>();
         List<String> valueList = Arrays.asList(string.split(splitStr));
-        if (!valueList.isEmpty()){
-            valueList.forEach(v->{
+        if (!valueList.isEmpty()) {
+            valueList.forEach(v -> {
                 String key = getKey(v);
                 String value = getValue(v);
-                if (null != key){
+                if (null != key) {
                     if (null != value) {
                         metaLis.add(EnumMeta.of(key, value));
                     } else {
@@ -762,15 +782,15 @@ public class CodeGen {
     /**
      * = 好前面的，逗号或者分号之间的字符
      */
-    private String getKey(String value){
+    private String getKey(String value) {
         Integer endIndex = value.indexOf("=");
         return getKeyFromSplit(value, Arrays.asList(":", "：", ",", "，"), endIndex);
     }
 
-    private String getKeyFromSplit(String value, List<String> splitStrs, Integer endIndex){
+    private String getKeyFromSplit(String value, List<String> splitStrs, Integer endIndex) {
         for (String splitStr : splitStrs) {
             int index = value.indexOf(splitStr);
-            if(-1 != index && -1 != endIndex){
+            if (-1 != index && -1 != endIndex) {
                 return value.substring(index + 1, endIndex);
             }
         }
@@ -783,9 +803,9 @@ public class CodeGen {
     /**
      * 等号后面的字符
      */
-    private String getValue(String value){
+    private String getValue(String value) {
         int index = value.indexOf("=");
-        if(-1 != index){
+        if (-1 != index) {
             return value.substring(index + 1);
         }
         return null;
@@ -794,7 +814,7 @@ public class CodeGen {
     /**
      * 去除前缀：lk_config_group -> config_group
      */
-    private String excludePreFix(){
+    private String excludePreFix() {
         if (null != preFix && tableName.startsWith(preFix)) {
             return tableName.substring(preFix.length());
         }
@@ -804,7 +824,7 @@ public class CodeGen {
     /**
      * 菜单的路径配置文件
      */
-    private void writeRouterConfig(Map<String, Object> dataMap, String filePath){
+    private void writeRouterConfig(Map<String, Object> dataMap, String filePath) {
         try {
             String oldRouterConfigText = FileUtil.read(filePath);
             String dbName = String.valueOf(dataMap.get("appName"));
@@ -828,38 +848,36 @@ public class CodeGen {
      * 新增菜单的路由
      *
      * @param oldRouterConfigText 旧的配置文件路径
-     * @param tableInfo: 里面包括：db 库名字，用于路径; tableName 表名，两个小写拼接; tablePathName 表路径名
+     * @param tableInfo:          里面包括：db 库名字，用于路径; tableName 表名，两个小写拼接; tablePathName 表路径名
      * @return 新增菜单后的路由菜单
      */
     private String addConfigRouter(Map<String, String> tableNameDescMap, String oldRouterConfigText, Triple tableInfo) {
-        String endStr =""
-            + "      // 403\n"
-            + "      {\n"
-            + "        component: '403',\n"
-            + "      },\n"
-            + "      // 404\n"
-            + "      {\n"
-            + "        component: '404',\n"
-            + "      },\n"
-            + "    ],\n"
-            + "  },\n"
-            + "];"
-            ;
+        String endStr = "" + "      // 403\n" + "      {\n" + "        component: '403',\n" + "      },\n" + "      // 404\n" + "      {\n" + "        component: '404',\n" + "      },\n" + "    ],\n" + "  },\n" + "];";
         int inputStartIndex = oldRouterConfigText.indexOf(endStr);
         if (-1 != inputStartIndex) {
             StringBuilder sb = new StringBuilder(oldRouterConfigText.substring(0, inputStartIndex));
             StringBuilder tem = new StringBuilder();
             String tableName = (String) tableInfo.getMiddle();
-            if(tableNameDescMap.containsKey(tableName)){
+            if (tableNameDescMap.containsKey(tableName)) {
                 tem.append("      // ").append(tableNameDescMap.get(tableName)).append("\n");
             }
             tem.append("      {\n")
-                .append("        path: '/").append(tableInfo.getMiddle()).append("',\n")
-                .append("        name: '").append(tableInfo.getMiddle()).append("List',\n")
+                .append("        path: '/")
+                .append(tableInfo.getMiddle())
+                .append("',\n")
+                .append("        name: '")
+                .append(tableInfo.getMiddle())
+                .append("List',\n")
                 .append("        icon: 'lock',\n")
                 .append("        // 直连阶段先删除，接入权限时候放开即可\n")
-                .append("        // authority: ['admin', '").append(tableInfo.getMiddle()).append("List'],\n")
-                .append("        component: './").append(tableInfo.getLeft()).append("/").append(tableInfo.getRight()).append("List',\n")
+                .append("        // authority: ['admin', '")
+                .append(tableInfo.getMiddle())
+                .append("List'],\n")
+                .append("        component: './")
+                .append(tableInfo.getLeft())
+                .append("/")
+                .append(tableInfo.getRight())
+                .append("List',\n")
                 .append("      },\n");
 
             // 如果已经存在则不添加
@@ -909,17 +927,14 @@ public class CodeGen {
         return oldMenuText;
     }
 
-    private void configTableMenu(Map<String, Object> dataMap){
+    private void configTableMenu(Map<String, Object> dataMap) {
         dataMap.put("tableInfo", TableInfo.of(getTablePathSplitLower(excludePreFix()), tableDesc));
 
         String tableNameAfterPre = excludePreFix();
-        dataMap.put("tableComponentInfos",
-            NeoMap.of()
-            .append("tableName", getTablePathSplitLower(tableNameAfterPre))
-            .append("tablePathName", getTablePathName(tableNameAfterPre)));
+        dataMap.put("tableComponentInfos", NeoMap.of().append("tableName", getTablePathSplitLower(tableNameAfterPre)).append("tablePathName", getTablePathName(tableNameAfterPre)));
     }
 
-    private Map<String, Object> generateBaseBone(){
+    private Map<String, Object> generateBaseBone() {
         Map<String, Object> dataMap = new HashMap<>();
 
         dataMap.put("backendPort", backendPort);
@@ -933,7 +948,7 @@ public class CodeGen {
         return dataMap;
     }
 
-    private Map<String, Object> generateFrontBone(){
+    private Map<String, Object> generateFrontBone() {
         Map<String, Object> dataMap = generateBaseBone();
 
         if (null != frontCodePath) {
@@ -946,11 +961,11 @@ public class CodeGen {
         return dataMap;
     }
 
-    private Map<String, Object> generateBackendBone(){
+    private Map<String, Object> generateBackendBone() {
         return generateBaseBone();
     }
 
-    private void configBaseInfo(Map<String, Object> dataMap, String tableNameAfterPre){
+    private void configBaseInfo(Map<String, Object> dataMap, String tableNameAfterPre) {
         // 表格扩展先设置为不显示
         dataMap.put("expandExist", 0);
         dataMap.put("tablePathName", getTablePathName(tableNameAfterPre));
@@ -960,12 +975,12 @@ public class CodeGen {
         dataMap.put("tablePathSplitLower", getTablePathSplitLower(tableNameAfterPre));
     }
 
-    private void configClassHead(Map<String, Object> dataMap){
+    private void configClassHead(Map<String, Object> dataMap) {
         dataMap.put("user", System.getProperty("user.name"));
         dataMap.put("time", new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
     }
 
-    private void configDBInfo(Map<String, Object> dataMap){
+    private void configDBInfo(Map<String, Object> dataMap) {
         if (null == dbUrl || null == dbUserName || null == dbUserPassword) {
             return;
         }
@@ -1006,6 +1021,7 @@ public class CodeGen {
         importMap.put("importTimestamp", 0);
         importMap.put("importBigDecimal", 0);
     }
+
     /**
      * 根据属性的Java类型映射，进行类型的判断和生成
      */
@@ -1027,7 +1043,7 @@ public class CodeGen {
         }
     }
 
-    private void writeFile(Map<String, Object> dataMap, String filePath, String templateName){
+    private void writeFile(Map<String, Object> dataMap, String filePath, String templateName) {
         try {
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(FileUtil.getFile(filePath)));
             Objects.requireNonNull(FreeMarkerTemplateUtil.getTemplate(templateName)).process(dataMap, bufferedWriter);
@@ -1051,6 +1067,26 @@ public class CodeGen {
         }
     }
 
+    private void generateEntity() {
+        EntityCodeGen codeGen = new EntityCodeGen()
+            // 设置DB信息
+            .setDb(dbUserName, dbUserPassword, dbUrl)
+            // 设置项目路径
+            .setProjectPath(projectModelPath)
+            // 设置实体生成的包路径
+            .setEntityPath(packagePath + ".entity")
+            // 设置表前缀过滤
+            .setPreFix(preFix)
+            // 设置要排除的表
+            // 设置只要的表
+            .setIncludes(tableName)
+            // 设置属性中数据库列名字向属性名字的转换，这里设置下划线，比如：data_user_base -> dataUserBase
+            .setFieldNamingChg(NeoMap.NamingChg.UNDERLINE);
+
+        // 代码生成
+        codeGen.generate();
+    }
+
     public void generateFront() {
         Map<String, Object> dataMap = generateFrontBone();
         dataMap.put("tableName", tableName);
@@ -1068,14 +1104,14 @@ public class CodeGen {
         // api
         writeFile(dataMap, frontCodePath + "/src/services/" + appName + "/" + getTablePathNameLower(tableNameAfterPre) + "Api.js", FRONT_PRE + "tableApi.ftl");
 
-        if(direct) {
+        if (direct) {
             writeFile(dataMap, frontCodePath + "/config/config.js", FRONT_PRE + "frontConfig.ftl");
         }
 
         System.out.println("front generate finish");
     }
 
-    public void generateBackend(){
+    public void generateBackend() {
         Map<String, Object> dataMap = generateBackendBone();
         dataMap.put("tableName", tableName);
         dataMap.put("packagePath", packagePath);
@@ -1109,6 +1145,9 @@ public class CodeGen {
 
         // service
         writeFile(dataMap, backendCodePath + "service/" + getTablePathName(tableNameAfterPre) + "Service.java", BACKEND_PRE + "tableService.ftl");
+
+        // 生成实体entity
+        generateEntity();
 
         System.out.println("backend generate finish");
     }

@@ -1,15 +1,15 @@
 package com.isyscore.robot.integration.dto;
 
-import com.isyscore.robot.integration.entity.Table4Entity;
-import com.isyscore.robot.integration.vo.req.Table4InsertReq;
-import com.isyscore.robot.integration.vo.req.Table4UpdateReq;
-import com.isyscore.robot.integration.vo.rsp.Table4QueryRsp;
+import com.isyscore.robot.integration.entity.Table4DO;
+import com.isyscore.robot.integration.web.vo.req.Table4InsertReq;
+import com.isyscore.robot.integration.web.vo.req.Table4UpdateReq;
+import com.isyscore.robot.integration.web.vo.rsp.Table4QueryRsp;
 import lombok.experimental.UtilityClass;
 import org.springframework.beans.BeanUtils;
 
 /**
  * @author zhouzhenyong
- * @since 2020/03/17 19:39:28
+ * @since 2020/03/17 20:15:13
  */
 @UtilityClass
 public class Table4Dto {

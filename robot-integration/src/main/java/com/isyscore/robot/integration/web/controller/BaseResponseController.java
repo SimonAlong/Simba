@@ -1,11 +1,11 @@
 package com.isyscore.robot.integration.web.controller;
 
-import com.isyscore.robot.integration.vo.Response;
+import com.isyscore.robot.integration.web.vo.Response;
 import org.springframework.http.HttpStatus;
 
 /**
- * @author robot
- */
+* @author robot
+*/
 public abstract class BaseResponseController {
 
     public <T> Response<T> success(T body) {

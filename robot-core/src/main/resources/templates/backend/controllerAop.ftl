@@ -1,9 +1,9 @@
-package com.isyscore.robot.integration.aop;
+package ${packagePath}.aop;
 
 import com.isyscore.ibo.neo.NeoMap;
 import com.isyscore.ibo.neo.util.TimeRangeStrUtil;
-import com.isyscore.robot.integration.exception.BusinessException;
-import com.isyscore.robot.integration.web.vo.Response;
+import ${packagePath}.exception.BusinessException;
+import ${packagePath}.web.vo.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -12,8 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 /**
- * @author shizi
- * @since 2019/12/3 1:52 下午
+ * @author ${user}
+ * @since ${time}
  */
 @Slf4j
 @Aspect
@@ -21,9 +21,9 @@ import org.springframework.stereotype.Component;
 public class ControllerAop {
 
     /**
-     * 拦截controller中所有的方法，异常时候打印
+     * 拦截controller中所有的方法
      */
-    @Around("execution(* com.isyscore.robot.integration.web.controller.*.*(..))")
+    @Around("execution(* ${packagePath}.web.controller.*.*(..))")
     public Object aroundParameter(ProceedingJoinPoint pjp) {
         long start = System.currentTimeMillis();
         NeoMap outInfo = NeoMap.of();

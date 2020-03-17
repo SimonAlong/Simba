@@ -21,7 +21,7 @@
 
     <properties>
         <ibo.mikilin.version>1.0.0</ibo.mikilin.version>
-        <ibo.neo.version>1.0.0</ibo.neo.version>
+        <ibo.neo.version>1.0.1-SNAPSHOT</ibo.neo.version>
     </properties>
 
     <dependencyManagement>

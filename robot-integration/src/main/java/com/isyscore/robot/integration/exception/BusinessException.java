@@ -3,6 +3,8 @@ package com.isyscore.robot.integration.exception;
 import lombok.Getter;
 
 /**
+ * 业务异常
+ *
  * @author shizi
  * @since 2020/3/17 下午5:26
  */

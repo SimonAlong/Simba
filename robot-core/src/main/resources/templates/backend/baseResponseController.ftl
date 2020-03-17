@@ -1,4 +1,4 @@
-package ${packagePath}.controller;
+package ${packagePath}.web.controller;
 
 import ${packagePath}.web.vo.Response;
 import org.springframework.http.HttpStatus;

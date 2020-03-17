@@ -1,9 +1,9 @@
 package ${packagePath}.dto;
 
-import ${packagePath}.entity.${tablePathName}Entity;
-import ${packagePath}.vo.req.${tablePathName}InsertReq;
-import ${packagePath}.vo.req.${tablePathName}UpdateReq;
-import ${packagePath}.vo.rsp.${tablePathName}QueryRsp;
+import ${packagePath}.entity.${tablePathName}DO;
+import ${packagePath}.web.vo.req.${tablePathName}InsertReq;
+import ${packagePath}.web.vo.req.${tablePathName}UpdateReq;
+import ${packagePath}.web.vo.rsp.${tablePathName}QueryRsp;
 import lombok.experimental.UtilityClass;
 import org.springframework.beans.BeanUtils;
 
