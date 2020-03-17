@@ -7,8 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 /**
- * @author zhouzhenyong
- * @since 2020/03/17 20:58:15
+ * @author robot
  */
 @Repository
 public class Table4Dao extends AbstractBizService {

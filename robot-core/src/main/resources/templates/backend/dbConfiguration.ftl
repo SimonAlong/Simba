@@ -7,8 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 
 /**
- * @author ${user}
- * @since ${time}
+ * @author robot
  */
 @Configuration
 public class DbConfiguration {

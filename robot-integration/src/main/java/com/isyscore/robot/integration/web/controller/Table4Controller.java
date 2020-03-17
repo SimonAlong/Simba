@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * @author zhouzhenyong
- * @since 2020/03/17 20:58:15
+ * @author robot
  */
 @Slf4j
 @RequestMapping("sequence/table4")

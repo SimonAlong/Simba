@@ -12,8 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 /**
- * @author ${user}
- * @since ${time}
+ * @author robot
  */
 @Slf4j
 @Aspect

@@ -4,9 +4,8 @@ import ${packagePath}.web.vo.Response;
 import org.springframework.http.HttpStatus;
 
 /**
- * @author ${user}
- * @since ${time}
-*/
+ * @author robot
+ */
 public abstract class BaseResponseController {
 
     public <T> Response<T> success(T body) {

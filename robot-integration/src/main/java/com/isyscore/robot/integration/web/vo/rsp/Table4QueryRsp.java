@@ -5,8 +5,7 @@ import java.util.Date;
 import java.io.Serializable;
 
 /**
- * @author zhouzhenyong
- * @since 2020/03/17 20:58:15
+ * @author robot
  */
 @Data
 public class Table4QueryRsp implements Serializable {

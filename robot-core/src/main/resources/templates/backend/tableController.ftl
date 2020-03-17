@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * @author ${user}
- * @since ${time}
+ * @author robot
  */
 @Slf4j
 @RequestMapping("${appName}/${tableUrlName}")

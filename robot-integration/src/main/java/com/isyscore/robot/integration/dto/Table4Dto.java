@@ -8,8 +8,7 @@ import lombok.experimental.UtilityClass;
 import org.springframework.beans.BeanUtils;
 
 /**
- * @author zhouzhenyong
- * @since 2020/03/17 20:58:15
+ * @author robot
  */
 @UtilityClass
 public class Table4Dto {

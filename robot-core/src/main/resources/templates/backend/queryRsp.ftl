@@ -10,8 +10,7 @@ import java.math.BigDecimal;
 import java.io.Serializable;
 
 /**
- * @author ${user}
- * @since ${time}
+ * @author robot
  */
 @Data
 public class ${tablePathName}QueryRsp implements Serializable {

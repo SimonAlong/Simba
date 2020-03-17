@@ -3,8 +3,7 @@ package com.isyscore.robot.integration.web.vo;
 import lombok.Data;
 
 /**
- * @author zhouzhenyong
- * @since 2020/03/17 20:58:15
+ * @author robot
  */
 @Data
 public class Pager<T> {

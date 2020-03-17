@@ -12,8 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * @author ${user}
- * @since ${time}
+ * @author robot
  */
 @Service
 public class ${tablePathName}Service {

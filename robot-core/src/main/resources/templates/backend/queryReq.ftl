@@ -9,8 +9,7 @@ import java.math.BigDecimal;
 import lombok.Data;
 
 /**
- * @author ${user}
- * @since ${time}
+ * @author robot
  */
 @Data
 public class ${tablePathName}QueryReq {

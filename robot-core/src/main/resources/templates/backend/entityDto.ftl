@@ -8,8 +8,7 @@ import lombok.experimental.UtilityClass;
 import org.springframework.beans.BeanUtils;
 
 /**
- * @author ${user}
- * @since ${time}
+ * @author robot
  */
 @UtilityClass
 public class ${tablePathName}Dto {

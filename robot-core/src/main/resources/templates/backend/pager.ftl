@@ -3,8 +3,7 @@ package ${packagePath}.web.vo;
 import lombok.Data;
 
 /**
- * @author ${user}
- * @since ${time}
+ * @author robot
  */
 @Data
 public class Pager<T> {

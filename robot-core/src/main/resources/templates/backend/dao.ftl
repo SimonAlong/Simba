@@ -7,8 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 /**
- * @author ${user}
- * @since ${time}
+ * @author robot
  */
 @Repository
 public class ${tablePathName}Dao extends AbstractBizService {
