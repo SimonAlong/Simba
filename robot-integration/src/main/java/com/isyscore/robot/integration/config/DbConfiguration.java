@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 
 /**
- * @author shizi
- * @since 2020/3/17 下午8:37
+ * @author zhouzhenyong
+ * @since 2020/03/17 20:58:15
  */
 @Configuration
 public class DbConfiguration {

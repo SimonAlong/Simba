@@ -12,8 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 /**
- * @author shizi
- * @since 2019/12/3 1:52 下午
+ * @author zhouzhenyong
+ * @since 2020/03/17 20:58:15
  */
 @Slf4j
 @Aspect
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 public class ControllerAop {
 
     /**
-     * 拦截controller中所有的方法，异常时候打印
+     * 拦截controller中所有的方法
      */
     @Around("execution(* com.isyscore.robot.integration.web.controller.*.*(..))")
     public Object aroundParameter(ProceedingJoinPoint pjp) {
@@ -34,7 +34,6 @@ public class ControllerAop {
         Object result;
         try {
             result = pjp.proceed();
-            outInfo.put("result", result);
         } catch (Throwable e) {
             outInfo.put("timeout", TimeRangeStrUtil.parseTime(System.currentTimeMillis() - start));
             log.error(outInfo.toString(), e);

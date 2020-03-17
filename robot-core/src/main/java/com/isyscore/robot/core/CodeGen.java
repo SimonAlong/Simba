@@ -1152,6 +1152,9 @@ public class CodeGen {
         // dbConfiguration
         writeFile(dataMap, backendCodePath + "config/DbConfiguration.java", BACKEND_PRE + "dbConfiguration.ftl");
 
+        // aop
+        writeFile(dataMap, backendCodePath + "aop/ControllerAop.java", BACKEND_PRE + "controllerAop.ftl");
+
         // entity
         generateEntity();
 

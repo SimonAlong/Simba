@@ -9,7 +9,7 @@ import org.springframework.beans.BeanUtils;
 
 /**
  * @author zhouzhenyong
- * @since 2020/03/17 20:33:25
+ * @since 2020/03/17 20:58:15
  */
 @UtilityClass
 public class Table4Dto {

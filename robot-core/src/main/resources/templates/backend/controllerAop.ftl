@@ -34,7 +34,6 @@ public class ControllerAop {
         Object result;
         try {
             result = pjp.proceed();
-            outInfo.put("result", result);
         } catch (Throwable e) {
             outInfo.put("timeout", TimeRangeStrUtil.parseTime(System.currentTimeMillis() - start));
             log.error(outInfo.toString(), e);
