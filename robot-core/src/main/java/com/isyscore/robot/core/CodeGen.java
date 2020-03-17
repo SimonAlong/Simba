@@ -685,7 +685,9 @@ public class CodeGen {
     }
 
     private void configBackend(Map<String, Object> dataMap){
-        dataMap.put("backendPort", backendPort);
+        if(null == backendPort) {
+            dataMap.put("backendPort", backendPort);
+        }
     }
 
     private String getRemark(NeoColumn c){
@@ -954,7 +956,7 @@ public class CodeGen {
             .append("tablePathName", getTablePathName(tableNameAfterPre)));
     }
 
-    private Map<String, Object> generateBone(){
+    private Map<String, Object> generateBaseBone(){
         Map<String, Object> dataMap = new HashMap<>();
 
         dataMap.put("backendPort", backendPort);
@@ -965,14 +967,24 @@ public class CodeGen {
 
         // 配置所有表和表名的对应
         configTableMenu(dataMap);
-
-        // router.config.js
-        writeRouterConfig(dataMap, frontCodePath + "/config/router.config.js");
-
-        // menu.js
-        writeMenu(dataMap, frontCodePath + "/src/locales/zh-CN/menu.js");
-
         return dataMap;
+    }
+
+    private Map<String, Object> generateFrontBone(){
+        Map<String, Object> dataMap = generateBaseBone();
+
+        if (null != frontCodePath) {
+            // router.config.js
+            writeRouterConfig(dataMap, frontCodePath + "/config/router.config.js");
+
+            // menu.js
+            writeMenu(dataMap, frontCodePath + "/src/locales/zh-CN/menu.js");
+        }
+        return dataMap;
+    }
+
+    private Map<String, Object> generateBackendBone(){
+        return generateBaseBone();
     }
 
     private void configBaseInfo(Map<String, Object> dataMap, String tableNameAfterPre){
@@ -991,6 +1003,9 @@ public class CodeGen {
     }
 
     private void configDBInfo(Map<String, Object> dataMap){
+        if (null == dbUrl || null == dbUserName || null == dbUserPassword) {
+            return;
+        }
         Neo neo = Neo.connect(dbUrl, dbUserName, dbUserPassword);
         List<NeoColumn> columns = neo.getColumnList(tableName);
 
@@ -1059,22 +1074,22 @@ public class CodeGen {
     }
 
     private void writeBaseResponseController(Map<String, Object> dataMap) {
-        String adminConstantFullPath = backendCodePath + "controller/BaseResponseController.java";
+        String adminConstantFullPath = backendCodePath + "web/controller/BaseResponseController.java";
         if (!FileUtil.exist(adminConstantFullPath)) {
             // baseResponseController
-            writeFile(dataMap, backendCodePath + "controller/BaseResponseController.java", "baseResponseController.ftl");
+            writeFile(dataMap, adminConstantFullPath, "baseResponseController.ftl");
         }
     }
 
     private void writeResponse(Map<String, Object> dataMap) {
         String adminConstantFullPath = backendCodePath + "constants/AdminConstant.java";
         if (!FileUtil.exist(adminConstantFullPath)) {
-            writeFile(dataMap, backendCodePath + "vo/Response.java", "response.ftl");
+            writeFile(dataMap, backendCodePath + "web/vo/Response.java", "response.ftl");
         }
     }
 
     public void generateFront() {
-        Map<String, Object> dataMap = generateBone();
+        Map<String, Object> dataMap = generateFrontBone();
         dataMap.put("tableName", tableName);
         dataMap.put("expandExist", 1);
 
@@ -1098,7 +1113,7 @@ public class CodeGen {
     }
 
     public void generateBackend(){
-        Map<String, Object> dataMap = generateBone();
+        Map<String, Object> dataMap = generateBackendBone();
         dataMap.put("tableName", tableName);
         dataMap.put("packagePath", packagePath);
 
@@ -1111,22 +1126,22 @@ public class CodeGen {
         configClassHead(dataMap);
 
         // controller
-        writeFile(dataMap, backendCodePath + "controller/" + getTablePathName(tableNameAfterPre) + "Controller.java", "tableController.ftl");
+        writeFile(dataMap, backendCodePath + "web/controller/" + getTablePathName(tableNameAfterPre) + "Controller.java", "tableController.ftl");
         writeBaseResponseController(dataMap);
 
         // dto
         writeFile(dataMap, backendCodePath + "dto/" + getTablePathName(tableNameAfterPre) + "Dto.java", "entityDto.ftl");
 
         // vo
-        writeFile(dataMap, backendCodePath + "vo/req/" + getTablePathName(tableNameAfterPre) + "InsertReq.java", "insertReq.ftl");
-        writeFile(dataMap, backendCodePath + "vo/req/" + getTablePathName(tableNameAfterPre) + "QueryReq.java", "queryReq.ftl");
-        writeFile(dataMap, backendCodePath + "vo/req/" + getTablePathName(tableNameAfterPre) + "UpdateReq.java", "updateReq.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/req/" + getTablePathName(tableNameAfterPre) + "InsertReq.java", "insertReq.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/req/" + getTablePathName(tableNameAfterPre) + "QueryReq.java", "queryReq.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/req/" + getTablePathName(tableNameAfterPre) + "UpdateReq.java", "updateReq.ftl");
 
         // QueryRsp
-        writeFile(dataMap, backendCodePath + "vo/rsp/" + getTablePathName(tableNameAfterPre) + "QueryRsp.java", "queryRsp.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/rsp/" + getTablePathName(tableNameAfterPre) + "QueryRsp.java", "queryRsp.ftl");
 
         // common entity
-        writeFile(dataMap, backendCodePath + "vo/Pager.java", "pager.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/Pager.java", "pager.ftl");
         writeResponse(dataMap);
 
         // service

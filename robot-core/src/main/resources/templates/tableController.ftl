@@ -1,5 +1,6 @@
 package ${packagePath}.controller;
 
+import ${packagePath}.web.controller.BaseResponseController;
 import ${packagePath}.constants.AdminConstant;
 import ${packagePath}.service.${tablePathName}Service;
 import ${packagePath}.vo.Pager;

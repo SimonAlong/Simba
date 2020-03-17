@@ -1,6 +1,6 @@
 package ${packagePath}.controller;
 
-import ${packagePath}.vo.Response;
+import ${packagePath}.web.vo.Response;
 import org.springframework.http.HttpStatus;
 
 /**

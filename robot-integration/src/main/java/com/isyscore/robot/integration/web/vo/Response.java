@@ -3,8 +3,8 @@ package com.isyscore.robot.integration.web.vo;
 import lombok.Data;
 
 /**
-* @author simon
-* @since 2019/12/23 16:11:29
+* @author zhouzhenyong
+* @since 2020/03/17 19:20:24
 */
 @Data
 public class Response<T> {

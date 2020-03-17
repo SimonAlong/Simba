@@ -1,4 +1,4 @@
-package ${packagePath}.vo.rsp;
+package ${packagePath}.web.vo.rsp;
 
 import lombok.Data;
 <#if queryRspImport.importDate == 1>

@@ -81,15 +81,15 @@ public class CodeGenTest {
         codeGen.setTableExpandFieldsMap("time", "year", "date", "datetime");
 
         /*============================================================================ 后端代码生成器（非必填） ===================*/
-        // 设置："后端项目模块路径"，后端项目的路径（如果不设置，则后端代码不会生成）
-        codeGen.setBackendModulePath("/Users/zhouzhenyong/project/isyscore/ibo-robot");
+        // 设置："后端项目模块路径"，（如果后端还有对应的组件包，则也要将组件包放到最后）
+        codeGen.setBackendModulePath("/Users/zhouzhenyong/project/isyscore/ibo-robot/robot-integration");
 
         // 设置："package包"
         codeGen.setBackendPackage("com.isyscore.robot.integration");
 
         /*=========================== 生成代码 ========================*/
         // 生成前端
-//        codeGen.generateFront();
+        // codeGen.generateFront();
 
         // 生成后端
         codeGen.generateBackend();

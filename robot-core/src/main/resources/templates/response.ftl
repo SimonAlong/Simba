@@ -1,4 +1,4 @@
-package ${packagePath}.vo;
+package ${packagePath}.web.vo;
 
 import lombok.Data;
 
