@@ -2,9 +2,9 @@ package ${packagePath}.service;
 
 import ${packagePath}.dto.${tablePathName}Dto;
 import ${packagePath}.mapper.ext.${tablePathName}ExtMapper;
-import ${packagePath}.vo.Pager;
-import ${packagePath}.vo.req.*;
-import ${packagePath}.vo.rsp.${tablePathName}QueryRsp;
+import ${packagePath}.web.vo.Pager;
+import ${packagePath}.web.vo.req.*;
+import ${packagePath}.web.vo.rsp.${tablePathName}QueryRsp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

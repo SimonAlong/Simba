@@ -2,9 +2,9 @@ package com.isyscore.robot.integration.service;
 
 import com.isyscore.robot.integration.dto.Table4Dto;
 import com.isyscore.robot.integration.mapper.ext.Table4ExtMapper;
-import com.isyscore.robot.integration.vo.Pager;
-import com.isyscore.robot.integration.vo.req.*;
-import com.isyscore.robot.integration.vo.rsp.Table4QueryRsp;
+import com.isyscore.robot.integration.web.vo.Pager;
+import com.isyscore.robot.integration.web.vo.req.*;
+import com.isyscore.robot.integration.web.vo.rsp.Table4QueryRsp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author zhouzhenyong
- * @since 2020/03/17 20:15:13
+ * @since 2020/03/17 20:33:25
  */
 @Service
 public class Table4Service {

@@ -14,19 +14,19 @@ import org.springframework.beans.BeanUtils;
 @UtilityClass
 public class ${tablePathName}Dto {
 
-    public ${tablePathName}Entity insertReqToEntity(${tablePathName}InsertReq req) {
-        ${tablePathName}Entity entity = new ${tablePathName}Entity();
+    public ${tablePathName}DO insertReqToEntity(${tablePathName}InsertReq req) {
+        ${tablePathName}DO entity = new ${tablePathName}DO();
         BeanUtils.copyProperties(req, entity);
         return entity;
     }
 
-    public ${tablePathName}Entity updateReqToEntity(${tablePathName}UpdateReq req) {
-        ${tablePathName}Entity entity = new ${tablePathName}Entity();
+    public ${tablePathName}DO updateReqToEntity(${tablePathName}UpdateReq req) {
+        ${tablePathName}DO entity = new ${tablePathName}DO();
         BeanUtils.copyProperties(req, entity);
         return entity;
     }
 
-    public ${tablePathName}QueryRsp entityToQueryRsp(${tablePathName}Entity entity) {
+    public ${tablePathName}QueryRsp entityToQueryRsp(${tablePathName}DO entity) {
         ${tablePathName}QueryRsp rsp = new ${tablePathName}QueryRsp();
         BeanUtils.copyProperties(entity, rsp);
         return rsp;

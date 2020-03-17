@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 /**
  * @author zhouzhenyong
- * @since 2020/03/17 20:15:13
+ * @since 2020/03/17 20:33:25
  */
 @Data
 public class Table4QueryRsp implements Serializable {

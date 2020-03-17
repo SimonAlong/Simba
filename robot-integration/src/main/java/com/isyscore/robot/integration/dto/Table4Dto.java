@@ -9,24 +9,24 @@ import org.springframework.beans.BeanUtils;
 
 /**
  * @author zhouzhenyong
- * @since 2020/03/17 20:15:13
+ * @since 2020/03/17 20:33:25
  */
 @UtilityClass
 public class Table4Dto {
 
-    public Table4Entity insertReqToEntity(Table4InsertReq req) {
-        Table4Entity entity = new Table4Entity();
+    public Table4DO insertReqToEntity(Table4InsertReq req) {
+        Table4DO entity = new Table4DO();
         BeanUtils.copyProperties(req, entity);
         return entity;
     }
 
-    public Table4Entity updateReqToEntity(Table4UpdateReq req) {
-        Table4Entity entity = new Table4Entity();
+    public Table4DO updateReqToEntity(Table4UpdateReq req) {
+        Table4DO entity = new Table4DO();
         BeanUtils.copyProperties(req, entity);
         return entity;
     }
 
-    public Table4QueryRsp entityToQueryRsp(Table4Entity entity) {
+    public Table4QueryRsp entityToQueryRsp(Table4DO entity) {
         Table4QueryRsp rsp = new Table4QueryRsp();
         BeanUtils.copyProperties(entity, rsp);
         return rsp;
