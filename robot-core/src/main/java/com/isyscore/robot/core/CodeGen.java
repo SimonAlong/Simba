@@ -1124,12 +1124,12 @@ public class CodeGen {
         // 配置类头部注释
         configClassHead(dataMap);
 
-        // controller
-        writeFile(dataMap, backendCodePath + "web/controller/" + getTablePathName(tableNameAfterPre) + "Controller.java", BACKEND_PRE + "tableController.ftl");
+        // XxxController
+        writeFile(dataMap, backendCodePath + "web/controller/" + getTablePathName(tableNameAfterPre) + "Controller.java", BACKEND_PRE + "controller.ftl");
         writeBaseResponseController(dataMap);
 
-        // dto
-        writeFile(dataMap, backendCodePath + "dto/" + getTablePathName(tableNameAfterPre) + "Dto.java", BACKEND_PRE + "entityDto.ftl");
+        // XxxTransfer
+        writeFile(dataMap, backendCodePath + "transfer/" + getTablePathName(tableNameAfterPre) + "Transfer.java", BACKEND_PRE + "transfer.ftl");
 
         // vo
         writeFile(dataMap, backendCodePath + "web/vo/req/" + getTablePathName(tableNameAfterPre) + "InsertReq.java", BACKEND_PRE + "insertReq.ftl");
@@ -1139,26 +1139,28 @@ public class CodeGen {
         // QueryRsp
         writeFile(dataMap, backendCodePath + "web/vo/rsp/" + getTablePathName(tableNameAfterPre) + "QueryRsp.java", BACKEND_PRE + "queryRsp.ftl");
 
-        // common entity
+        // Pager.java
         writeFile(dataMap, backendCodePath + "web/vo/Pager.java", BACKEND_PRE + "pager.ftl");
+
+        // Response.java
         writeResponse(dataMap);
 
-        // service
-        writeFile(dataMap, backendCodePath + "service/" + getTablePathName(tableNameAfterPre) + "Service.java", BACKEND_PRE + "tableService.ftl");
+        // XxxService.java
+        writeFile(dataMap, backendCodePath + "service/" + getTablePathName(tableNameAfterPre) + "Service.java", BACKEND_PRE + "service.ftl");
 
-        // dao
+        // XxxDao.java
         writeFile(dataMap, backendCodePath + "dao/" + getTablePathName(tableNameAfterPre) + "Dao.java", BACKEND_PRE + "dao.ftl");
 
-        // dbConfiguration
+        // DbConfiguration.java
         writeFile(dataMap, backendCodePath + "config/DbConfiguration.java", BACKEND_PRE + "dbConfiguration.ftl");
 
-        // aop
+        // ControllerAop.java
         writeFile(dataMap, backendCodePath + "aop/ControllerAop.java", BACKEND_PRE + "controllerAop.ftl");
 
-        // application
+        // XxxApplication.java
         writeFile(dataMap, backendCodePath + getTablePathName(tableNameAfterPre) + "Application.java", BACKEND_PRE + "application.ftl");
 
-        // entity
+        // XxxDO
         generateEntity();
 
         System.out.println("backend generate finish");

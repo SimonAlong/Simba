@@ -1,4 +1,4 @@
-package ${packagePath}.dto;
+package ${packagePath}.transfer;
 
 import ${packagePath}.entity.${tablePathName}DO;
 import ${packagePath}.web.vo.req.${tablePathName}InsertReq;
@@ -11,7 +11,7 @@ import org.springframework.beans.BeanUtils;
  * @author robot
  */
 @UtilityClass
-public class ${tablePathName}Dto {
+public class ${tablePathName}Transfer {
 
     public ${tablePathName}DO insertReqToEntity(${tablePathName}InsertReq req) {
         ${tablePathName}DO entity = new ${tablePathName}DO();

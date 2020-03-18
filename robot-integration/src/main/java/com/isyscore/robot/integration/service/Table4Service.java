@@ -3,7 +3,7 @@ package com.isyscore.robot.integration.service;
 import com.isyscore.ibo.neo.NeoMap;
 import com.isyscore.ibo.neo.db.NeoPage;
 import com.isyscore.robot.integration.dao.Table4Dao;
-import com.isyscore.robot.integration.dto.Table4Dto;
+import com.isyscore.robot.integration.transfer.Table4Transfer;
 import com.isyscore.robot.integration.entity.Table4DO;
 import com.isyscore.robot.integration.web.vo.Pager;
 import com.isyscore.robot.integration.web.vo.req.*;
@@ -24,7 +24,7 @@ public class Table4Service {
     private Table4Dao dao;
 
     public Integer insert(Table4InsertReq insertReq) {
-        dao.insert(Table4Dto.insertReqToEntity(insertReq));
+        dao.insert(Table4Transfer.insertReqToEntity(insertReq));
         return 1;
     }
 
@@ -33,7 +33,7 @@ public class Table4Service {
     }
 
     public Integer update(Table4UpdateReq updateReq) {
-        dao.update(Table4Dto.updateReqToEntity(updateReq));
+        dao.update(Table4Transfer.updateReqToEntity(updateReq));
         return 1;
     }
 
@@ -41,7 +41,7 @@ public class Table4Service {
         return dao.page(NeoMap.from(pageReq.getPageIndex()), NeoPage.of(pageReq.getPageIndex(), pageReq.getPageSize()))
             .stream()
             .map(data -> data.as(Table4DO.class))
-            .map(Table4Dto::entityToQueryRsp)
+            .map(Table4Transfer::entityToQueryRsp)
             .collect(Collectors.toList());
     }
 

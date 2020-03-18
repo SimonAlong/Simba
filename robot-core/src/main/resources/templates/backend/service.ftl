@@ -3,7 +3,7 @@ package ${packagePath}.service;
 import com.isyscore.ibo.neo.NeoMap;
 import com.isyscore.ibo.neo.db.NeoPage;
 import ${packagePath}.dao.${tablePathName}Dao;
-import ${packagePath}.dto.${tablePathName}Dto;
+import ${packagePath}.transfer.${tablePathName}Transfer;
 import ${packagePath}.entity.${tablePathName}DO;
 import ${packagePath}.web.vo.Pager;
 import ${packagePath}.web.vo.req.*;

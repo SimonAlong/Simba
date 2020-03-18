@@ -1,4 +1,4 @@
-package com.isyscore.robot.integration.dto;
+package com.isyscore.robot.integration.transfer;
 
 import com.isyscore.robot.integration.entity.Table4DO;
 import com.isyscore.robot.integration.web.vo.req.Table4InsertReq;
@@ -11,7 +11,7 @@ import org.springframework.beans.BeanUtils;
  * @author robot
  */
 @UtilityClass
-public class Table4Dto {
+public class Table4Transfer {
 
     public Table4DO insertReqToEntity(Table4InsertReq req) {
         Table4DO entity = new Table4DO();
