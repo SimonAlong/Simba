@@ -1073,26 +1073,6 @@ public class CodeGen {
         }
     }
 
-    private void generateEntity() {
-        EntityCodeGen codeGen = new EntityCodeGen()
-            // 设置DB信息
-            .setDb(dbUserName, dbUserPassword, dbUrl)
-            // 设置项目路径
-            .setProjectPath(projectModelPath)
-            // 设置实体生成的包路径
-            .setEntityPath(packagePath + ".entity")
-            // 设置表前缀过滤
-            .setPreFix(preFix)
-            // 设置要排除的表
-            // 设置只要的表
-            .setIncludes(tableName)
-            // 设置属性中数据库列名字向属性名字的转换，这里设置下划线，比如：data_user_base -> dataUserBase
-            .setFieldNamingChg(NeoMap.NamingChg.UNDERLINE);
-
-        // 代码生成
-        codeGen.generate();
-    }
-
     public void generateFront() {
         NeoMap dataMap = generateFrontBone();
         dataMap.put("tableName", tableName);
@@ -1130,52 +1110,99 @@ public class CodeGen {
         // 配置类头部注释
         configClassHead(dataMap);
 
-        // XxxController
-        writeFile(dataMap, backendCodePath + "web/controller/" + getTablePathName(tableNameAfterPre) + "Controller.java", BACKEND_PRE + "controller.ftl");
-        writeBaseResponseController(dataMap);
+        generateAop(dataMap);
+        generateConfig(dataMap);
+        generateDao(dataMap, tableNameAfterPre);
+        generateException(dataMap);
+        generateEntity();
+        generateService(dataMap, tableNameAfterPre);
+        generateTransfer(dataMap, tableNameAfterPre);
+        generateWeb(dataMap, tableNameAfterPre);
 
-        // XxxTransfer
-        writeFile(dataMap, backendCodePath + "transfer/" + getTablePathName(tableNameAfterPre) + "Transfer.java", BACKEND_PRE + "transfer.ftl");
+        // 生成resource中的文件
+        // generateResources(dataMap);
 
-        // vo
-        writeFile(dataMap, backendCodePath + "web/vo/req/" + getTablePathName(tableNameAfterPre) + "InsertReq.java", BACKEND_PRE + "insertReq.ftl");
-        writeFile(dataMap, backendCodePath + "web/vo/req/" + getTablePathName(tableNameAfterPre) + "QueryReq.java", BACKEND_PRE + "queryReq.ftl");
-        writeFile(dataMap, backendCodePath + "web/vo/req/" + getTablePathName(tableNameAfterPre) + "UpdateReq.java", BACKEND_PRE + "updateReq.ftl");
+        System.out.println("backend generate finish");
+    }
 
-        // QueryRsp
-        writeFile(dataMap, backendCodePath + "web/vo/rsp/" + getTablePathName(tableNameAfterPre) + "QueryRsp.java", BACKEND_PRE + "queryRsp.ftl");
-
-        // Pager.java
-        writeFile(dataMap, backendCodePath + "web/vo/Pager.java", BACKEND_PRE + "pager.ftl");
-
-        // Response.java
-        writeResponse(dataMap);
-
-        // XxxService.java
-        writeFile(dataMap, backendCodePath + "service/" + getTablePathName(tableNameAfterPre) + "Service.java", BACKEND_PRE + "service.ftl");
-
-        // XxxDao.java
-        writeFile(dataMap, backendCodePath + "dao/" + getTablePathName(tableNameAfterPre) + "Dao.java", BACKEND_PRE + "dao.ftl");
-
-        // DbConfiguration.java
-        writeFile(dataMap, backendCodePath + "config/DbConfiguration.java", BACKEND_PRE + "dbConfiguration.ftl");
-
+    private void generateAop(NeoMap dataMap) {
         // ControllerAop.java
         writeFile(dataMap, backendCodePath + "aop/ControllerAop.java", BACKEND_PRE + "controllerAop.ftl");
 
         // AutoCheck.java
         writeFile(dataMap, backendCodePath + "aop/AutoCheck.java", BACKEND_PRE + "autoCheck.ftl");
+    }
 
+    private void generateConfig(NeoMap dataMap) {
+        // DbConfiguration.java
+        writeFile(dataMap, backendCodePath + "config/DbConfiguration.java", BACKEND_PRE + "dbConfiguration.ftl");
+    }
+
+    private void generateDao(NeoMap dataMap, String tableNameAfterPre) {
+        // XxxDao.java
+        writeFile(dataMap, backendCodePath + "dao/" + getTablePathName(tableNameAfterPre) + "Dao.java", BACKEND_PRE + "dao.ftl");
+    }
+
+    private void generateException(NeoMap dataMap) {
+        // BusinessException.java
+        writeFile(dataMap, backendCodePath + "exception/BusinessException.java", BACKEND_PRE + "exception.ftl");
+    }
+
+    private void generateEntity() {
+        // XxxDO
+        EntityCodeGen codeGen = new EntityCodeGen()
+            // 设置DB信息
+            .setDb(dbUserName, dbUserPassword, dbUrl)
+            // 设置项目路径
+            .setProjectPath(projectModelPath)
+            // 设置实体生成的包路径
+            .setEntityPath(packagePath + ".entity")
+            // 设置表前缀过滤
+            .setPreFix(preFix)
+            // 设置要排除的表
+            // 设置只要的表
+            .setIncludes(tableName)
+            // 设置属性中数据库列名字向属性名字的转换，这里设置下划线，比如：data_user_base -> dataUserBase
+            .setFieldNamingChg(NeoMap.NamingChg.UNDERLINE);
+
+        // 代码生成
+        codeGen.generate();
+    }
+
+    private void generateService(NeoMap dataMap, String tableNameAfterPre) {
+        // XxxService.java
+        writeFile(dataMap, backendCodePath + "service/" + getTablePathName(tableNameAfterPre) + "Service.java", BACKEND_PRE + "service.ftl");
+    }
+
+    private void generateTransfer(NeoMap dataMap, String tableNameAfterPre) {
+        // XxxTransfer
+        writeFile(dataMap, backendCodePath + "transfer/" + getTablePathName(tableNameAfterPre) + "Transfer.java", BACKEND_PRE + "transfer.ftl");
+    }
+
+    private void generateWeb(NeoMap dataMap, String tableNameAfterPre) {
+        // baseResponseController
+        writeBaseResponseController(dataMap);
+        // XxxController
+        writeFile(dataMap, backendCodePath + "web/controller/" + getTablePathName(tableNameAfterPre) + "Controller.java", BACKEND_PRE + "controller.ftl");
+
+        // vo: req
+        writeFile(dataMap, backendCodePath + "web/vo/req/" + getTablePathName(tableNameAfterPre) + "InsertReq.java", BACKEND_PRE + "insertReq.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/req/" + getTablePathName(tableNameAfterPre) + "QueryReq.java", BACKEND_PRE + "queryReq.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/req/" + getTablePathName(tableNameAfterPre) + "UpdateReq.java", BACKEND_PRE + "updateReq.ftl");
+
+        // vo: rsp
+        writeFile(dataMap, backendCodePath + "web/vo/rsp/" + getTablePathName(tableNameAfterPre) + "QueryRsp.java", BACKEND_PRE + "queryRsp.ftl");
+
+        // vo: Pager.java
+        writeFile(dataMap, backendCodePath + "web/vo/Pager.java", BACKEND_PRE + "pager.ftl");
+
+        // vo: Response.java
+        writeResponse(dataMap);
+    }
+
+    private void generateApplication(NeoMap dataMap, String tableNameAfterPre) {
         // XxxApplication.java
         writeFile(dataMap, backendCodePath + getTablePathName(tableNameAfterPre) + "Application.java", BACKEND_PRE + "applicationStart.ftl");
-
-        // XxxDO
-        generateEntity();
-
-        // 生成resource中的文件
-//        generateResources(dataMap);
-
-        System.out.println("backend generate finish");
     }
 
     private void generateResources(NeoMap dataMap) {

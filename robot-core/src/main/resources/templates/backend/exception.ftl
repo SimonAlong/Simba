@@ -1,4 +1,4 @@
-package com.isyscore.robot.integration.exception;
+package ${packagePath}.exception;
 
 import lombok.Getter;
 
