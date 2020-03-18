@@ -238,7 +238,7 @@ public class CodeGen {
     /**
      * 将表中文名和表名对应起来
      */
-    private void configTableName(Map<String, Object> dataMap) {
+    private void configTableName(NeoMap dataMap) {
         dataMap.put("tableNameCn", tableName);
         if (null != tableDesc) {
             dataMap.put("tableNameCn", tableDesc);
@@ -248,7 +248,7 @@ public class CodeGen {
     /**
      * 添加枚举类型和对应的值
      */
-    private void configEnumTypeField(Map<String, Object> dataMap, List<NeoColumn> columns) {
+    private void configEnumTypeField(NeoMap dataMap, List<NeoColumn> columns) {
         List<EnumInfo> infoList = new ArrayList<>();
         if (null != columns && !columns.isEmpty()) {
             columns.stream()
@@ -287,7 +287,7 @@ public class CodeGen {
      * <p>
      * 注意：如果有这么几个基本字段则这里默认在添加框中不展示
      */
-    private void configInsertField(Map<String, Object> dataMap, List<NeoColumn> columns) {
+    private void configInsertField(NeoMap dataMap, List<NeoColumn> columns) {
         if (insertFieldsMap.isEmpty()) {
             return;
         }
@@ -325,7 +325,7 @@ public class CodeGen {
     /**
      * 设置哪些字段是可以更新的，首先过滤排除表，然后查看展示表
      */
-    private void configUpdateField(Map<String, Object> dataMap, List<NeoColumn> columns) {
+    private void configUpdateField(NeoMap dataMap, List<NeoColumn> columns) {
         if (updateFieldsMap.isEmpty()) {
             return;
         }
@@ -364,7 +364,7 @@ public class CodeGen {
         dataMap.put("updateFields", fieldInfos);
     }
 
-    private void configSearchField(Map<String, Object> dataMap, List<NeoColumn> columns) {
+    private void configSearchField(NeoMap dataMap, List<NeoColumn> columns) {
         if (queryFieldsMap.isEmpty()) {
             return;
         }
@@ -397,7 +397,7 @@ public class CodeGen {
         dataMap.put("searchFields", searchFieldMapList);
     }
 
-    private void configTableShowField(Map<String, Object> dataMap, List<NeoColumn> columns) {
+    private void configTableShowField(NeoMap dataMap, List<NeoColumn> columns) {
         if (tableShowFieldsMap.isEmpty()) {
             return;
         }
@@ -433,7 +433,7 @@ public class CodeGen {
     /**
      * 设置表的每一行展开字段，排除表格的字段，排除不展示的字段，其他的字段都进行展示
      */
-    private void configExpandShowField(Map<String, Object> dataMap, List<NeoColumn> columns) {
+    private void configExpandShowField(NeoMap dataMap, List<NeoColumn> columns) {
         if (tableShowExpandFieldsMap.isEmpty()) {
             return;
         }
@@ -468,7 +468,7 @@ public class CodeGen {
         dataMap.put("expandFields", ListUtils.split(fieldInfoList, 4));
     }
 
-    private void configInsertEntity(Map<String, Object> dataMap, List<NeoColumn> columns) {
+    private void configInsertEntity(NeoMap dataMap, List<NeoColumn> columns) {
         if (insertFieldsMap.isEmpty()) {
             return;
         }
@@ -509,7 +509,7 @@ public class CodeGen {
         dataMap.put("insertReqImport", importMap);
     }
 
-    private void configUpdateEntity(Map<String, Object> dataMap, List<NeoColumn> columns) {
+    private void configUpdateEntity(NeoMap dataMap, List<NeoColumn> columns) {
         if (updateFieldsMap.isEmpty()) {
             return;
         }
@@ -551,7 +551,7 @@ public class CodeGen {
         dataMap.put("updateReqImport", importMap);
     }
 
-    private void configQueryReqEntity(Map<String, Object> dataMap, List<NeoColumn> columns) {
+    private void configQueryReqEntity(NeoMap dataMap, List<NeoColumn> columns) {
         if (queryFieldsMap.isEmpty()) {
             return;
         }
@@ -594,7 +594,7 @@ public class CodeGen {
         dataMap.put("queryReqImport", importMap);
     }
 
-    private void configQueryRspEntity(Map<String, Object> dataMap, List<NeoColumn> columns) {
+    private void configQueryRspEntity(NeoMap dataMap, List<NeoColumn> columns) {
         if (null == columns || columns.isEmpty()) {
             return;
         }
@@ -671,7 +671,7 @@ public class CodeGen {
         return fieldName;
     }
 
-    private void configBackend(Map<String, Object> dataMap) {
+    private void configBackend(NeoMap dataMap) {
         if (null == backendPort) {
             dataMap.put("backendPort", backendPort);
         }
@@ -830,7 +830,7 @@ public class CodeGen {
     /**
      * 菜单的路径配置文件
      */
-    private void writeRouterConfig(Map<String, Object> dataMap, String filePath) {
+    private void writeRouterConfig(NeoMap dataMap, String filePath) {
         try {
             String oldRouterConfigText = FileUtil.read(filePath);
             String dbName = String.valueOf(dataMap.get("appName"));
@@ -899,7 +899,7 @@ public class CodeGen {
     /**
      * 菜单的路径配置文件
      */
-    private void writeMenu(Map<String, Object> dataMap, String filePath) {
+    private void writeMenu(NeoMap dataMap, String filePath) {
         try {
             String oldMenuText = FileUtil.read(filePath);
             TableInfo tableInfo = (TableInfo) dataMap.get("tableInfo");
@@ -933,15 +933,15 @@ public class CodeGen {
         return oldMenuText;
     }
 
-    private void configTableMenu(Map<String, Object> dataMap) {
+    private void configTableMenu(NeoMap dataMap) {
         dataMap.put("tableInfo", TableInfo.of(getTablePathSplitLower(excludePreFix()), tableDesc));
 
         String tableNameAfterPre = excludePreFix();
         dataMap.put("tableComponentInfos", NeoMap.of().append("tableName", getTablePathSplitLower(tableNameAfterPre)).append("tablePathName", getTablePathName(tableNameAfterPre)));
     }
 
-    private Map<String, Object> generateBaseBone() {
-        Map<String, Object> dataMap = new HashMap<>();
+    private NeoMap generateBaseBone() {
+        NeoMap dataMap = new HashMap<>();
 
         dataMap.put("backendPort", backendPort);
         dataMap.put("appName", appName);
@@ -954,8 +954,8 @@ public class CodeGen {
         return dataMap;
     }
 
-    private Map<String, Object> generateFrontBone() {
-        Map<String, Object> dataMap = generateBaseBone();
+    private NeoMap generateFrontBone() {
+        NeoMap dataMap = generateBaseBone();
 
         if (null != frontCodePath) {
             // router.config.js
@@ -967,11 +967,11 @@ public class CodeGen {
         return dataMap;
     }
 
-    private Map<String, Object> generateBackendBone() {
+    private NeoMap generateBackendBone() {
         return generateBaseBone();
     }
 
-    private void configBaseInfo(Map<String, Object> dataMap, String tableNameAfterPre) {
+    private void configBaseInfo(NeoMap dataMap, String tableNameAfterPre) {
         // 表格扩展先设置为不显示
         dataMap.put("expandExist", 0);
         dataMap.put("tablePathName", getTablePathName(tableNameAfterPre));
@@ -981,12 +981,12 @@ public class CodeGen {
         dataMap.put("tablePathSplitLower", getTablePathSplitLower(tableNameAfterPre));
     }
 
-    private void configClassHead(Map<String, Object> dataMap) {
+    private void configClassHead(NeoMap dataMap) {
         dataMap.put("user", System.getProperty("user.name"));
         dataMap.put("time", new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
     }
 
-    private void configDBInfo(Map<String, Object> dataMap) {
+    private void configDBInfo(NeoMap dataMap) {
         if (null == dbUrl || null == dbUserName || null == dbUserPassword) {
             return;
         }
@@ -1049,7 +1049,7 @@ public class CodeGen {
         }
     }
 
-    private void writeFile(Map<String, Object> dataMap, String filePath, String templateName) {
+    private void writeFile(NeoMap dataMap, String filePath, String templateName) {
         try {
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(FileUtil.getFile(filePath)));
             Objects.requireNonNull(FreeMarkerTemplateUtil.getTemplate(templateName)).process(dataMap, bufferedWriter);
@@ -1058,7 +1058,7 @@ public class CodeGen {
         }
     }
 
-    private void writeBaseResponseController(Map<String, Object> dataMap) {
+    private void writeBaseResponseController(NeoMap dataMap) {
         String adminConstantFullPath = backendCodePath + "web/controller/BaseResponseController.java";
         if (!FileUtil.exist(adminConstantFullPath)) {
             // baseResponseController
@@ -1066,7 +1066,7 @@ public class CodeGen {
         }
     }
 
-    private void writeResponse(Map<String, Object> dataMap) {
+    private void writeResponse(NeoMap dataMap) {
         String adminConstantFullPath = backendCodePath + "constants/AdminConstant.java";
         if (!FileUtil.exist(adminConstantFullPath)) {
             writeFile(dataMap, backendCodePath + "web/vo/Response.java", BACKEND_PRE + "response.ftl");
@@ -1094,7 +1094,7 @@ public class CodeGen {
     }
 
     public void generateFront() {
-        Map<String, Object> dataMap = generateFrontBone();
+        NeoMap dataMap = generateFrontBone();
         dataMap.put("tableName", tableName);
         dataMap.put("expandExist", 1);
 
@@ -1118,7 +1118,7 @@ public class CodeGen {
     }
 
     public void generateBackend() {
-        Map<String, Object> dataMap = generateBackendBone();
+        NeoMap dataMap = generateBackendBone();
         dataMap.put("tableName", tableName);
         dataMap.put("packagePath", packagePath);
 
@@ -1175,7 +1175,7 @@ public class CodeGen {
         System.out.println("backend generate finish");
     }
 
-    private void generateResources(Map<String, Object> dataMap) {
+    private void generateResources(NeoMap dataMap) {
         // application.yml
         writeFile(dataMap, backendResourcesPath + "/application.yml", BACKEND_PRE + "/resources/application.ftl");
         // application-local.yml
