@@ -14,7 +14,7 @@
 
     <!--记录warn和Error级别-->
     <appender name="RollingWarnOrErrorLogger" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_HOME}/${APP_NAME}/error.log</file>
+        <file>${LOG_HOME}/${APP_NAME}/warn.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_HOME}/${APP_NAME}/warnOrError.log.%d{yyyy-MM-dd}</fileNamePattern>
             <maxHistory>60</maxHistory>
@@ -59,7 +59,6 @@
     </appender>
 
     <logger name="org.springframework" level="debug" additivity="false"/>
-
 
     <logger name="com.isyscore.ibo.neo" level="info" additivity="false">
         <appender-ref ref="RollingInfoLogger"/>
