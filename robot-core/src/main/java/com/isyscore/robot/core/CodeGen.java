@@ -20,9 +20,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.Callable;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -34,7 +32,7 @@ import java.util.stream.Stream;
  */
 @Setter
 @SuppressWarnings("unchecked")
-private class CodeGen {
+public class CodeGen {
 
     /*================================ 公共部分 ==========================**/
     /**
@@ -319,7 +317,18 @@ private class CodeGen {
         }
     }
 
-    private void configField(NeoMap dataMap, List<NeoColumn> columns, Map<String, FieldMeta> fieldsMap, List<String> filterColumns, BiFunction<NeoColumn, List<NeoColumn>, Object> function){
+    /**
+     * 配置属性
+     *
+     * @param dataMap           结果接
+     * @param columns           表的列
+     * @param fieldsMap         待导入的数据值
+     * @param filterColumnNames 不要的列名
+     * @param function          执行配置的配置器
+     * @param fieldKey          最后配置完之后对应的Map中的key
+     */
+    private void configField(NeoMap dataMap, List<NeoColumn> columns, Map<String, FieldMeta> fieldsMap, List<String> filterColumnNames,
+        BiFunction<NeoColumn, List<NeoColumn>, Object> function, String fieldKey) {
         if (fieldsMap.isEmpty()) {
             return;
         }
@@ -329,13 +338,13 @@ private class CodeGen {
         }
         List<String> dbFieldList = fieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
         List<String> excludeFieldList = excludesFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
-        excludeFieldList.addAll(filterColumns);
-        List insertFieldInfos = columns.stream()
+        excludeFieldList.addAll(filterColumnNames);
+        List fieldInfos = columns.stream()
             .filter(column -> !excludeFieldList.contains(column.getColumnName()))
             .filter(column -> dbFieldList.contains(column.getColumnName()))
             .map(column -> function.apply(column, columns))
             .collect(Collectors.toList());
-        dataMap.put("insertFields", insertFieldInfos);
+        dataMap.put(fieldKey, fieldInfos);
     }
 
     /**
@@ -344,110 +353,52 @@ private class CodeGen {
      * 注意：如果有这么几个基本字段则这里默认在添加框中不展示
      */
     private void configInsertField(NeoMap dataMap, List<NeoColumn> columns) {
-        if (insertFieldsMap.isEmpty()) {
-            return;
-        }
-
-        if (null == columns || columns.isEmpty()) {
-            return;
-        }
-        List<String> dbFieldList = insertFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
-        List<String> excludeFieldList = excludesFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
-        List<UpdateInsertFieldInfo> insertFieldInfos = columns.stream()
-            .filter(column -> !column.getColumnName().equals("id"))
-            .filter(column -> !column.getColumnName().equals("create_time"))
-            .filter(column -> !column.getColumnName().equals("update_time"))
-            .filter(column -> !excludeFieldList.contains(column.getColumnName()))
-            .filter(column -> dbFieldList.contains(column.getColumnName()))
-            .map(column -> {
-                String dbName = column.getColumnName();
-                UpdateInsertFieldInfo info = UpdateInsertFieldInfo.of((dbName), getFieldDesc(dbName, column.getInnerColumn().getRemarks()));
-                doUpdateInsert(info, dbName, column);
-                return info;
-            })
-            .collect(Collectors.toList());
-        dataMap.put("insertFields", insertFieldInfos);
+        List<String> columnsList = new ArrayList<>();
+        columnsList.add("id");
+        columnsList.add("create_time");
+        columnsList.add("update_time");
+        configField(dataMap, columns, insertFieldsMap, columnsList, (column, columnList)->{
+            String dbName = column.getColumnName();
+            UpdateInsertFieldInfo info = UpdateInsertFieldInfo.of((dbName), getFieldDesc(dbName, column.getInnerColumn().getRemarks()));
+            doUpdateInsert(info, dbName, column);
+            return info;
+        }, "insertFields");
     }
 
     /**
      * 设置哪些字段是可以更新的，首先过滤排除表，然后查看展示表
      */
     private void configUpdateField(NeoMap dataMap, List<NeoColumn> columns) {
-        if (updateFieldsMap.isEmpty()) {
-            return;
-        }
+        configField(dataMap, columns, updateFieldsMap, new ArrayList<>(), (column, columnList)->{
+            String dbName = column.getColumnName();
+            UpdateInsertFieldInfo info = UpdateInsertFieldInfo.of(dbName, getFieldDesc(dbName, column.getInnerColumn().getRemarks())).setCanEdit(1);
 
-        if (null == columns || columns.isEmpty()) {
-            return;
-        }
+            // 设置哪些字段是只可查看不可编辑
+            if (fieldIsUnEdit(dbName)) {
+                info.setCanEdit(0);
+            }
 
-        List<String> dbFieldList = updateFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
-        List<String> excludeFieldList = excludesFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
-        List<UpdateInsertFieldInfo> fieldInfos = columns.stream()
-            .filter(column -> dbFieldList.contains(column.getColumnName()))
-            .filter(column -> !excludeFieldList.contains(column.getColumnName()))
-            .map(column -> {
-                String dbName = column.getColumnName();
-                UpdateInsertFieldInfo info = UpdateInsertFieldInfo.of(dbName, getFieldDesc(dbName, column.getInnerColumn().getRemarks())).setCanEdit(1);
-
-                // 设置哪些字段是只可查看不可编辑
-                if (fieldIsUnEdit(dbName)) {
-                    info.setCanEdit(0);
-                }
-
-                doUpdateInsert(info, dbName, column);
-                return info;
-            })
-            .collect(Collectors.toList());
-        dataMap.put("updateFields", fieldInfos);
+            doUpdateInsert(info, dbName, column);
+            return info;
+        }, "updateFields");
     }
 
     private void configSearchField(NeoMap dataMap, List<NeoColumn> columns) {
-        if (queryFieldsMap.isEmpty()) {
-            return;
-        }
-
-        if (null == columns || columns.isEmpty()) {
-            return;
-        }
-
-        List<String> dbFieldList = queryFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
-        List<String> excludeFieldList = excludesFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
-        List<FieldInfo> searchFieldMapList = columns.stream()
-            .filter(column -> dbFieldList.contains(column.getColumnName()))
-            .filter(column -> !excludeFieldList.contains(column.getColumnName()))
-            .map(column -> {
-                String dbName = column.getColumnName();
-                FieldInfo info = FieldInfo.of(dbName, getFieldDesc(dbName, column.getInnerColumn().getRemarks()));
-                doField(info, dbName, columns);
-                return info;
-            })
-            .collect(Collectors.toList());
-        dataMap.put("searchFields", searchFieldMapList);
+        configField(dataMap, columns, queryFieldsMap, new ArrayList<>(), (column, columnList)->{
+            String dbName = column.getColumnName();
+            FieldInfo info = FieldInfo.of(dbName, getFieldDesc(dbName, column.getInnerColumn().getRemarks()));
+            doField(info, dbName, columnList);
+            return info;
+        }, "searchFields");
     }
 
     private void configTableShowField(NeoMap dataMap, List<NeoColumn> columns) {
-        if (tableShowFieldsMap.isEmpty()) {
-            return;
-        }
-
-        if (null == columns || columns.isEmpty()) {
-            return;
-        }
-
-        List<String> dbFieldList = tableShowFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
-        List<String> excludeFieldList = excludesFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
-        List<FieldInfo> fieldInfoList = columns.stream()
-            .filter(column -> dbFieldList.contains(column.getColumnName()))
-            .filter(column -> !excludeFieldList.contains(column.getColumnName()))
-            .map(column -> {
-                String dbName = column.getColumnName();
-                FieldInfo info = FieldInfo.of(dbName, getFieldDesc(dbName, column.getInnerColumn().getRemarks()));
-                doField(info, dbName, columns);
-                return info;
-            })
-            .collect(Collectors.toList());
-        dataMap.put("tableShowFields", fieldInfoList);
+        configField(dataMap, columns, tableShowFieldsMap, new ArrayList<>(), (column, columnList)->{
+            String dbName = column.getColumnName();
+            FieldInfo info = FieldInfo.of(dbName, getFieldDesc(dbName, column.getInnerColumn().getRemarks()));
+            doField(info, dbName, columnList);
+            return info;
+        }, "tableShowFields");
     }
 
     /**
@@ -639,163 +590,82 @@ private class CodeGen {
         configExpandShowField(dataMap, columns);
     }
 
-    private void configInsertEntity(NeoMap dataMap, List<NeoColumn> columns) {
-        if (insertFieldsMap.isEmpty()) {
+    /**
+     * 配置属性
+     *
+     * @param dataMap           结果接
+     * @param columns           表的列
+     * @param fieldsMap         待导入的数据值
+     * @param function          执行配置的配置器
+     * @param fieldKey          最后配置完之后对应的Map中的key
+     * @param importKey         后端的import对应的key
+     */
+    private void configField(NeoMap dataMap, List<NeoColumn> columns, Map<String, FieldMeta> fieldsMap, BiFunctional<NeoColumn, List<NeoColumn>, NeoMap, Object> function, String fieldKey, String importKey) {
+        if (null != fieldsMap && fieldsMap.isEmpty()) {
             return;
         }
 
         if (null == columns || columns.isEmpty()) {
             return;
         }
-
         NeoMap importMap = NeoMap.of();
         preGenerateImport(importMap);
-        List<String> dbFieldList = insertFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
+        List<String> dbFieldList = null;
+        if (null != fieldsMap) {
+            dbFieldList = fieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
+        }
+
         List<String> excludeFieldList = excludesFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
-        List<FieldInfo> fieldInfoList = columns.stream()
-            .filter(column -> dbFieldList.contains(column.getColumnName()))
+        List<String> finalDbFieldList = dbFieldList;
+        List fieldInfos = columns.stream()
             .filter(column -> !excludeFieldList.contains(column.getColumnName()))
-            .map(column -> {
-                String dbName = column.getColumnName();
-                FieldInfo info = FieldInfo.of(dbName, getFieldDesc(dbName, column.getInnerColumn().getRemarks()));
-
-                // 属性类型转换
-                fieldTypeChg(column, info);
-
-                generateImport(column, importMap);
-
-                // 时间戳设置
-                if (fieldIsTimeField(info.getCodeName())) {
-                    info.setTimeFlag(1);
+            .filter(column -> {
+                if(null != finalDbFieldList) {
+                    return finalDbFieldList.contains(column.getColumnName());
                 }
-
-                // 枚举类型设置
-                if (fieldIsEnum(columns, dbName)) {
-                    info.setEnumFlag(1);
-                }
-                return info;
+                return true;
             })
+            .map(column -> function.apply(column, columns, importMap))
             .collect(Collectors.toList());
-        dataMap.put("insertReqFields", fieldInfoList);
-        dataMap.put("insertReqImport", importMap);
+        dataMap.put(fieldKey, fieldInfos);
+        dataMap.put(importKey, importMap);
+    }
+
+    private FieldInfo doConfigField(NeoColumn column, List<NeoColumn> columns, NeoMap importMap){
+        String dbName = (column).getColumnName();
+        FieldInfo info = FieldInfo.of(dbName, getFieldDesc(dbName, column.getInnerColumn().getRemarks()));
+
+        // 属性类型转换
+        fieldTypeChg(column, info);
+
+        generateImport(column, importMap);
+
+        // 时间戳设置
+        if (fieldIsTimeField(info.getCodeName())) {
+            info.setTimeFlag(1);
+        }
+
+        // 枚举类型设置
+        if (fieldIsEnum(columns, dbName)) {
+            info.setEnumFlag(1);
+        }
+        return info;
+    }
+
+    private void configInsertEntity(NeoMap dataMap, List<NeoColumn> columns) {
+        configField(dataMap, columns, insertFieldsMap, (column, columnList, importMap)-> doConfigField(column, columns, importMap), "insertReqFields", "insertReqImport");
     }
 
     private void configUpdateEntity(NeoMap dataMap, List<NeoColumn> columns) {
-        if (updateFieldsMap.isEmpty()) {
-            return;
-        }
-
-        if (null == columns || columns.isEmpty()) {
-            return;
-        }
-
-        List<String> dbFieldList = updateFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
-        List<String> excludeFieldList = excludesFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
-        NeoMap importMap = NeoMap.of();
-        preGenerateImport(importMap);
-        List<FieldInfo> fieldInfoList = columns.stream()
-            .filter(column -> dbFieldList.contains(column.getColumnName()))
-            .filter(column -> !excludeFieldList.contains(column.getColumnName()))
-            .map(column -> {
-                String dbName = column.getColumnName();
-                FieldInfo info = FieldInfo.of(dbName, getFieldDesc(dbName, column.getInnerColumn().getRemarks()));
-
-                // 属性类型转换
-                fieldTypeChg(column, info);
-
-                // 配置实体中配置的引用
-                generateImport(column, importMap);
-
-                // 时间戳设置
-                if (fieldIsTimeField(info.getCodeName())) {
-                    info.setTimeFlag(1);
-                }
-
-                // 枚举类型设置
-                if (fieldIsEnum(columns, dbName)) {
-                    info.setEnumFlag(1);
-                }
-                return info;
-            })
-            .collect(Collectors.toList());
-        dataMap.put("updateReqFields", fieldInfoList);
-        dataMap.put("updateReqImport", importMap);
+        configField(dataMap, columns, updateFieldsMap, (column, columnList, importMap)-> doConfigField(column, columns, importMap), "updateReqFields", "updateReqImport");
     }
 
     private void configQueryReqEntity(NeoMap dataMap, List<NeoColumn> columns) {
-        if (queryFieldsMap.isEmpty()) {
-            return;
-        }
-
-        if (null == columns || columns.isEmpty()) {
-            return;
-        }
-
-        List<String> dbFieldList = queryFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
-        List<String> excludeFieldList = excludesFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
-
-        NeoMap importMap = NeoMap.of();
-        preGenerateImport(importMap);
-        List<FieldInfo> fieldInfoList = columns.stream()
-            .filter(column -> dbFieldList.contains(column.getColumnName()))
-            .filter(column -> !excludeFieldList.contains(column.getColumnName()))
-            .map(column -> {
-                String dbName = column.getColumnName();
-                FieldInfo info = FieldInfo.of(dbName, getFieldDesc(dbName, column.getInnerColumn().getRemarks()));
-
-                // 属性类型转换
-                fieldTypeChg(column, info);
-
-                // 配置实体中配置的引用
-                generateImport(column, importMap);
-
-                // 时间戳设置
-                if (fieldIsTimeField(info.getCodeName())) {
-                    info.setTimeFlag(1);
-                }
-
-                // 枚举类型设置
-                if (fieldIsEnum(columns, dbName)) {
-                    info.setEnumFlag(1);
-                }
-                return info;
-            })
-            .collect(Collectors.toList());
-        dataMap.put("queryReqFields", fieldInfoList);
-        dataMap.put("queryReqImport", importMap);
+        configField(dataMap, columns, queryFieldsMap, (column, columnList, importMap)-> doConfigField(column, columns, importMap), "queryReqFields", "queryReqImport");
     }
 
     private void configQueryRspEntity(NeoMap dataMap, List<NeoColumn> columns) {
-        if (null == columns || columns.isEmpty()) {
-            return;
-        }
-
-        List<String> excludeFieldList = excludesFieldsMap.values().stream().map(FieldMeta::getDbName).collect(Collectors.toList());
-        NeoMap importMap = NeoMap.of();
-        preGenerateImport(importMap);
-        List<FieldInfo> fieldInfoList = columns.stream().filter(column -> !excludeFieldList.contains(column.getColumnName())).map(column -> {
-            String dbName = column.getColumnName();
-            FieldInfo info = FieldInfo.of(dbName, getFieldDesc(dbName, column.getInnerColumn().getRemarks()));
-
-            // 属性类型转换
-            fieldTypeChg(column, info);
-
-            // 配置实体中配置的引用
-            generateImport(column, importMap);
-
-            // 时间戳设置
-            if (fieldIsTimeField(info.getCodeName())) {
-                info.setTimeFlag(1);
-            }
-
-            // 枚举类型设置
-            if (fieldIsEnum(columns, dbName)) {
-                info.setEnumFlag(1);
-            }
-            return info;
-        }).collect(Collectors.toList());
-        dataMap.put("queryRspFields", fieldInfoList);
-        dataMap.put("queryRspImport", importMap);
+        configField(dataMap, columns, null, (column, columnList, importMap)-> doConfigField(column, columns, importMap), "queryRspFields", "queryRspImport");
     }
 
     /**
