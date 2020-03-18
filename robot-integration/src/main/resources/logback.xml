@@ -4,43 +4,22 @@
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
     <property name="APP_NAME" value="xxxxx"/>
-    <property name="LOG_HOME" value="${LIKE_LOG_PATH}"/>
-    <property name="LOG_LEVEL" value="${LIKE_LOG_LEVEL}"/>
-    <property name="LOG_KEEP_TIME" value="30"/>
+    <property name="LOG_HOME" value="${LOG_HOME}"/>
+    <property name="LOG_LEVEL" value="${LOG_LEVEL}"/>
 
     <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度，%logger: 日志输出者的名字, %msg：日志消息，%n是换行符 -->
     <property name="pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [ %thread ] - [ %-5level ] [ %logger{50} : %line ] - %msg%n"/>
     <contextName>${APP_NAME}</contextName>
 
-    <!--记录error级别-->
-    <appender name="RollingErrorLogger" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!--记录warn和Error级别-->
+    <appender name="RollingWarnOrErrorLogger" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>/logs/${APP_HOME}/error.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/logs/${APP_HOME}/error.log.%d{yyyy-MM-dd}</fileNamePattern>
+            <fileNamePattern>/logs/${APP_HOME}/warnOrError.log.%d{yyyy-MM-dd}</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>ERROR</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
-        </filter>
-        <encoder>
-            <pattern>${pattern}</pattern>
-            <charset>UTF-8</charset>
-        </encoder>
-    </appender>
-
-    <!--记录warn级别-->
-    <appender name="RollingWarnLogger" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/logs/${APP_HOME}/error.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/logs/${APP_HOME}/error.log.%d{yyyy-MM-dd}</fileNamePattern>
-            <maxHistory>30</maxHistory>
-        </rollingPolicy>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>WARN</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
         </filter>
         <encoder>
             <pattern>${pattern}</pattern>
@@ -66,7 +45,7 @@
         </encoder>
     </appender>
 
-    <!-- 控制台输出，生产环境将请stdout去掉 -->
+    <!-- 控制台输出 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>${pattern}</pattern>
@@ -74,22 +53,23 @@
         </encoder>
     </appender>
 
-    <logger name="ch.qos.logback" level="ERROR" additivity="true"/>
+    <logger name="org.springframework" level="debug" additivity="false"/>
 
-    <logger name="org.springframework" level="ERROR" additivity="true"/>
-
-    <logger name="com.github.simonalong" level="${LOG_LEVEL}" additivity="false">
+    <logger name="com.isyscore.ibo.mikilin" level="debug" additivity="false">
         <appender-ref ref="STDOUT"/>
-        <appender-ref ref="ADMIN_FILE"/>
+        <appender-ref ref="RollingInfoLogger"/>
+        <appender-ref ref="RollingWarnOrErrorLogger"/>
     </logger>
 
-    <logger name="com.simon.tina.server" level="${LOG_LEVEL}" additivity="false">
+    <logger name="com.isyscore.ibo.mikilin" level="debug" additivity="false">
         <appender-ref ref="STDOUT"/>
-        <appender-ref ref="ADMIN_FILE"/>
+        <appender-ref ref="RollingInfoLogger"/>
+        <appender-ref ref="RollingWarnOrErrorLogger"/>
     </logger>
 
     <root level="${LOG_LEVEL}">
-        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="RollingWarnOrErrorLogger"/>
+        <appender-ref ref="RollingInfoLogger"/>
     </root>
 
 </configuration>
