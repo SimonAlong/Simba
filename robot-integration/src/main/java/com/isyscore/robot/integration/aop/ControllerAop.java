@@ -1,5 +1,7 @@
 package com.isyscore.robot.integration.aop;
 
+import com.isyscore.ibo.mikilin.MkValidators;
+import com.isyscore.ibo.mikilin.exception.MkCheckException;
 import com.isyscore.ibo.neo.NeoMap;
 import com.isyscore.ibo.neo.util.TimeRangeStrUtil;
 import com.isyscore.robot.integration.exception.BusinessException;
@@ -28,10 +30,10 @@ public class ControllerAop {
         NeoMap outInfo = NeoMap.of();
         String funStr = pjp.getSignature().toLongString();
         outInfo.put("fun", funStr);
-
         outInfo.put("parameters", pjp.getArgs());
         Object result;
         try {
+            validate(pjp);
             result = pjp.proceed();
         } catch (Throwable e) {
             outInfo.put("timeout", TimeRangeStrUtil.parseTime(System.currentTimeMillis() - start));
@@ -44,5 +46,32 @@ public class ControllerAop {
             }
         }
         return result;
+    }
+
+    private void validate(ProceedingJoinPoint pjp) {
+        // 函数添加注解，则核查函数中所有的参数
+        Class<?> methodClass = pjp.getTarget().getClass();
+        if (methodClass.isAnnotationPresent(AutoCheck.class)) {
+            Object[] parameters = pjp.getArgs();
+            for (Object parameter : parameters) {
+                try {
+                    MkValidators.validate(parameter);
+                } catch (MkCheckException e) {
+                    throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR.value(), MkValidators.getErrMsg());
+                }
+            }
+        } else {
+            // 否则：查看修饰的参数是否有
+            Object[] parameters = pjp.getArgs();
+            for (Object parameter : parameters) {
+                if (parameter.getClass().isAnnotationPresent(AutoCheck.class)) {
+                    try {
+                        MkValidators.validate(parameter);
+                    } catch (MkCheckException e) {
+                        throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR.value(), MkValidators.getErrMsg());
+                    }
+                }
+            }
+        }
     }
 }
