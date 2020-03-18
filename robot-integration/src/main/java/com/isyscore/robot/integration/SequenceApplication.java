@@ -7,9 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author robot
  */
 @SpringBootApplication
-public class Table4Application {
+public class SequenceApplication {
 
     public static void main(String... args) {
-        SpringApplication.run(Table4Application.class, args);
+        SpringApplication.run(SequenceApplication.class, args);
     }
 }

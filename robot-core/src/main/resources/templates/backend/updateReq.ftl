@@ -14,10 +14,6 @@ import lombok.Data;
 @Data
 public class ${tablePathName}UpdateReq {
 
-    /**
-     * 主键
-     */
-    private Long id;
 <#list updateReqFields! as field>
     <#if field.desc?? && field.desc!=''>
 

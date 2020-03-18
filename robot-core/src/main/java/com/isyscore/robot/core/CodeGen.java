@@ -945,6 +945,7 @@ public class CodeGen {
 
         dataMap.put("backendPort", backendPort);
         dataMap.put("appName", appName);
+        dataMap.put("AppName", Strings.toCamelCaseAll(appName));
 
         // 设置后端信息（端口和url）
         configBackend(dataMap);
@@ -1208,7 +1209,7 @@ public class CodeGen {
 
     private void generateApplication(NeoMap dataMap, String tableNameAfterPre) {
         // XxxApplication.java
-        writeFile(dataMap, backendCodePath + getTablePathName(tableNameAfterPre) + "Application.java", BACKEND_PRE + "applicationStart.ftl");
+        writeFile(dataMap, backendCodePath + getTablePathName(appName) + "Application.java", BACKEND_PRE + "applicationStart.ftl");
     }
 
     private void generateResources(NeoMap dataMap) {
