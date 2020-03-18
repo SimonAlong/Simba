@@ -1118,6 +1118,7 @@ public class CodeGen {
         generateService(dataMap, tableNameAfterPre);
         generateTransfer(dataMap, tableNameAfterPre);
         generateWeb(dataMap, tableNameAfterPre);
+        generateApplication(dataMap, tableNameAfterPre);
 
         // 生成resource中的文件
         // generateResources(dataMap);
