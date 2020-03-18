@@ -1,6 +1,6 @@
 package com.isyscore.robot.core.entity;
 
-import com.isyscore.robot.core.util.Strings;
+import com.isyscore.ibo.neo.StringConverter;
 import com.isyscore.ibo.neo.NeoMap;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,7 +32,7 @@ public class FieldMeta {
         FieldMeta fieldMeta = new FieldMeta();
         fieldMeta.dbName = NeoMap.NamingChg.UNDERLINE.smallCamelToOther(name);
         fieldMeta.codeName = NeoMap.NamingChg.UNDERLINE.otherToSmallCamel(fieldMeta.dbName);
-        fieldMeta.projectName = Strings.toCamelCaseAllStrict(fieldMeta.dbName);
+        fieldMeta.projectName = StringConverter.underLineToBigCamel(fieldMeta.dbName);
         return fieldMeta;
     }
 }

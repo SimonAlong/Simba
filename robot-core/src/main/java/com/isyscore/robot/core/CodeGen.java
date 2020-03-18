@@ -1,11 +1,14 @@
 package com.isyscore.robot.core;
 
-import com.isyscore.ibo.neo.codegen.EntityCodeGen;
-import com.isyscore.robot.core.entity.*;
-import com.isyscore.robot.core.util.*;
 import com.isyscore.ibo.neo.Neo;
-import com.isyscore.ibo.neo.NeoMap;
+import com.isyscore.ibo.neo.StringConverter;
+import com.isyscore.ibo.neo.codegen.EntityCodeGen;
 import com.isyscore.ibo.neo.db.NeoColumn;
+import com.isyscore.ibo.neo.NeoMap;
+import com.isyscore.robot.core.entity.*;
+import com.isyscore.robot.core.util.FileUtil;
+import com.isyscore.robot.core.util.FreeMarkerTemplateUtil;
+import com.isyscore.robot.core.util.ListUtils;
 import freemarker.template.TemplateException;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -30,27 +33,60 @@ import java.util.stream.Stream;
 @SuppressWarnings("unchecked")
 public class CodeGen {
 
+    /*================================ 公共部分 ==========================**/
     /**
      * 应用名字，用于前端创建目录用，建议用一个小写的单词
      */
-    private String appName;
+    protected String appName;
     /**
-     * mysql的时间字段
+     * 不需要生成的表
      */
-    private static final List<String> mysqlTimeType = Arrays.asList("DATETIME", "TIMESTAMP");
+    protected String dbUrl;
+    protected String dbUserName;
+    protected String dbUserPassword;
 
     /**
-     * mysql的枚举类型
+     * 表名
      */
-    private static final String mysqlEnumType = "ENUM";
-
-    private static final String FRONT_PRE = "front/";
-    private static final String BACKEND_PRE = "backend/";
-
+    protected String tableName;
     /**
-     * 前端代码生成路径
+     * 表名前缀
      */
-    private String frontCodePath;
+    protected String preFix;
+    /**
+     * 前端配置的后端的端口
+     */
+    protected String backendPort;
+    /**
+     * "新增弹窗"展示的字段
+     * tableName, fieldName
+     */
+    protected Map<String, FieldMeta> insertFieldsMap = new HashMap<>();
+    /**
+     * "修改弹窗"（即编辑）展示的字段
+     * tableName, fieldName
+     */
+    protected Map<String, FieldMeta> updateFieldsMap = new HashMap<>();
+    /**
+     * 搜索框搜索的字段
+     */
+    protected Map<String, FieldMeta> queryFieldsMap = new HashMap<>();
+    /**
+     * 界面上所有位置都不展示的字段
+     */
+    protected Map<String, FieldMeta> excludesFieldsMap = new HashMap<>();
+    /**
+     * 属性名和界面展示的中文映射，如果没有指定，则用数据库的注释
+     * tableName, fieldName, fieldDesc
+     */
+    protected Map<String, FieldInfo> tableFieldNameMap = new HashMap<>();
+    /**
+     * 表的属性为时间类型的字段
+     */
+    protected Map<String, FieldMeta> tableTimeFieldMap = new HashMap<>();
+    protected Neo neo;
+
+    /*================================ 后端部分 ==========================**/
     /**
      * 后端代码的项目模块路径
      */
@@ -67,66 +103,23 @@ public class CodeGen {
      * 后端项目的包路径
      */
     private String packagePath;
+    private static final String BACKEND_PRE = "backend/";
+
+    /*================================ 前端部分 ==========================**/
     /**
-     * 表名前缀
+     * 前端代码生成路径
      */
-    private String preFix;
-    /**
-     * 表名
-     */
-    @Setter
-    private String tableName;
+    private String frontCodePath;
     /**
      * 表的描述
      */
-    @Setter
     private String tableDesc;
-    /**
-     * 不需要生成的表
-     */
-    private String dbUrl;
-    private String dbUserName;
-    private String dbUserPassword;
-    /**
-     * 是否直连：前后端直连，不是走代理模式
-     */
-    private Boolean direct = false;
-    /**
-     * 前端配置的后端的端口
-     */
-    private String backendPort;
-    /**
-     * 表的属性为时间类型的字段
-     */
-    private Map<String, FieldMeta> tableTimeFieldMap = new HashMap<>();
-    /**
-     * 属性名和界面展示的中文映射，如果没有指定，则用数据库的注释
-     * tableName, fieldName, fieldDesc
-     */
-    private Map<String, FieldInfo> tableFieldNameMap = new HashMap<>();
-    /**
-     * "新增弹窗"展示的字段
-     * tableName, fieldName
-     */
-    private Map<String, FieldMeta> insertFieldsMap = new HashMap<>();
-    /**
-     * "修改弹窗"（即编辑）展示的字段
-     * tableName, fieldName
-     */
-    private Map<String, FieldMeta> updateFieldsMap = new HashMap<>();
+
     /**
      * "修改弹窗"（即编辑）中不可编辑的属性，针对{@code updateFieldMap}中展示的属性进行禁用
      * tableName, fieldName
      */
     private Map<String, FieldMeta> unEditFieldsMap = new HashMap<>();
-    /**
-     * 界面上所有位置都不展示的字段
-     */
-    private Map<String, FieldMeta> excludesFieldsMap = new HashMap<>();
-    /**
-     * 搜索框搜索的字段
-     */
-    private Map<String, FieldMeta> queryFieldsMap = new HashMap<>();
     /**
      * "表格"中展示的属性
      * tableName, fieldName
@@ -138,57 +131,34 @@ public class CodeGen {
      */
     private Map<String, FieldMeta> tableShowExpandFieldsMap = new HashMap<>();
 
-    public void setBackendModulePath(String codePath) {
-        this.projectModelPath = codePath;
-        if (codePath.endsWith("/")) {
-            this.backendCodePath = codePath + "src/main/java/";
-            this.backendResourcesPath = codePath + "src/main/resources/";
-        } else {
-            this.backendCodePath = codePath + "/src/main/java/";
-            this.backendResourcesPath = codePath + "/src/main/resources/";
-        }
-    }
-
-    public void setBackendPackage(String packagePath) {
-        this.packagePath = packagePath;
-        this.backendCodePath += packagePath.replace(".", "/") + "/";
-    }
+    private static final String FRONT_PRE = "front/";
+    /**
+     * mysql的枚举类型
+     */
+    protected static final String MYSQL_ENUM_TYPE = "ENUM";
+    /**
+     * mysql的时间字段
+     */
+    protected static final List<String> MYSQL_TIME_TYPE = Arrays.asList("DATETIME", "TIMESTAMP");
 
     /**
      * 设置表的属性和中文名的对应
      *
      * @param tableFieldMap fieldName-fieldDesc
      */
-    public void setFieldNameMap(Map<String, String> tableFieldMap) {
+    public void setFieldNameMap(NeoMap tableFieldMap) {
         if (null == tableFieldMap || tableFieldMap.size() == 0) {
             return;
         }
-        tableFieldMap.forEach((k, v) -> tableFieldNameMap.put(k, FieldInfo.of(k, v)));
-    }
-
-    /**
-     * 设置弹窗"新增"中展示的字段
-     *
-     * @param fields fieldList
-     */
-    public void setInsertFields(String... fields) {
-        generateMap(insertFieldsMap, fields);
-    }
-
-    public void setUpdateFields(String... fields) {
-        generateMap(updateFieldsMap, fields);
-    }
-
-    public void setUnEditFields(String... fields) {
-        generateMap(unEditFieldsMap, fields);
+        tableFieldMap.forEach((k, v) -> tableFieldNameMap.put(k, FieldInfo.of(k, (String) v)));
     }
 
     public void setExcludesFields(String... fields) {
         generateMap(excludesFieldsMap, fields);
     }
 
-    public void setQueryFields(String... fields) {
-        generateMap(queryFieldsMap, fields);
+    public void setUnEditFields(String... fields) {
+        generateMap(unEditFieldsMap, fields);
     }
 
     public void setTableShowFieldsMap(String... fields) {
@@ -199,46 +169,10 @@ public class CodeGen {
         generateMap(tableShowExpandFieldsMap, fields);
     }
 
-    private void generateMap(Map<String, FieldMeta> dataMap, String... fields) {
-        if (null == fields || fields.length == 0) {
-            return;
-        }
-
-        Stream.of(fields).forEach(f -> dataMap.put(f, FieldMeta.of(f)));
-    }
-
-    /**
-     * config_group -> ConfigGroup
-     */
-    private String getTablePathName(String tableName) {
-        return Strings.toCamelCaseAll(tableName);
-    }
-
-    /**
-     * config_group -> config/group
-     */
-    private String getTableUrlName(String tableName) {
-        return tableName.replaceAll("_", "/");
-    }
-
-    /**
-     * config_group -> configGroup
-     */
-    private String getTablePathNameLower(String tableName) {
-        return Strings.toCamelCaseStrict(tableName);
-    }
-
-    /**
-     * config_group -> configgroup
-     */
-    private String getTablePathSplitLower(String tableName) {
-        return Strings.toCamelCaseStrict(tableName);
-    }
-
     /**
      * 将表中文名和表名对应起来
      */
-    private void configTableName(NeoMap dataMap) {
+    public void configTableName(NeoMap dataMap) {
         dataMap.put("tableNameCn", tableName);
         if (null != tableDesc) {
             dataMap.put("tableNameCn", tableDesc);
@@ -248,11 +182,11 @@ public class CodeGen {
     /**
      * 添加枚举类型和对应的值
      */
-    private void configEnumTypeField(NeoMap dataMap, List<NeoColumn> columns) {
+    public void configEnumTypeField(NeoMap dataMap, List<NeoColumn> columns) {
         List<EnumInfo> infoList = new ArrayList<>();
         if (null != columns && !columns.isEmpty()) {
             columns.stream()
-                .filter(c -> c.getColumnTypeName().equals(mysqlEnumType))
+                .filter(c -> c.getColumnTypeName().equals(MYSQL_ENUM_TYPE))
                 .forEach(c -> infoList.add(EnumInfo.of(c.getColumnName(), getEnumValueList(c.getInnerColumn().getRemarks()))));
         }
         dataMap.put("enumFields", infoList);
@@ -261,10 +195,10 @@ public class CodeGen {
     /**
      * 根据时间字段表，将各个表中的时间字段在界面上进行转换
      */
-    private void configTimeField(List<NeoColumn> columns) {
+    public void configTimeField(List<NeoColumn> columns) {
         if (null != columns && !columns.isEmpty()) {
             columns.forEach(c -> {
-                if (mysqlTimeType.contains(c.getColumnTypeName())) {
+                if (MYSQL_TIME_TYPE.contains(c.getColumnTypeName())) {
                     tableTimeFieldMap.computeIfAbsent(c.getColumnName(), FieldMeta::of);
                 }
             });
@@ -274,7 +208,7 @@ public class CodeGen {
     /**
      * 设置表的属性名和名称的对应，如果没有设置，则用DB中的注释，如果注释也没有，则直接用name
      */
-    private void configFieldName(List<NeoColumn> columns) {
+    public void configFieldName(List<NeoColumn> columns) {
         if (null == columns || columns.isEmpty()) {
             return;
         }
@@ -282,12 +216,115 @@ public class CodeGen {
         columns.forEach(column -> tableFieldNameMap.computeIfAbsent(column.getColumnName(), k -> FieldInfo.of(k, getRemark(column))));
     }
 
+    private String getRemark(NeoColumn c) {
+        String remarks = c.getInnerColumn().getRemarks();
+        if (null != remarks) {
+            if (c.getColumnTypeName().equals(MYSQL_ENUM_TYPE)) {
+                return getEnumDesc(remarks, Arrays.asList(":", "：", ",", "，"));
+            }
+            return remarks;
+        }
+        return c.getColumnName();
+    }
+
+    /**
+     * 对于枚举类型，获取其中枚举类型的描述
+     *
+     * @param fieldDesc 性别用户的性别:MALE=男性;FEMALE=女性;UNKNOWN=未知
+     * @return 性别用户的性别
+     */
+    private String getEnumDesc(String fieldDesc, List<String> splitStrs) {
+        for (String splitStr : splitStrs) {
+            if (fieldDesc.contains(splitStr)) {
+                return Arrays.asList(fieldDesc.split(splitStr)).get(0);
+            }
+        }
+        return fieldDesc;
+    }
+
+    /**
+     * 获取枚举值的key和value
+     *
+     * @param str 比如：性别用户的性别:MALE=男性;FEMALE=女性;UNKNOWN=未知
+     * @return {MALE:男性, FEMAIL=女性, UNKNOWN=未知}
+     */
+    private List<EnumMeta> getEnumValueList(String str) {
+        if (null == str) {
+            return null;
+        }
+
+        return getEnumValueList(str, Arrays.asList(";", ",", "，"));
+    }
+
+    private List<EnumMeta> getEnumValueList(String str, List<String> splitStrs) {
+        for (String splitStr : splitStrs) {
+            if (str.contains(splitStr)) {
+                return getEnumValueListFromSemi(str, splitStr);
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    /**
+     * 分号
+     */
+    private List<EnumMeta> getEnumValueListFromSemi(String string, String splitStr) {
+        List<EnumMeta> metaLis = new ArrayList<>();
+        List<String> valueList = Arrays.asList(string.split(splitStr));
+        if (!valueList.isEmpty()) {
+            valueList.forEach(v -> {
+                String key = getKey(v);
+                String value = getValue(v);
+                if (null != key) {
+                    if (null != value) {
+                        metaLis.add(EnumMeta.of(key, value));
+                    } else {
+                        metaLis.add(EnumMeta.of(key, key));
+                    }
+                }
+            });
+        }
+        return metaLis;
+    }
+
+    /**
+     * 等号后面的字符
+     */
+    private String getValue(String value) {
+        int index = value.indexOf("=");
+        if (-1 != index) {
+            return value.substring(index + 1);
+        }
+        return null;
+    }
+
+    /**
+     * = 好前面的，逗号或者分号之间的字符
+     */
+    private String getKey(String value) {
+        Integer endIndex = value.indexOf("=");
+        return getKeyFromSplit(value, Arrays.asList(":", "：", ",", "，"), endIndex);
+    }
+
+    private String getKeyFromSplit(String value, List<String> splitStrs, Integer endIndex) {
+        for (String splitStr : splitStrs) {
+            int index = value.indexOf(splitStr);
+            if (-1 != index && -1 != endIndex) {
+                return value.substring(index + 1, endIndex);
+            }
+        }
+        if (-1 != endIndex) {
+            return value.substring(0, endIndex);
+        }
+        return null;
+    }
+
     /**
      * 配置新增弹窗要展示的字段
      * <p>
      * 注意：如果有这么几个基本字段则这里默认在添加框中不展示
      */
-    private void configInsertField(NeoMap dataMap, List<NeoColumn> columns) {
+    public void configInsertField(NeoMap dataMap, List<NeoColumn> columns) {
         if (insertFieldsMap.isEmpty()) {
             return;
         }
@@ -313,7 +350,7 @@ public class CodeGen {
                 }
 
                 // 设置枚举类型
-                if (column.getColumnTypeName().equals(mysqlEnumType)) {
+                if (column.getColumnTypeName().equals(MYSQL_ENUM_TYPE)) {
                     info.getFieldInfo().setEnumFlag(1);
                 }
                 return info;
@@ -325,7 +362,7 @@ public class CodeGen {
     /**
      * 设置哪些字段是可以更新的，首先过滤排除表，然后查看展示表
      */
-    private void configUpdateField(NeoMap dataMap, List<NeoColumn> columns) {
+    public void configUpdateField(NeoMap dataMap, List<NeoColumn> columns) {
         if (updateFieldsMap.isEmpty()) {
             return;
         }
@@ -354,7 +391,7 @@ public class CodeGen {
                 }
 
                 // 设置枚举类型
-                if (c.getColumnTypeName().equals(mysqlEnumType)) {
+                if (c.getColumnTypeName().equals(MYSQL_ENUM_TYPE)) {
                     info.getFieldInfo().setEnumFlag(1);
                 }
 
@@ -364,7 +401,7 @@ public class CodeGen {
         dataMap.put("updateFields", fieldInfos);
     }
 
-    private void configSearchField(NeoMap dataMap, List<NeoColumn> columns) {
+    public void configSearchField(NeoMap dataMap, List<NeoColumn> columns) {
         if (queryFieldsMap.isEmpty()) {
             return;
         }
@@ -397,7 +434,7 @@ public class CodeGen {
         dataMap.put("searchFields", searchFieldMapList);
     }
 
-    private void configTableShowField(NeoMap dataMap, List<NeoColumn> columns) {
+    public void configTableShowField(NeoMap dataMap, List<NeoColumn> columns) {
         if (tableShowFieldsMap.isEmpty()) {
             return;
         }
@@ -433,7 +470,7 @@ public class CodeGen {
     /**
      * 设置表的每一行展开字段，排除表格的字段，排除不展示的字段，其他的字段都进行展示
      */
-    private void configExpandShowField(NeoMap dataMap, List<NeoColumn> columns) {
+    public void configExpandShowField(NeoMap dataMap, List<NeoColumn> columns) {
         if (tableShowExpandFieldsMap.isEmpty()) {
             return;
         }
@@ -466,6 +503,182 @@ public class CodeGen {
 
         dataMap.put("expandExist", 1);
         dataMap.put("expandFields", ListUtils.split(fieldInfoList, 4));
+    }
+
+    /**
+     * 菜单的路径配置文件
+     */
+    private void writeMenu(NeoMap dataMap, String filePath) {
+        try {
+            String oldMenuText = FileUtil.read(filePath);
+            TableInfo tableInfo = (TableInfo) dataMap.get("tableInfo");
+            FileUtil.write(filePath, addMenu(oldMenuText, tableInfo));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 向文件中后面添加菜单
+     *
+     * @param oldMenuText 菜单源码中的旧数据
+     * @return 返回加入后的菜单数据
+     */
+    private String addMenu(String oldMenuText, TableInfo tableInfo) {
+        String endStr = "};";
+        int inputStartIndex = oldMenuText.indexOf(endStr);
+        if (-1 != inputStartIndex) {
+            StringBuilder sb = new StringBuilder(oldMenuText.substring(0, inputStartIndex));
+            StringBuilder tem = new StringBuilder();
+            tem.append("  'menu.").append(tableInfo.getName()).append("List': '").append(tableInfo.getDesc()).append("',\n");
+
+            // 如果已经存在则不添加
+            if (!oldMenuText.contains(tem.toString())) {
+                sb.append(tem.toString());
+            }
+            sb.append(endStr);
+            return sb.toString();
+        }
+        return oldMenuText;
+    }
+
+    /**
+     * 菜单的路径配置文件
+     */
+    private void writeRouterConfig(NeoMap dataMap, String filePath) {
+        try {
+            String oldRouterConfigText = FileUtil.read(filePath);
+            String dbName = String.valueOf(dataMap.get("appName"));
+            Map<String, String> componentInfoMap = (Map<String, String>) dataMap.get("tableComponentInfos");
+
+            if (null != componentInfoMap && !componentInfoMap.isEmpty()) {
+                Triple tripleList = new MutableTriple<>(dbName, componentInfoMap.get("tableName"), componentInfoMap.get("tablePathName"));
+
+                // 获取表名和表中文名对应的map
+                Map<String, String> tableNameDescMap = new HashMap<>();
+                tableNameDescMap.put(tableName, tableDesc);
+
+                FileUtil.write(filePath, addConfigRouter(tableNameDescMap, oldRouterConfigText, tripleList));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 新增菜单的路由
+     *
+     * @param oldRouterConfigText 旧的配置文件路径
+     * @param tableInfo:          里面包括：db 库名字，用于路径; tableName 表名，两个小写拼接; tablePathName 表路径名
+     * @return 新增菜单后的路由菜单
+     */
+    private String addConfigRouter(Map<String, String> tableNameDescMap, String oldRouterConfigText, Triple tableInfo) {
+        String endStr = "" + "      // 403\n" + "      {\n" + "        component: '403',\n" + "      },\n" + "      // 404\n" + "      {\n" + "        component: '404',\n" + "      },\n" + "    ],\n" + "  },\n" + "];";
+        int inputStartIndex = oldRouterConfigText.indexOf(endStr);
+        if (-1 != inputStartIndex) {
+            StringBuilder sb = new StringBuilder(oldRouterConfigText.substring(0, inputStartIndex));
+            StringBuilder tem = new StringBuilder();
+            String tableName = (String) tableInfo.getMiddle();
+            if (tableNameDescMap.containsKey(tableName)) {
+                tem.append("      // ").append(tableNameDescMap.get(tableName)).append("\n");
+            }
+            tem.append("      {\n")
+                .append("        path: '/")
+                .append(tableInfo.getMiddle())
+                .append("',\n")
+                .append("        name: '")
+                .append(tableInfo.getMiddle())
+                .append("List',\n")
+                .append("        icon: 'lock',\n")
+                .append("        // 直连阶段先删除，接入权限时候放开即可\n")
+                .append("        // authority: ['admin', '")
+                .append(tableInfo.getMiddle())
+                .append("List'],\n")
+                .append("        component: './")
+                .append(tableInfo.getLeft())
+                .append("/")
+                .append(tableInfo.getRight())
+                .append("List',\n")
+                .append("      },\n");
+
+            // 如果已经存在则不添加
+            if (!oldRouterConfigText.contains(tem.toString())) {
+                sb.append(tem.toString());
+            }
+            sb.append(endStr);
+            return sb.toString();
+        }
+        return oldRouterConfigText;
+    }
+
+    private Boolean fieldIsUnEdit(String fieldDbName) {
+        if (null != unEditFieldsMap) {
+            return unEditFieldsMap.containsKey(fieldDbName);
+        }
+        return true;
+    }
+
+    public void generateFront(NeoMap dataMap) {
+        String tableNameAfterPre = excludePreFix();
+
+        if (null != frontCodePath) {
+            // router.config.js
+            writeRouterConfig(dataMap, frontCodePath + "/config/router.config.js");
+
+            // menu.js
+            writeMenu(dataMap, frontCodePath + "/src/locales/zh-CN/menu.js");
+        }
+        // List
+        writeFile(dataMap, frontCodePath + "/src/pages/" + appName + "/" + StringConverter.underLineToSmallCamel(tableNameAfterPre) + "List.js", FRONT_PRE + "tableList.ftl");
+        writeFile(dataMap, frontCodePath + "/src/pages/" + appName + "/" + StringConverter.underLineToSmallCamel(tableNameAfterPre) + "List.less", FRONT_PRE + "tableList.less");
+        // model
+        writeFile(dataMap, frontCodePath + "/src/models/" + appName + "/" + StringConverter.underLineToSmallCamel(tableNameAfterPre) + "Model.js", FRONT_PRE + "tableModel.ftl");
+        // api
+        writeFile(dataMap, frontCodePath + "/src/services/" + appName + "/" + StringConverter.underLineToSmallCamel(tableNameAfterPre) + "Api.js", FRONT_PRE + "tableApi.ftl");
+
+        writeFile(dataMap, frontCodePath + "/config/config.js", FRONT_PRE + "frontConfig.ftl");
+    }
+
+    public void configFrontDbInfo(NeoMap dataMap){
+        if (null == neo) {
+            return;
+        }
+        List<NeoColumn> columns = neo.getColumnList(tableName);
+        configTableName(dataMap);
+        configEnumTypeField(dataMap, columns);
+        configTimeField(columns);
+        configFieldName(columns);
+
+        //****** 设置"新增框"信息 ******
+        configInsertField(dataMap, columns);
+
+        //****** 设置"编辑框"信息 ******
+        configUpdateField(dataMap, columns);
+
+        //****** 设置"搜索框"信息 ******
+        configSearchField(dataMap, columns);
+
+        //****** 设置"表格展示"信息 ******
+        configTableShowField(dataMap, columns);
+
+        //****** 设置"表格的扩展"信息 ******
+        configExpandShowField(dataMap, columns);
+    }
+
+    public void setBackendModulePath(String codePath) {
+        this.projectModelPath = codePath;
+        if (codePath.endsWith("/")) {
+            this.backendCodePath = codePath + "src/main/java/";
+            this.backendResourcesPath = codePath + "src/main/resources/";
+        } else {
+            this.backendCodePath = codePath + "/src/main/java/";
+            this.backendResourcesPath = codePath + "/src/main/resources/";
+        }
+    }
+
+    public void setBackendPackage(String packagePath) {
+        this.packagePath = packagePath;
+        this.backendCodePath += packagePath.replace(".", "/") + "/";
     }
 
     private void configInsertEntity(NeoMap dataMap, List<NeoColumn> columns) {
@@ -627,10 +840,12 @@ public class CodeGen {
         dataMap.put("queryRspImport", importMap);
     }
 
-    // 时间类型转换
+    /**
+     * 时间类型转换
+     */
     private void fieldTypeChg(NeoColumn column, FieldInfo info) {
         String type = column.getJavaClass().getSimpleName();
-        if (type.equals("BigInteger")) {
+        if ("BigInteger".equals(type)) {
             // 针对DB中的BigInteger类型，这里采用Long类型进行转换
             info.setFieldType("Long");
             return;
@@ -638,395 +853,12 @@ public class CodeGen {
             info.setFieldType(type);
         }
 
-        if (type.equals("Timestamp") || type.equals("Time") || type.equals("Year")) {
+        if ("Timestamp".equals(type) || "Time".equals(type) || "Year".equals(type)) {
             // 针对DB中的时间类型，这里全部采用Data类型
             info.setFieldType("Date");
         } else {
             info.setFieldType(type);
         }
-    }
-
-    /**
-     * 获取属性的描述，比如：user_name -> 用户名
-     *
-     * @param fieldName    db中对应的属性的名字
-     * @param defaultValue 如果没有配置，则采用默认的名字
-     * @return 属性对应的中文名
-     */
-    private String getFieldDesc(String fieldName, String defaultValue) {
-        if (null != fieldName && !"".equals(fieldName)) {
-            if (tableFieldNameMap.containsKey(fieldName)) {
-                FieldInfo fieldInfo = tableFieldNameMap.get(fieldName);
-                if (null != fieldInfo) {
-                    String desc = fieldInfo.getDesc();
-                    if (StringUtils.isNoneBlank(desc)) {
-                        return desc;
-                    }
-                }
-            }
-        }
-        if (StringUtils.isNoneBlank(defaultValue)) {
-            return defaultValue;
-        }
-        return fieldName;
-    }
-
-    private void configBackend(NeoMap dataMap) {
-        if (null == backendPort) {
-            dataMap.put("backendPort", backendPort);
-        }
-    }
-
-    private String getRemark(NeoColumn c) {
-        String remarks = c.getInnerColumn().getRemarks();
-        if (null != remarks) {
-            if (c.getColumnTypeName().equals(mysqlEnumType)) {
-                return getEnumDesc(remarks);
-            }
-            return remarks;
-        }
-        return c.getColumnName();
-    }
-
-    /**
-     * 判断字段是否为枚举类型
-     */
-    private boolean fieldIsEnum(List<NeoColumn> columns, String field) {
-        if (null != columns && !columns.isEmpty()) {
-            return columns.stream().anyMatch(c -> c.getColumnName().equals(field) && c.getColumnTypeName().equals(mysqlEnumType));
-        }
-        return false;
-    }
-
-    /**
-     * 对于枚举类型，获取其中枚举类型的描述
-     *
-     * @param fieldDesc 性别用户的性别:MALE=男性;FEMALE=女性;UNKNOWN=未知
-     * @return 性别用户的性别
-     */
-    private String getEnumDesc(String fieldDesc) {
-        if (null == fieldDesc) {
-            return null;
-        }
-
-        return getEnumDesc(fieldDesc, Arrays.asList(":", "：", ",", "，"));
-    }
-
-    private String getEnumDesc(String fieldDesc, List<String> splitStrs) {
-        for (String splitStr : splitStrs) {
-            if (fieldDesc.contains(splitStr)) {
-                return Arrays.asList(fieldDesc.split(splitStr)).get(0);
-            }
-        }
-        return fieldDesc;
-    }
-
-
-    private Boolean fieldIsUnEdit(String fieldDbName) {
-        if (null != unEditFieldsMap) {
-            return unEditFieldsMap.containsKey(fieldDbName);
-        }
-        return true;
-    }
-
-    /**
-     * 获取枚举值的key和value
-     *
-     * @param str 比如：性别用户的性别:MALE=男性;FEMALE=女性;UNKNOWN=未知
-     * @return {MALE:男性, FEMAIL=女性, UNKNOWN=未知}
-     */
-    private List<EnumMeta> getEnumValueList(String str) {
-        if (null == str) {
-            return null;
-        }
-
-        return getEnumValueList(str, Arrays.asList(";", ",", "，"));
-    }
-
-    private List<EnumMeta> getEnumValueList(String str, List<String> splitStrs) {
-        for (String splitStr : splitStrs) {
-            if (str.contains(splitStr)) {
-                return getEnumValueListFromSemi(str, splitStr);
-            }
-        }
-        return Collections.emptyList();
-    }
-
-    /**
-     * 判断表的某个属性是否为时间类型
-     */
-    private boolean fieldIsTimeField(String field) {
-        if (null != tableTimeFieldMap) {
-            return tableTimeFieldMap.containsKey(field);
-        }
-        return false;
-    }
-
-    /**
-     * 分号
-     */
-    private List<EnumMeta> getEnumValueListFromSemi(String string, String splitStr) {
-        List<EnumMeta> metaLis = new ArrayList<>();
-        List<String> valueList = Arrays.asList(string.split(splitStr));
-        if (!valueList.isEmpty()) {
-            valueList.forEach(v -> {
-                String key = getKey(v);
-                String value = getValue(v);
-                if (null != key) {
-                    if (null != value) {
-                        metaLis.add(EnumMeta.of(key, value));
-                    } else {
-                        metaLis.add(EnumMeta.of(key, key));
-                    }
-                }
-            });
-        }
-        return metaLis;
-    }
-
-
-    /**
-     * = 好前面的，逗号或者分号之间的字符
-     */
-    private String getKey(String value) {
-        Integer endIndex = value.indexOf("=");
-        return getKeyFromSplit(value, Arrays.asList(":", "：", ",", "，"), endIndex);
-    }
-
-    private String getKeyFromSplit(String value, List<String> splitStrs, Integer endIndex) {
-        for (String splitStr : splitStrs) {
-            int index = value.indexOf(splitStr);
-            if (-1 != index && -1 != endIndex) {
-                return value.substring(index + 1, endIndex);
-            }
-        }
-        if (-1 != endIndex) {
-            return value.substring(0, endIndex);
-        }
-        return null;
-    }
-
-    /**
-     * 等号后面的字符
-     */
-    private String getValue(String value) {
-        int index = value.indexOf("=");
-        if (-1 != index) {
-            return value.substring(index + 1);
-        }
-        return null;
-    }
-
-    /**
-     * 去除前缀：lk_config_group -> config_group
-     */
-    private String excludePreFix() {
-        if (null != preFix && tableName.startsWith(preFix)) {
-            return tableName.substring(preFix.length());
-        }
-        return tableName;
-    }
-
-    /**
-     * 菜单的路径配置文件
-     */
-    private void writeRouterConfig(NeoMap dataMap, String filePath) {
-        try {
-            String oldRouterConfigText = FileUtil.read(filePath);
-            String dbName = String.valueOf(dataMap.get("appName"));
-            Map<String, String> componentInfoMap = (Map<String, String>) dataMap.get("tableComponentInfos");
-
-            if (null != componentInfoMap && !componentInfoMap.isEmpty()) {
-                Triple tripleList = new MutableTriple<>(dbName, componentInfoMap.get("tableName"), componentInfoMap.get("tablePathName"));
-
-                // 获取表名和表中文名对应的map
-                Map<String, String> tableNameDescMap = new HashMap<>();
-                tableNameDescMap.put(tableName, tableDesc);
-
-                FileUtil.write(filePath, addConfigRouter(tableNameDescMap, oldRouterConfigText, tripleList));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 新增菜单的路由
-     *
-     * @param oldRouterConfigText 旧的配置文件路径
-     * @param tableInfo:          里面包括：db 库名字，用于路径; tableName 表名，两个小写拼接; tablePathName 表路径名
-     * @return 新增菜单后的路由菜单
-     */
-    private String addConfigRouter(Map<String, String> tableNameDescMap, String oldRouterConfigText, Triple tableInfo) {
-        String endStr = "" + "      // 403\n" + "      {\n" + "        component: '403',\n" + "      },\n" + "      // 404\n" + "      {\n" + "        component: '404',\n" + "      },\n" + "    ],\n" + "  },\n" + "];";
-        int inputStartIndex = oldRouterConfigText.indexOf(endStr);
-        if (-1 != inputStartIndex) {
-            StringBuilder sb = new StringBuilder(oldRouterConfigText.substring(0, inputStartIndex));
-            StringBuilder tem = new StringBuilder();
-            String tableName = (String) tableInfo.getMiddle();
-            if (tableNameDescMap.containsKey(tableName)) {
-                tem.append("      // ").append(tableNameDescMap.get(tableName)).append("\n");
-            }
-            tem.append("      {\n")
-                .append("        path: '/")
-                .append(tableInfo.getMiddle())
-                .append("',\n")
-                .append("        name: '")
-                .append(tableInfo.getMiddle())
-                .append("List',\n")
-                .append("        icon: 'lock',\n")
-                .append("        // 直连阶段先删除，接入权限时候放开即可\n")
-                .append("        // authority: ['admin', '")
-                .append(tableInfo.getMiddle())
-                .append("List'],\n")
-                .append("        component: './")
-                .append(tableInfo.getLeft())
-                .append("/")
-                .append(tableInfo.getRight())
-                .append("List',\n")
-                .append("      },\n");
-
-            // 如果已经存在则不添加
-            if (!oldRouterConfigText.contains(tem.toString())) {
-                sb.append(tem.toString());
-            }
-            sb.append(endStr);
-            return sb.toString();
-        }
-        return oldRouterConfigText;
-    }
-
-    /**
-     * 菜单的路径配置文件
-     */
-    private void writeMenu(NeoMap dataMap, String filePath) {
-        try {
-            String oldMenuText = FileUtil.read(filePath);
-            TableInfo tableInfo = (TableInfo) dataMap.get("tableInfo");
-            FileUtil.write(filePath, addMenu(oldMenuText, tableInfo));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 向文件中后面添加菜单
-     *
-     * @param oldMenuText 菜单源码中的旧数据
-     * @return 返回加入后的菜单数据
-     */
-    private String addMenu(String oldMenuText, TableInfo tableInfo) {
-        String endStr = "};";
-        int inputStartIndex = oldMenuText.indexOf(endStr);
-        if (-1 != inputStartIndex) {
-            StringBuilder sb = new StringBuilder(oldMenuText.substring(0, inputStartIndex));
-            StringBuilder tem = new StringBuilder();
-            tem.append("  'menu.").append(tableInfo.getName()).append("List': '").append(tableInfo.getDesc()).append("',\n");
-
-            // 如果已经存在则不添加
-            if (!oldMenuText.contains(tem.toString())) {
-                sb.append(tem.toString());
-            }
-            sb.append(endStr);
-            return sb.toString();
-        }
-        return oldMenuText;
-    }
-
-    private void configTableMenu(NeoMap dataMap) {
-        dataMap.put("tableInfo", TableInfo.of(getTablePathSplitLower(excludePreFix()), tableDesc));
-
-        String tableNameAfterPre = excludePreFix();
-        dataMap.put("tableComponentInfos", NeoMap.of().append("tableName", getTablePathSplitLower(tableNameAfterPre)).append("tablePathName", getTablePathName(tableNameAfterPre)));
-    }
-
-    private NeoMap generateBaseBone() {
-        NeoMap dataMap = new NeoMap();
-
-        dataMap.put("backendPort", backendPort);
-        dataMap.put("appName", appName);
-        dataMap.put("AppName", Strings.toCamelCaseAll(appName));
-
-        // 设置后端信息（端口和url）
-        configBackend(dataMap);
-
-        // 配置所有表和表名的对应
-        configTableMenu(dataMap);
-        return dataMap;
-    }
-
-    private NeoMap generateFrontBone() {
-        NeoMap dataMap = generateBaseBone();
-
-        if (null != frontCodePath) {
-            // router.config.js
-            writeRouterConfig(dataMap, frontCodePath + "/config/router.config.js");
-
-            // menu.js
-            writeMenu(dataMap, frontCodePath + "/src/locales/zh-CN/menu.js");
-        }
-        return dataMap;
-    }
-
-    private NeoMap generateBackendBone() {
-        return generateBaseBone();
-    }
-
-    private void configBaseInfo(NeoMap dataMap, String tableNameAfterPre) {
-        // 表格扩展先设置为不显示
-        dataMap.put("expandExist", 0);
-        dataMap.put("tablePathName", getTablePathName(tableNameAfterPre));
-        dataMap.put("tableUrlName", getTableUrlName(tableNameAfterPre));
-        dataMap.put("tablePathNameLower", getTablePathNameLower(tableNameAfterPre));
-
-        dataMap.put("tablePathSplitLower", getTablePathSplitLower(tableNameAfterPre));
-    }
-
-    private void configClassHead(NeoMap dataMap) {
-        dataMap.put("user", System.getProperty("user.name"));
-        dataMap.put("time", new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
-    }
-
-    private void configDBInfo(NeoMap dataMap) {
-        if (null == dbUrl || null == dbUserName || null == dbUserPassword) {
-            return;
-        }
-        Neo neo = Neo.connect(dbUrl, dbUserName, dbUserPassword);
-        List<NeoColumn> columns = neo.getColumnList(tableName);
-
-        //****** 设置表基本信息 ******
-        configTableName(dataMap);
-        configEnumTypeField(dataMap, columns);
-        configTimeField(columns);
-        configFieldName(columns);
-
-        //****** 设置"新增框"信息 ******
-        configInsertField(dataMap, columns);
-
-        //****** 设置"编辑框"信息 ******
-        configUpdateField(dataMap, columns);
-
-        //****** 设置"搜索框"信息 ******
-        configSearchField(dataMap, columns);
-
-        //****** 设置"表格展示"信息 ******
-        configTableShowField(dataMap, columns);
-
-        //****** 设置"表格的扩展"信息 ******
-        configExpandShowField(dataMap, columns);
-
-        //****** 设置后端"CURD"实体对应的字段 ******
-        configInsertEntity(dataMap, columns);
-        configUpdateEntity(dataMap, columns);
-        configQueryReqEntity(dataMap, columns);
-        configQueryRspEntity(dataMap, columns);
-    }
-
-    private void preGenerateImport(NeoMap importMap) {
-        importMap.put("importDate", 0);
-        importMap.put("importTime", 0);
-        importMap.put("importTimestamp", 0);
-        importMap.put("importBigDecimal", 0);
     }
 
     /**
@@ -1050,86 +882,11 @@ public class CodeGen {
         }
     }
 
-    private void writeFile(NeoMap dataMap, String filePath, String templateName) {
-        try {
-            if (!FileUtil.exist(filePath)) {
-                BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(FileUtil.getFile(filePath)));
-                Objects.requireNonNull(FreeMarkerTemplateUtil.getTemplate(templateName)).process(dataMap, bufferedWriter);
-            }
-        } catch (TemplateException | IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void writeBaseResponseController(NeoMap dataMap) {
-        String adminConstantFullPath = backendCodePath + "web/controller/BaseResponseController.java";
-        if (!FileUtil.exist(adminConstantFullPath)) {
-            // baseResponseController
-            writeFile(dataMap, adminConstantFullPath, BACKEND_PRE + "baseResponseController.ftl");
-        }
-    }
-
-    private void writeResponse(NeoMap dataMap) {
-        String adminConstantFullPath = backendCodePath + "constants/AdminConstant.java";
-        if (!FileUtil.exist(adminConstantFullPath)) {
-            writeFile(dataMap, backendCodePath + "web/vo/Response.java", BACKEND_PRE + "response.ftl");
-        }
-    }
-
-    public void generateFront() {
-        NeoMap dataMap = generateFrontBone();
-        dataMap.put("tableName", tableName);
-        dataMap.put("expandExist", 1);
-
-        String tableNameAfterPre = excludePreFix();
-        configBaseInfo(dataMap, tableNameAfterPre);
-        configDBInfo(dataMap);
-
-        // List
-        writeFile(dataMap, frontCodePath + "/src/pages/" + appName + "/" + getTablePathName(tableNameAfterPre) + "List.js", FRONT_PRE + "tableList.ftl");
-        writeFile(dataMap, frontCodePath + "/src/pages/" + appName + "/" + getTablePathName(tableNameAfterPre) + "List.less", FRONT_PRE + "tableList.less");
-        // model
-        writeFile(dataMap, frontCodePath + "/src/models/" + appName + "/" + getTablePathNameLower(tableNameAfterPre) + "Model.js", FRONT_PRE + "tableModel.ftl");
-        // api
-        writeFile(dataMap, frontCodePath + "/src/services/" + appName + "/" + getTablePathNameLower(tableNameAfterPre) + "Api.js", FRONT_PRE + "tableApi.ftl");
-
-        if (direct) {
-            writeFile(dataMap, frontCodePath + "/config/config.js", FRONT_PRE + "frontConfig.ftl");
-        }
-
-        System.out.println("front generate finish");
-    }
-
-    public void generateBackend() {
-        NeoMap dataMap = generateBackendBone();
-        dataMap.put("dbUrl", dbUrl);
-        dataMap.put("dbUserName", dbUserName);
-        dataMap.put("dbUserPassword", dbUserPassword);
-        dataMap.put("tableName", tableName);
-        dataMap.put("packagePath", packagePath);
-
-        String tableNameAfterPre = excludePreFix();
-        // 配置表路径的一些基本信息
-        configBaseInfo(dataMap, tableNameAfterPre);
-        // 配置db对应的实体信息
-        configDBInfo(dataMap);
-        // 配置类头部注释
-        configClassHead(dataMap);
-
-        generateAop(dataMap);
-        generateConfig(dataMap);
-        generateDao(dataMap, tableNameAfterPre);
-        generateException(dataMap);
-        generateEntity();
-        generateService(dataMap, tableNameAfterPre);
-        generateTransfer(dataMap, tableNameAfterPre);
-        generateWeb(dataMap, tableNameAfterPre);
-        generateApplication(dataMap, tableNameAfterPre);
-
-        // 生成resource中的文件
-        generateResources(dataMap);
-
-        System.out.println("backend generate finish");
+    private void preGenerateImport(NeoMap importMap) {
+        importMap.put("importDate", 0);
+        importMap.put("importTime", 0);
+        importMap.put("importTimestamp", 0);
+        importMap.put("importBigDecimal", 0);
     }
 
     private void generateAop(NeoMap dataMap) {
@@ -1147,7 +904,7 @@ public class CodeGen {
 
     private void generateDao(NeoMap dataMap, String tableNameAfterPre) {
         // XxxDao.java
-        writeFile(dataMap, backendCodePath + "dao/" + getTablePathName(tableNameAfterPre) + "Dao.java", BACKEND_PRE + "dao.ftl");
+        writeFile(dataMap, backendCodePath + "dao/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "Dao.java", BACKEND_PRE + "dao.ftl");
     }
 
     private void generateException(NeoMap dataMap) {
@@ -1178,27 +935,27 @@ public class CodeGen {
 
     private void generateService(NeoMap dataMap, String tableNameAfterPre) {
         // XxxService.java
-        writeFile(dataMap, backendCodePath + "service/" + getTablePathName(tableNameAfterPre) + "Service.java", BACKEND_PRE + "service.ftl");
+        writeFile(dataMap, backendCodePath + "service/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "Service.java", BACKEND_PRE + "service.ftl");
     }
 
     private void generateTransfer(NeoMap dataMap, String tableNameAfterPre) {
         // XxxTransfer
-        writeFile(dataMap, backendCodePath + "transfer/" + getTablePathName(tableNameAfterPre) + "Transfer.java", BACKEND_PRE + "transfer.ftl");
+        writeFile(dataMap, backendCodePath + "transfer/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "Transfer.java", BACKEND_PRE + "transfer.ftl");
     }
 
     private void generateWeb(NeoMap dataMap, String tableNameAfterPre) {
         // baseResponseController
         writeBaseResponseController(dataMap);
         // XxxController
-        writeFile(dataMap, backendCodePath + "web/controller/" + getTablePathName(tableNameAfterPre) + "Controller.java", BACKEND_PRE + "controller.ftl");
+        writeFile(dataMap, backendCodePath + "web/controller/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "Controller.java", BACKEND_PRE + "controller.ftl");
 
         // vo: req
-        writeFile(dataMap, backendCodePath + "web/vo/req/" + getTablePathName(tableNameAfterPre) + "InsertReq.java", BACKEND_PRE + "insertReq.ftl");
-        writeFile(dataMap, backendCodePath + "web/vo/req/" + getTablePathName(tableNameAfterPre) + "QueryReq.java", BACKEND_PRE + "queryReq.ftl");
-        writeFile(dataMap, backendCodePath + "web/vo/req/" + getTablePathName(tableNameAfterPre) + "UpdateReq.java", BACKEND_PRE + "updateReq.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/req/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "InsertReq.java", BACKEND_PRE + "insertReq.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/req/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "QueryReq.java", BACKEND_PRE + "queryReq.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/req/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "UpdateReq.java", BACKEND_PRE + "updateReq.ftl");
 
         // vo: rsp
-        writeFile(dataMap, backendCodePath + "web/vo/rsp/" + getTablePathName(tableNameAfterPre) + "QueryRsp.java", BACKEND_PRE + "queryRsp.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/rsp/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "QueryRsp.java", BACKEND_PRE + "queryRsp.ftl");
 
         // vo: Pager.java
         writeFile(dataMap, backendCodePath + "web/vo/Pager.java", BACKEND_PRE + "pager.ftl");
@@ -1207,9 +964,24 @@ public class CodeGen {
         writeResponse(dataMap);
     }
 
+    private void writeResponse(NeoMap dataMap) {
+        String adminConstantFullPath = backendCodePath + "constants/AdminConstant.java";
+        if (!FileUtil.exist(adminConstantFullPath)) {
+            writeFile(dataMap, backendCodePath + "web/vo/Response.java", BACKEND_PRE + "response.ftl");
+        }
+    }
+
+    private void writeBaseResponseController(NeoMap dataMap) {
+        String adminConstantFullPath = backendCodePath + "web/controller/BaseResponseController.java";
+        if (!FileUtil.exist(adminConstantFullPath)) {
+            // baseResponseController
+            writeFile(dataMap, adminConstantFullPath, BACKEND_PRE + "baseResponseController.ftl");
+        }
+    }
+
     private void generateApplication(NeoMap dataMap, String tableNameAfterPre) {
         // XxxApplication.java
-        writeFile(dataMap, backendCodePath + getTablePathName(appName) + "Application.java", BACKEND_PRE + "applicationStart.ftl");
+        writeFile(dataMap, backendCodePath + StringConverter.underLineToBigCamel(appName) + "Application.java", BACKEND_PRE + "applicationStart.ftl");
     }
 
     private void generateResources(NeoMap dataMap) {
@@ -1223,5 +995,190 @@ public class CodeGen {
         writeFile(dataMap, backendResourcesPath + "/application-pre.yml", BACKEND_PRE + "/resources/application-pre.ftl");
         // application-pro.yml
         writeFile(dataMap, backendResourcesPath + "/application-pro.yml", BACKEND_PRE + "/resources/application-pro.ftl");
+    }
+
+    public void configBackendDbInfo(NeoMap dataMap){
+        if(null == neo){
+            return;
+        }
+        List<NeoColumn> columns = neo.getColumnList(tableName);
+        configInsertEntity(dataMap, columns);
+        configUpdateEntity(dataMap, columns);
+        configQueryReqEntity(dataMap, columns);
+        configQueryRspEntity(dataMap, columns);
+    }
+
+    public void generateBackend(NeoMap dataMap){
+        String tableNameAfterPre = excludePreFix();
+
+        generateAop(dataMap);
+        generateConfig(dataMap);
+        generateDao(dataMap, tableNameAfterPre);
+        generateException(dataMap);
+        generateEntity();
+        generateService(dataMap, tableNameAfterPre);
+        generateTransfer(dataMap, tableNameAfterPre);
+        generateWeb(dataMap, tableNameAfterPre);
+        generateApplication(dataMap, tableNameAfterPre);
+
+        // 生成resource中的文件
+        generateResources(dataMap);
+    }
+
+    /**
+     * 设置弹窗"新增"中展示的字段
+     *
+     * @param fields fieldList
+     */
+    public void setInsertFields(String... fields) {
+        generateMap(insertFieldsMap, fields);
+    }
+
+    public void setUpdateFields(String... fields) {
+        generateMap(updateFieldsMap, fields);
+    }
+
+    public void setQueryFields(String... fields) {
+        generateMap(queryFieldsMap, fields);
+    }
+
+    public Neo generateDb(){
+        if (null == dbUrl || null == dbUserName || null == dbUserPassword) {
+            return null;
+        }
+        return Neo.connect(dbUrl, dbUserName, dbUserPassword);
+    }
+
+    /**
+     * 去除前缀：lk_config_group -> config_group
+     */
+    public String excludePreFix() {
+        if (null != preFix && tableName.startsWith(preFix)) {
+            return tableName.substring(preFix.length());
+        }
+        return tableName;
+    }
+
+    /**
+     * config_group -> config/group
+     */
+    private String getTableUrlName(String tableName) {
+        return tableName.replaceAll("_", "/");
+    }
+
+    /**
+     * 获取属性的描述，比如：user_name -> 用户名
+     *
+     * @param fieldName    db中对应的属性的名字
+     * @param defaultValue 如果没有配置，则采用默认的名字
+     * @return 属性对应的中文名
+     */
+    public String getFieldDesc(String fieldName, String defaultValue) {
+        if (null != fieldName && !"".equals(fieldName)) {
+            if (tableFieldNameMap.containsKey(fieldName)) {
+                FieldInfo fieldInfo = tableFieldNameMap.get(fieldName);
+                if (null != fieldInfo) {
+                    String desc = fieldInfo.getDesc();
+                    if (StringUtils.isNoneBlank(desc)) {
+                        return desc;
+                    }
+                }
+            }
+        }
+        if (StringUtils.isNoneBlank(defaultValue)) {
+            return defaultValue;
+        }
+        return fieldName;
+    }
+
+    /**
+     * 判断表的某个属性是否为时间类型
+     */
+    public boolean fieldIsTimeField(String field) {
+        if (null != tableTimeFieldMap) {
+            return tableTimeFieldMap.containsKey(field);
+        }
+        return false;
+    }
+
+    /**
+     * 判断字段是否为枚举类型
+     */
+    public boolean fieldIsEnum(List<NeoColumn> columns, String field) {
+        if (null != columns && !columns.isEmpty()) {
+            return columns.stream().anyMatch(c -> c.getColumnName().equals(field) && c.getColumnTypeName().equals(MYSQL_ENUM_TYPE));
+        }
+        return false;
+    }
+
+    protected void writeFile(NeoMap dataMap, String filePath, String templateName) {
+        try {
+            if (!FileUtil.exist(filePath)) {
+                BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(FileUtil.getFile(filePath)));
+                Objects.requireNonNull(FreeMarkerTemplateUtil.getTemplate(templateName)).process(dataMap, bufferedWriter);
+            }
+        } catch (TemplateException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void generateMap(Map<String, FieldMeta> dataMap, String... fields) {
+        if (null == fields || fields.length == 0) {
+            return;
+        }
+
+        Stream.of(fields).forEach(f -> dataMap.put(f, FieldMeta.of(f)));
+    }
+
+    private NeoMap generateBone(){
+        NeoMap dataMap = new NeoMap();
+        if (null == neo) {
+            neo = Neo.connect(dbUrl, dbUserName, dbUserPassword);
+        }
+        dataMap.put("dbUrl", dbUrl);
+        dataMap.put("dbUserName", dbUserName);
+        dataMap.put("dbUserPassword", dbUserPassword);
+        dataMap.put("tableName", tableName);
+        dataMap.put("backendPort", backendPort);
+        dataMap.put("appName", appName);
+        dataMap.put("AppName", StringConverter.underLineToBigCamel(appName));
+        String tableNameAfterPre = excludePreFix();
+        dataMap.put("tablePathName", StringConverter.underLineToBigCamel(tableNameAfterPre));
+        dataMap.put("tableUrlName", getTableUrlName(tableNameAfterPre));
+        dataMap.put("tablePathNameLower", StringConverter.underLineToSmallCamel(tableNameAfterPre));
+        dataMap.put("tableComponentInfos",
+            NeoMap.of()
+                .append("tableName", StringConverter.underLineToSmallCamel(tableNameAfterPre))
+                .append("tablePathName", StringConverter.underLineToBigCamel(tableNameAfterPre))
+        );
+        return dataMap;
+    }
+
+    public void configBackendBone(NeoMap dataMap) {
+        dataMap.put("packagePath", packagePath);
+        dataMap.put("user", System.getProperty("user.name"));
+        dataMap.put("time", new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
+    }
+
+    public void configFrontBone(NeoMap dataMap) {
+        dataMap.put("expandExist", 0);
+        dataMap.put("tableInfo", TableInfo.of(StringConverter.underLineToSmallCamel(excludePreFix()), tableDesc));
+    }
+
+    public void generateFront() {
+        NeoMap dataMap = generateBone();
+        configFrontBone(dataMap);
+        configFrontDbInfo(dataMap);
+        generateFront(dataMap);
+        System.out.println("front generate finish");
+    }
+
+    public void generateBackend() {
+        NeoMap dataMap = generateBone();
+        configBackendBone(dataMap);
+        configBackendDbInfo(dataMap);
+        generateBackend(dataMap);
+
+        System.out.println("backend generate finish");
     }
 }
