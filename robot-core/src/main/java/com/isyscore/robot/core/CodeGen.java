@@ -1099,6 +1099,9 @@ public class CodeGen {
 
     public void generateBackend() {
         NeoMap dataMap = generateBackendBone();
+        dataMap.put("dbUrl", dbUrl);
+        dataMap.put("dbUserName", dbUserName);
+        dataMap.put("dbUserPassword", dbUserPassword);
         dataMap.put("tableName", tableName);
         dataMap.put("packagePath", packagePath);
 
@@ -1121,7 +1124,7 @@ public class CodeGen {
         generateApplication(dataMap, tableNameAfterPre);
 
         // 生成resource中的文件
-        // generateResources(dataMap);
+        generateResources(dataMap);
 
         System.out.println("backend generate finish");
     }
