@@ -1051,8 +1051,10 @@ public class CodeGen {
 
     private void writeFile(NeoMap dataMap, String filePath, String templateName) {
         try {
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(FileUtil.getFile(filePath)));
-            Objects.requireNonNull(FreeMarkerTemplateUtil.getTemplate(templateName)).process(dataMap, bufferedWriter);
+            if (!FileUtil.exist(filePath)) {
+                BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(FileUtil.getFile(filePath)));
+                Objects.requireNonNull(FreeMarkerTemplateUtil.getTemplate(templateName)).process(dataMap, bufferedWriter);
+            }
         } catch (TemplateException | IOException e) {
             e.printStackTrace();
         }
