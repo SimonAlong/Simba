@@ -60,6 +60,10 @@ public class CodeGen {
      */
     private String backendCodePath;
     /**
+     * 后端资源文件生成路径
+     */
+    private String backendResourcesPath;
+    /**
      * 后端项目的包路径
      */
     private String packagePath;
@@ -138,8 +142,10 @@ public class CodeGen {
         this.projectModelPath = codePath;
         if (codePath.endsWith("/")) {
             this.backendCodePath = codePath + "src/main/java/";
+            this.backendResourcesPath = codePath + "src/main/resources/";
         } else {
             this.backendCodePath = codePath + "/src/main/java/";
+            this.backendResourcesPath = codePath + "/src/main/resources/";
         }
     }
 
@@ -1158,11 +1164,27 @@ public class CodeGen {
         writeFile(dataMap, backendCodePath + "aop/ControllerAop.java", BACKEND_PRE + "controllerAop.ftl");
 
         // XxxApplication.java
-        writeFile(dataMap, backendCodePath + getTablePathName(tableNameAfterPre) + "Application.java", BACKEND_PRE + "application.ftl");
+        writeFile(dataMap, backendCodePath + getTablePathName(tableNameAfterPre) + "Application.java", BACKEND_PRE + "applicationStart.ftl");
 
         // XxxDO
         generateEntity();
 
+        // 生成resource中的文件
+        generateResources(dataMap);
+
         System.out.println("backend generate finish");
+    }
+
+    private void generateResources(Map<String, Object> dataMap) {
+        // application.yml
+        writeFile(dataMap, backendResourcesPath + "/application.yml", BACKEND_PRE + "/resources/application.ftl");
+        // application-local.yml
+        writeFile(dataMap, backendResourcesPath + "/application-local.yml", BACKEND_PRE + "/resources/application-local.ftl");
+        // application-dev.yml
+        writeFile(dataMap, backendResourcesPath + "/application-dev.yml", BACKEND_PRE + "/resources/application-dev.ftl");
+        // application-pre.yml
+        writeFile(dataMap, backendResourcesPath + "/application-pre.yml", BACKEND_PRE + "/resources/application-pre.ftl");
+        // application-pro.yml
+        writeFile(dataMap, backendResourcesPath + "/application-pro.yml", BACKEND_PRE + "/resources/application-pro.ftl");
     }
 }

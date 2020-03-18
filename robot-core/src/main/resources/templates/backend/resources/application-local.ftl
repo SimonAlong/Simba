@@ -1,12 +1,12 @@
 server:
-  port: 8085
+  port: ${backendPort}
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/neo?useUnicode=true&characterEncoding=UTF-8&useSSL=false
-    username: neo_test
-    password: neo@Test123
+    url: ${dbUrl}
+    username: ${dbUserName}
+    password: ${dbUserPassword}
     hikari:
       auto-commit: true
       idle-timeout: 180000
