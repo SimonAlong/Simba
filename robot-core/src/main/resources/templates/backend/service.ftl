@@ -24,7 +24,7 @@ public class ${tablePathName}Service {
     private ${tablePathName}Dao dao;
 
     public Integer insert(${tablePathName}InsertReq insertReq) {
-        dao.insert(${tablePathName}Dto.insertReqToEntity(insertReq));
+        dao.insert(${tablePathName}Transfer.insertReqToEntity(insertReq));
         return 1;
     }
 
@@ -33,7 +33,7 @@ public class ${tablePathName}Service {
     }
 
     public Integer update(${tablePathName}UpdateReq updateReq) {
-        dao.update(${tablePathName}Dto.updateReqToEntity(updateReq));
+        dao.update(${tablePathName}Transfer.updateReqToEntity(updateReq));
         return 1;
     }
 
@@ -41,7 +41,7 @@ public class ${tablePathName}Service {
         return dao.page(NeoMap.from(pageReq.getPageIndex()), NeoPage.of(pageReq.getPageIndex(), pageReq.getPageSize()))
             .stream()
             .map(data -> data.as(${tablePathName}DO.class))
-            .map(${tablePathName}Dto::entityToQueryRsp)
+            .map(${tablePathName}Transfer::entityToQueryRsp)
             .collect(Collectors.toList());
     }
 

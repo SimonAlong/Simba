@@ -941,7 +941,7 @@ public class CodeGen {
     }
 
     private NeoMap generateBaseBone() {
-        NeoMap dataMap = new HashMap<>();
+        NeoMap dataMap = new NeoMap();
 
         dataMap.put("backendPort", backendPort);
         dataMap.put("appName", appName);
@@ -1163,6 +1163,9 @@ public class CodeGen {
         // ControllerAop.java
         writeFile(dataMap, backendCodePath + "aop/ControllerAop.java", BACKEND_PRE + "controllerAop.ftl");
 
+        // AutoCheck.java
+        writeFile(dataMap, backendCodePath + "aop/AutoCheck.java", BACKEND_PRE + "autoCheck.ftl");
+
         // XxxApplication.java
         writeFile(dataMap, backendCodePath + getTablePathName(tableNameAfterPre) + "Application.java", BACKEND_PRE + "applicationStart.ftl");
 
@@ -1170,7 +1173,7 @@ public class CodeGen {
         generateEntity();
 
         // 生成resource中的文件
-        generateResources(dataMap);
+//        generateResources(dataMap);
 
         System.out.println("backend generate finish");
     }

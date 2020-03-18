@@ -10,8 +10,7 @@ import java.lang.annotation.*;
  *         <li>1.修饰函数：则会核查函数对应的所有参数</li>
  *         <li>2.修饰参数：则只会核查指定的参数</li>
  *     </ul>
- * @author shizi
- * @since 2020/3/18 上午9:41
+ * @author robot
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

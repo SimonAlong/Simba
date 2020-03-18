@@ -25,7 +25,7 @@ public class ${tablePathName}Controller extends BaseResponseController {
 
     @AutoCheck
     @PutMapping("add")
-    public Response<Integer> add(@RequestBody ${tablePathName}InsertReq insertReq){
+    public Response<Integer> add(@RequestBody ${tablePathName}InsertReq insertReq) {
         return success(${tablePathNameLower}service.insert(insertReq));
     }
 
