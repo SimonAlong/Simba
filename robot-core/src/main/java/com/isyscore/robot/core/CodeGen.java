@@ -140,7 +140,7 @@ public class CodeGen {
     /**
      * mysql的时间字段
      */
-    private static final List<String> MYSQL_TIME_TYPE = Arrays.asList("DATETIME", "TIMESTAMP");
+    private static final List<String> MYSQL_TIME_TYPE = Arrays.asList("DATETIME", "TIMESTAMP", "DATE", "TIME", "YEAR");
 
     /**
      * 将表中文名和表名对应起来
@@ -307,7 +307,7 @@ public class CodeGen {
 
     private void doField(FieldInfo info, String dbName, List<NeoColumn> columns){
         // 时间戳设置
-        if (fieldIsTimeField(info.getCodeName())) {
+        if (fieldIsTimeField(info.getDbName())) {
             info.setTimeFlag(1);
         }
 
