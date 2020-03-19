@@ -19,9 +19,8 @@
 2.该工具生成的后端涉及到的框架：
 - web框架：spring-boot
 - Orm框架（自研）：ibo-neo
-- 核查框架（自研）：ibo-mikilin
+- 核查框架（自研）：ibo-mikilin<br/>
 
-<br/>
 3.该工具生成的前端<br/>
 - 前端语言：React<br/>
 - 路由框架：dva
