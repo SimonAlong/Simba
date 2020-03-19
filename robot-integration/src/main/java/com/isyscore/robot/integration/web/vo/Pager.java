@@ -1,6 +1,7 @@
 package com.isyscore.robot.integration.web.vo;
 
 import com.isyscore.ibo.mikilin.annotation.Check;
+import com.isyscore.ibo.mikilin.annotation.Matcher;
 import lombok.Data;
 
 /**
@@ -9,7 +10,9 @@ import lombok.Data;
 @Data
 public class Pager<T> {
 
+    @Matcher(range = "[0, )", errMsg = "分页数据不满足")
     private Integer pageNo;
+    @Matcher(range = "[0, )", errMsg = "pageSize数据不满足")
     private Integer pageSize;
     @Check
     private T param;

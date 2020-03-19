@@ -38,7 +38,7 @@ public class ${tablePathName}Service {
     }
 
     public List<${tablePathName}QueryRsp> pageList(Pager<${tablePathName}QueryReq> pageReq) {
-        return dao.page(NeoMap.from(pageReq.getPageIndex()), NeoPage.of(pageReq.getPageIndex(), pageReq.getPageSize()))
+        return dao.page(NeoMap.from(pageReq.getParam()), NeoPage.of(pageReq.getPageIndex(), pageReq.getPageSize()))
             .stream()
             .map(data -> data.as(${tablePathName}DO.class))
             .map(${tablePathName}Transfer::entityToQueryRsp)

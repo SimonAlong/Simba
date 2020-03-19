@@ -2,6 +2,7 @@ package com.isyscore.robot.integration.entity;
 
 import java.sql.Timestamp;
 import com.isyscore.ibo.neo.annotation.Column;
+import com.isyscore.ibo.neo.annotation.Table;
 import lombok.experimental.Accessors;
 import lombok.Data;
 
@@ -10,6 +11,7 @@ import lombok.Data;
  * @author robot
  */
 @Data
+@Table("neo_city")
 @Accessors(chain = true)
 public class CityDO {
 
