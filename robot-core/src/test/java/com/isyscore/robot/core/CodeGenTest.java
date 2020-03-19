@@ -16,7 +16,7 @@ public class CodeGenTest {
 
         /*============================================================================ 公共配置（必填） =======================*/
         // 设置应用名字
-        codeGen.setAppName("sequence");
+        codeGen.setAppName("robot");
         // 设置数据库信息
         codeGen.setDbUrl("jdbc:mysql://localhost:3306/neo");
         codeGen.setDbUserName("neo_test");
@@ -41,7 +41,7 @@ public class CodeGenTest {
 
         /*=============================================================================== 前端代码配置 =======================*/
         // 设置前端代码路径
-        codeGen.setFrontCodePath("/Users/simon/work/project/portal-front");
+        codeGen.setFrontCodePath("/Users/zhouzhenyong/project/isyscore/ibo-front-base");
 
         /*========= 要展示的表基本信息（必填） ========*/
         // 设置表的中文名，如果没有设置，则采用DB中的描述

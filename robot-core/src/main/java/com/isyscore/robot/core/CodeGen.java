@@ -930,7 +930,18 @@ public class CodeGen {
             if (!FileUtil.exist(filePath)) {
                 BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(FileUtil.getFile(filePath)));
                 Objects.requireNonNull(FreeMarkerTemplateUtil.getTemplate(templateName)).process(dataMap, bufferedWriter);
+                System.out.println("file generate finish: " + filePath);
             }
+        } catch (TemplateException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeFileWithCover(NeoMap dataMap, String filePath, String templateName) {
+        try {
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(FileUtil.getFile(filePath)));
+            Objects.requireNonNull(FreeMarkerTemplateUtil.getTemplate(templateName)).process(dataMap, bufferedWriter);
+            System.out.println("file generate finish: " + filePath);
         } catch (TemplateException | IOException e) {
             e.printStackTrace();
         }
