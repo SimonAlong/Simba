@@ -561,7 +561,8 @@ public class CodeGen {
         // api
         writeFile(dataMap, frontCodePath + "/src/services/" + appName + "/" + StringConverter.underLineToSmallCamel(tableNameAfterPre) + "Api.js", FRONT_PRE + "tableApi.ftl");
 
-        writeFile(dataMap, frontCodePath + "/config/config.js", FRONT_PRE + "frontConfig.ftl");
+        // config.js
+        writeFileWithCover(dataMap, frontCodePath + "/config/config.js", FRONT_PRE + "frontConfig.ftl");
     }
 
     private void configFrontDbInfo(NeoMap dataMap){

@@ -433,7 +433,11 @@ class ${tablePathName}List extends PureComponent {
 
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-
+      for(let key in fieldsValue) {
+        if(fieldsValue[key] === '') {
+          delete fieldsValue[key]
+        }
+      };
       this.getPageData(1, fieldsValue);
     });
   };
