@@ -11,7 +11,7 @@ public class CodeGenTest {
 
     @Test
     @SuppressWarnings("all")
-    public void genFront2() {
+    public void generate1() {
         CodeGen codeGen = new CodeGen();
 
         /*============================================================================ 公共配置（必填） =======================*/
@@ -81,14 +81,14 @@ public class CodeGenTest {
 
         /*============================================================================== 生成代码 ================================*/
         // 生成前端
-//        codeGen.generateFront();
+        codeGen.generateFront();
 
         // 生成后端
         codeGen.generateBackend();
     }
 
     @Test
-    public void test2(){
+    public void generate2(){
         CodeGen codeGen = new CodeGen();
 
         /*============================================================================ 公共配置（必填） =======================*/

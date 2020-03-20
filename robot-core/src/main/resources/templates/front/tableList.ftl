@@ -189,7 +189,7 @@ class ${tablePathName}List extends PureComponent {
       <#if f.timeFlag == 1>
       render: (text, record) => (
         // eslint-disable-next-line radix
-        <span>{moment(parseInt(record.${f.fieldMeta.codeName})).format('YYYY-MM-DD HH:mm:ss')}</span>
+        <span>{moment(record.${f.fieldMeta.codeName}).format('YYYY-MM-DD HH:mm:ss')}</span>
       ),
       <#elseif f.picFlag == 1>
       render: (text, record) => <Avatar shape="square" src={record.${f.fieldMeta.codeName}} />,
@@ -284,7 +284,7 @@ class ${tablePathName}List extends PureComponent {
         <Col span={6}>
           <Badge status="success" text="${expand.desc}：" />
           <#if expand.timeFlag == 1>{/* eslint-disable-next-line radix */}
-          <span>{moment(parseInt(record.${expand.fieldMeta.codeName})).format('YYYY-MM-DD HH:mm:ss')}</span><#elseif expand.picFlag == 1><Avatar shape="square" src={record.${expand.fieldMeta.codeName}} />><#else ><span>{record.${expand.fieldMeta.codeName}}</span></#if>
+          <span>{moment(record.${expand.fieldMeta.codeName}).format('YYYY-MM-DD HH:mm:ss')}</span><#elseif expand.picFlag == 1><Avatar shape="square" src={record.${expand.fieldMeta.codeName}} />><#else ><span>{record.${expand.fieldMeta.codeName}}</span></#if>
         </Col>
        </#list>
       </Row>
