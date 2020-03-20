@@ -6,7 +6,6 @@ import ${packagePath}.web.vo.Pager;
 import ${packagePath}.web.vo.Response;
 import ${packagePath}.web.vo.req.*;
 import ${packagePath}.web.vo.rsp.${tablePathName}QueryRsp;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +14,6 @@ import java.util.List;
 /**
  * @author robot
  */
-@Slf4j
 @RequestMapping("${appName}/${tableUrlName}")
 @RestController
 public class ${tablePathName}Controller extends BaseResponseController {

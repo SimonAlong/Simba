@@ -6,7 +6,6 @@ import com.isyscore.robot.integration.web.vo.Pager;
 import com.isyscore.robot.integration.web.vo.Response;
 import com.isyscore.robot.integration.web.vo.req.*;
 import com.isyscore.robot.integration.web.vo.rsp.BusinessCityQueryRsp;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +14,6 @@ import java.util.List;
 /**
  * @author robot
  */
-@Slf4j
 @RequestMapping("robot/business/city")
 @RestController
 public class BusinessCityController extends BaseResponseController {

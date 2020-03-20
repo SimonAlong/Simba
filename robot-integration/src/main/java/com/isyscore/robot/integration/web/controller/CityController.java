@@ -15,7 +15,6 @@ import java.util.List;
 /**
  * @author robot
  */
-@Slf4j
 @RequestMapping("robot/city")
 @RestController
 public class CityController extends BaseResponseController {
