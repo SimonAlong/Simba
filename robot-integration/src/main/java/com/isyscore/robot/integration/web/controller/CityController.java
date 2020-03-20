@@ -6,7 +6,6 @@ import com.isyscore.robot.integration.web.vo.Pager;
 import com.isyscore.robot.integration.web.vo.Response;
 import com.isyscore.robot.integration.web.vo.req.*;
 import com.isyscore.robot.integration.web.vo.rsp.CityQueryRsp;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

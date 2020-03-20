@@ -1,8 +1,8 @@
-package com.isyscore.robot.integration.web.controller;
+package ${packagePath}.web.controller;
 
-import com.isyscore.robot.integration.web.vo.AccountInfo;
-import com.isyscore.robot.integration.web.vo.req.LoginReq;
-import com.isyscore.robot.integration.web.vo.rsp.LoginRsp;
+import ${packagePath}.web.vo.AccountInfo;
+import ${packagePath}.web.vo.req.LoginReq;
+import ${packagePath}.web.vo.rsp.LoginRsp;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * @author robot
  */
-@RequestMapping("robot/login")
+@RequestMapping("${appName}/login")
 @RestController
 public class LoginController {
 

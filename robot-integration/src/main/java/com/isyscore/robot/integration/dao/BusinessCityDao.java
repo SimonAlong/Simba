@@ -1,13 +1,10 @@
 package com.isyscore.robot.integration.dao;
 
 import com.isyscore.ibo.neo.Neo;
-import com.isyscore.ibo.neo.NeoMap;
 import com.isyscore.ibo.neo.core.AbstractBizService;
 import com.isyscore.ibo.neo.core.DbSync;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * @author robot

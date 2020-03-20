@@ -1,6 +1,6 @@
-package com.isyscore.robot.integration.web.vo.rsp;
+package ${packagePath}.web.vo.rsp;
 
-import com.isyscore.robot.integration.web.vo.AccountInfo;
+import ${packagePath}.web.vo.AccountInfo;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

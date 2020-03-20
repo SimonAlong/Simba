@@ -777,17 +777,25 @@ public class CodeGen {
         writeBaseResponseController(dataMap);
         // XxxController
         writeFile(dataMap, backendCodePath + "web/controller/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "Controller.java", BACKEND_PRE + "controller.ftl");
+        // loginController
+        writeFile(dataMap, backendCodePath + "web/controller/" + "LoginController.java", BACKEND_PRE + "loginController.ftl");
 
         // vo: req
         writeFile(dataMap, backendCodePath + "web/vo/req/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "InsertReq.java", BACKEND_PRE + "insertReq.ftl");
         writeFile(dataMap, backendCodePath + "web/vo/req/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "QueryReq.java", BACKEND_PRE + "queryReq.ftl");
         writeFile(dataMap, backendCodePath + "web/vo/req/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "UpdateReq.java", BACKEND_PRE + "updateReq.ftl");
+        // vo: loginReq
+        writeFile(dataMap, backendCodePath + "web/vo/req/LoginReq.java", BACKEND_PRE + "loginReq.ftl");
 
         // vo: rsp
         writeFile(dataMap, backendCodePath + "web/vo/rsp/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "QueryRsp.java", BACKEND_PRE + "queryRsp.ftl");
+        // vo: loginRsp
+        writeFile(dataMap, backendCodePath + "web/vo/rsp/LoginRsp.java", BACKEND_PRE + "loginRsp.ftl");
 
         // vo: Pager.java
         writeFile(dataMap, backendCodePath + "web/vo/Pager.java", BACKEND_PRE + "pager.ftl");
+        // vo: AccountInfo.java
+        writeFile(dataMap, backendCodePath + "web/vo/AccountInfo.java", BACKEND_PRE + "accountInfo.ftl");
 
         // vo: Response.java
         writeResponse(dataMap);
@@ -808,7 +816,7 @@ public class CodeGen {
         }
     }
 
-    private void generateApplication(NeoMap dataMap, String tableNameAfterPre) {
+    private void generateApplication(NeoMap dataMap) {
         // XxxApplication.java
         writeFile(dataMap, backendCodePath + StringConverter.underLineToBigCamel(appName) + "Application.java", BACKEND_PRE + "applicationStart.ftl");
     }
@@ -851,7 +859,7 @@ public class CodeGen {
         generateService(dataMap, tableNameAfterPre);
         generateTransfer(dataMap, tableNameAfterPre);
         generateWeb(dataMap, tableNameAfterPre);
-        generateApplication(dataMap, tableNameAfterPre);
+        generateApplication(dataMap);
 
         // 生成resource中的文件
         generateResources(dataMap);
