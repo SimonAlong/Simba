@@ -20,7 +20,7 @@
     </modules>
 
     <properties>
-        <ibo.mikilin.version>1.0.1-SNAPSHOT</ibo.mikilin.version>
+        <ibo.mikilin.version>1.0.0-SNAPSHOT</ibo.mikilin.version>
         <ibo.neo.version>1.0.1-SNAPSHOT</ibo.neo.version>
     </properties>
 
@@ -28,7 +28,7 @@
         <dependencies>
             <dependency>
                 <groupId>com.isyscore.mikilin</groupId>
-                <artifactId>ibo-mikilin</artifactId>
+                <artifactId>isc-mikilin</artifactId>
                 <version>${ibo.mikilin.version}</version>
             </dependency>
         </dependencies>
@@ -41,7 +41,7 @@
         </dependency>
         <dependency>
             <groupId>com.isyscore.neo</groupId>
-            <artifactId>ibo-neo</artifactId>
+            <artifactId>isc-neo</artifactId>
             <version>${ibo.neo.version}</version>
         </dependency>
         <dependency>

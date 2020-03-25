@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>com.isyscore.mikilin</groupId>
-            <artifactId>ibo-mikilin</artifactId>
+            <artifactId>isc-mikilin</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
