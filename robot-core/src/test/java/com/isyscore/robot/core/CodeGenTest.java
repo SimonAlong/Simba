@@ -41,7 +41,7 @@ public class CodeGenTest {
 
         /*=============================================================================== 前端代码配置 =======================*/
         // 设置前端代码路径
-        codeGen.setFrontCodePath("/Users/zhouzhenyong/project/isyscore/ibo-front-base");
+        codeGen.setFrontCodePath("/Users/zhouzhenyong/project/isyscore/isc-front-base");
 
         /*========= 要展示的表基本信息（必填） ========*/
         // 设置表的中文名，如果没有设置，则采用DB中的描述
@@ -118,7 +118,7 @@ public class CodeGenTest {
 
         /*=============================================================================== 前端代码配置 =======================*/
         // 设置前端代码路径
-        codeGen.setFrontCodePath("/Users/zhouzhenyong/project/isyscore/ibo-front-base");
+        codeGen.setFrontCodePath("/Users/zhouzhenyong/project/isyscore/isc-front-base");
 
         /*========= 要展示的表基本信息（必填） ========*/
         // 设置表的中文名，如果没有设置，则采用DB中的描述
