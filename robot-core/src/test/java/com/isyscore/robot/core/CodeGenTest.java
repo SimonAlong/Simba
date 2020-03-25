@@ -74,7 +74,7 @@ public class CodeGenTest {
 
         /*============================================================================== 后端代码生成器（非必填） ===================*/
         // 设置："后端项目模块路径"，（如果后端还有对应的组件包，则也要将组件包放到最后）
-        codeGen.setBackendModulePath("/Users/zhouzhenyong/project/isyscore/ibo-robot/robot-integration");
+        codeGen.setBackendModulePath("/Users/zhouzhenyong/project/isyscore/isc-robot/robot-integration");
 
         // 设置："package包"
         codeGen.setBackendPackage("com.isyscore.robot.integration");
@@ -151,7 +151,7 @@ public class CodeGenTest {
 
         /*============================================================================== 后端代码生成器（非必填） ===================*/
         // 设置："后端项目模块路径"，（如果后端还有对应的组件包，则也要将组件包放到最后）
-        codeGen.setBackendModulePath("/Users/zhouzhenyong/project/isyscore/ibo-robot/robot-integration");
+        codeGen.setBackendModulePath("/Users/zhouzhenyong/project/isyscore/isc-robot/robot-integration");
 
         // 设置："package包"
         codeGen.setBackendPackage("com.isyscore.robot.integration");

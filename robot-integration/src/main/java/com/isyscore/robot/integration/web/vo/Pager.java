@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class Pager<T> {
 
-    @Matcher(range = "[0, )", errMsg = "分页数据不满足")
+    @Matcher(range = "[10, )", errMsg = "分页数据不满足")
     private Integer pageNo;
     @Matcher(range = "[0, )", errMsg = "pageSize数据不满足")
     private Integer pageSize;

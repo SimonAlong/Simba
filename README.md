@@ -1,4 +1,4 @@
-# ibo-robot介绍
+# isc-robot介绍
 该组件可以一键式生成整个前后端项目。其中前端为采用React的Ant Design Pro框架，后端为基本的springBoot项目。前端需要以ibo-front-base项目为模板进行创建新的业务前端项目。后端可以采用空项目即可。
 
 ## 快速入门
@@ -97,7 +97,7 @@ public void genFront2() {
 
     /*============================================================================== 后端代码生成器（非必填） ===================*/
     // 设置："后端项目模块路径"，（如果后端还有对应的组件包，则也要将组件包放到最后）
-    codeGen.setBackendModulePath("/Users/zhouzhenyong/project/isyscore/ibo-robot/robot-integration");
+    codeGen.setBackendModulePath("/Users/zhouzhenyong/project/isyscore/isc-robot/robot-integration");
 
     // 设置："package包"
     codeGen.setBackendPackage("com.isyscore.robot.integration");

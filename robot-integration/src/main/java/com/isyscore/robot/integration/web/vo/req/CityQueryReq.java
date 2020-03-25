@@ -1,5 +1,6 @@
 package com.isyscore.robot.integration.web.vo.req;
 
+import com.isyscore.ibo.mikilin.annotation.Matcher;
 import lombok.Data;
 
 /**
@@ -16,6 +17,7 @@ public class CityQueryReq {
     /**
      * 市编码
      */
+    @Matcher(value = "12")
     private String cityCode;
     /**
      * 名称
