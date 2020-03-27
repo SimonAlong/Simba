@@ -826,18 +826,18 @@ public class CodeGen {
 
     private void generateResources(NeoMap dataMap) {
         // application.yml
-        writeFile(dataMap, backendResourcesPath + "/application.yml", BACKEND_PRE + "/resources/application.ftl");
+        writeFile(dataMap, backendResourcesPath + "application.yml", BACKEND_PRE + "resources/application.ftl");
         // application-local.yml
-        writeFile(dataMap, backendResourcesPath + "/application-local.yml", BACKEND_PRE + "/resources/application-local.ftl");
+        writeFile(dataMap, backendResourcesPath + "application-local.yml", BACKEND_PRE + "resources/application-local.ftl");
         // application-dev.yml
-        writeFile(dataMap, backendResourcesPath + "/application-dev.yml", BACKEND_PRE + "/resources/application-dev.ftl");
+        writeFile(dataMap, backendResourcesPath + "application-dev.yml", BACKEND_PRE + "resources/application-dev.ftl");
         // application-pre.yml
-        writeFile(dataMap, backendResourcesPath + "/application-pre.yml", BACKEND_PRE + "/resources/application-pre.ftl");
+        writeFile(dataMap, backendResourcesPath + "application-pre.yml", BACKEND_PRE + "resources/application-pre.ftl");
         // application-pro.yml
-        writeFile(dataMap, backendResourcesPath + "/application-pro.yml", BACKEND_PRE + "/resources/application-pro.ftl");
+        writeFile(dataMap, backendResourcesPath + "application-pro.yml", BACKEND_PRE + "resources/application-pro.ftl");
 
         // logback.xml
-        writeFile(dataMap, backendResourcesPath + "/logback.xml", BACKEND_PRE + "/resources/logback.ftl");
+        writeFile(dataMap, backendResourcesPath + "logback.xml", BACKEND_PRE + "resources/logback.ftl");
     }
 
     private void configBackendDbInfo(NeoMap dataMap){

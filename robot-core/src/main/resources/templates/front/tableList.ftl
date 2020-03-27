@@ -165,9 +165,8 @@ class EditableCell extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ ${tablePathNameLower}Model, loading, authCheckModel }) => ({
+@connect(({ ${tablePathNameLower}Model, loading}) => ({
   ${tablePathNameLower}Model,
-  authCheckModel,
   loading: loading.models.${tablePathNameLower}Model,
 }))
 // @Form.create() 是一个注解，就简化了xxx = Form.create(xxx);export xxx
@@ -223,13 +222,9 @@ class ${tablePathName}List extends PureComponent {
 
   // 界面初始化函数
   componentDidMount() {
-    const { location, dispatch} = this.props;
+    const { location} = this.props;
     localStorage.setItem('currentPath', location.pathname);
     <#if appName!='portal'>localStorage.setItem('appName', "${appName}");</#if>
-    dispatch({
-      type: 'authCheckModel/checkPage',
-      payload: {},
-    });
 
     // 获取页面的总个数
     this.getPageData(1);
