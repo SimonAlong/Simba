@@ -58,14 +58,15 @@
         </encoder>
     </appender>
 
-    <logger name="org.springframework" level="debug" additivity="false"/>
+    <logger name="org.springframework" level="info" additivity="false"/>
 
-    <logger name="com.isyscore.ibo.neo" level="info" additivity="false">
+    <logger name="com.isyscore.ibo.neo" level="${r'${LOG_LEVEL}'}" additivity="false">
         <appender-ref ref="RollingInfoLogger"/>
         <appender-ref ref="RollingWarnOrErrorLogger"/>
     </logger>
 
     <root level="${r'${LOG_LEVEL}'}">
+        <appender-ref ref="STDOUT"/>
         <appender-ref ref="RollingWarnOrErrorLogger"/>
         <appender-ref ref="RollingInfoLogger"/>
     </root>
