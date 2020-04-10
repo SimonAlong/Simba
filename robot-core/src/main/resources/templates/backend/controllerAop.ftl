@@ -1,9 +1,9 @@
 package ${packagePath}.aop;
 
-import com.isyscore.ibo.mikilin.MkValidators;
-import com.isyscore.ibo.mikilin.exception.MkCheckException;
-import com.isyscore.ibo.neo.NeoMap;
-import com.isyscore.ibo.neo.util.TimeRangeStrUtil;
+import com.isyscore.isc.mikilin.MkValidators;
+import com.isyscore.isc.mikilin.exception.MkCheckException;
+import com.isyscore.isc.neo.NeoMap;
+import com.isyscore.isc.neo.util.TimeRangeStrUtil;
 import ${packagePath}.exception.BusinessException;
 import ${packagePath}.web.vo.Response;
 import lombok.extern.slf4j.Slf4j;

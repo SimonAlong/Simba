@@ -1,7 +1,8 @@
 package com.isyscore.robot.integration.service;
 
-import com.isyscore.ibo.neo.NeoMap;
-import com.isyscore.ibo.neo.db.NeoPage;
+import com.isyscore.isc.neo.NeoMap;
+import com.isyscore.isc.neo.db.NeoPage;
+import com.isyscore.os.dev.api.permission.service.PermissionService;
 import com.isyscore.robot.integration.dao.CityDao;
 import com.isyscore.robot.integration.transfer.CityTransfer;
 import com.isyscore.robot.integration.entity.CityDO;
@@ -22,6 +23,8 @@ public class CityService {
 
     @Autowired
     private CityDao dao;
+    @Autowired
+    private PermissionService permissionService;
 
     public Integer insert(CityInsertReq insertReq) {
         dao.insert(CityTransfer.insertReqToEntity(insertReq));

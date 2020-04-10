@@ -1,7 +1,7 @@
 package com.isyscore.robot.core.entity;
 
-import com.isyscore.ibo.neo.StringConverter;
-import com.isyscore.ibo.neo.NeoMap;
+import com.isyscore.isc.neo.StringConverter;
+import com.isyscore.isc.neo.NeoMap;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

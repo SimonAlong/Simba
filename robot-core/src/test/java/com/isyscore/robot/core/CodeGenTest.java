@@ -1,6 +1,6 @@
 package com.isyscore.robot.core;
 
-import com.isyscore.ibo.neo.NeoMap;
+import com.isyscore.isc.neo.NeoMap;
 import org.junit.Test;
 
 /**

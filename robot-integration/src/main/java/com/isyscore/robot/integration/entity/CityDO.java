@@ -1,8 +1,8 @@
 package com.isyscore.robot.integration.entity;
 
 import java.sql.Timestamp;
-import com.isyscore.ibo.neo.annotation.Column;
-import com.isyscore.ibo.neo.annotation.Table;
+import com.isyscore.isc.neo.annotation.Column;
+import com.isyscore.isc.neo.annotation.Table;
 import lombok.experimental.Accessors;
 import lombok.Data;
 

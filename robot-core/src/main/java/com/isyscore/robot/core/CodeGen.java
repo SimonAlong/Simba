@@ -1,10 +1,10 @@
 package com.isyscore.robot.core;
 
-import com.isyscore.ibo.neo.Neo;
-import com.isyscore.ibo.neo.StringConverter;
-import com.isyscore.ibo.neo.codegen.EntityCodeGen;
-import com.isyscore.ibo.neo.db.NeoColumn;
-import com.isyscore.ibo.neo.NeoMap;
+import com.isyscore.isc.neo.Neo;
+import com.isyscore.isc.neo.StringConverter;
+import com.isyscore.isc.neo.codegen.EntityCodeGen;
+import com.isyscore.isc.neo.db.NeoColumn;
+import com.isyscore.isc.neo.NeoMap;
 import com.isyscore.robot.core.entity.*;
 import com.isyscore.robot.core.util.FileUtil;
 import com.isyscore.robot.core.util.FreeMarkerTemplateUtil;

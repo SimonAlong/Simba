@@ -1,7 +1,7 @@
 package ${packagePath}.service;
 
-import com.isyscore.ibo.neo.NeoMap;
-import com.isyscore.ibo.neo.db.NeoPage;
+import com.isyscore.isc.neo.NeoMap;
+import com.isyscore.isc.neo.db.NeoPage;
 import ${packagePath}.dao.${tablePathName}Dao;
 import ${packagePath}.transfer.${tablePathName}Transfer;
 import ${packagePath}.entity.${tablePathName}DO;

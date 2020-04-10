@@ -1,6 +1,6 @@
 package com.isyscore.robot.integration.config;
 
-import com.isyscore.ibo.neo.Neo;
+import com.isyscore.isc.neo.Neo;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

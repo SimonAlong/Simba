@@ -1,7 +1,7 @@
 package ${packagePath}.web.vo;
 
-import com.isyscore.ibo.mikilin.annotation.Check;
-import com.isyscore.ibo.mikilin.annotation.Matcher;
+import com.isyscore.isc.mikilin.annotation.Check;
+import com.isyscore.isc.mikilin.annotation.Matcher;
 import lombok.Data;
 
 /**
