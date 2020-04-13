@@ -9,6 +9,7 @@ import com.isyscore.os.sso.session.UserForm;
 import com.isyscore.robot.integration.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -63,10 +64,10 @@ public class AuthController {
     /**
      * 给OS进行使用对应的菜单结构
      */
-    @GetMapping("getAuthListForOs")
+    @PostMapping("getAuthListForOs")
     public String getAuthList() {
-        try {
-            return FileUtil.readFromResource(this.getClass(), "/router/router/json");
+        try { 
+            return FileUtil.readFromResource(this.getClass(), "/router/router.json");
         } catch (IOException e) {
             return "{}";
         }
