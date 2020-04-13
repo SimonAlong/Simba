@@ -62,20 +62,39 @@
         </rollingPolicy>
     </appender>
 
+    <appender name="API_MONITOR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/api-monitor.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <encoder>
+            <pattern>${PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/api-monitor.log.%d{yyyyMMdd}</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="com.isyscore.boot.web.monitor.MonitorAspect" level="WARN" additivity="false">
+        <appender-ref ref="API_MONITOR"/>
+    </logger>
+
     <logger name="org.springframework" level="INFO" additivity="false"/>
 
     <logger name="com.isyscore.isc.neo" level="INFO" additivity="false">
         <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FILE_INFO" />
+        <appender-ref ref="FILE_INFO"/>
         <appender-ref ref="FILE_WARN"/>
-        <appender-ref ref="FILE_ERROR" />
+        <appender-ref ref="FILE_ERROR"/>
     </logger>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FILE_INFO" />
+        <appender-ref ref="FILE_INFO"/>
         <appender-ref ref="FILE_WARN"/>
-        <appender-ref ref="FILE_ERROR" />
+        <appender-ref ref="FILE_ERROR"/>
     </root>
 
 </configuration>
