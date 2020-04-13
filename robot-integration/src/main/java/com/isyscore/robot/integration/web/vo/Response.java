@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class Response<T> {
 
-    private Integer errCode;
+    private String errCode;
     private String errMsg;
     private T data;
 
@@ -18,7 +18,7 @@ public class Response<T> {
         return response;
     }
 
-    public static <V> Response<V> fail(Integer errCode, String errMsg) {
+    public static <V> Response<V> fail(String errCode, String errMsg) {
         Response<V> response = new Response<>();
         response.setErrCode(errCode);
         response.setErrMsg(errMsg);

@@ -1,4 +1,4 @@
-package com.isyscore.robot.integration.properties;
+package com.isyscore.robot.integration.config;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -4,7 +4,6 @@ import com.isyscore.os.dev.api.http.DefaultIsyscoreClient;
 import com.isyscore.os.dev.api.http.IsyscoreClient;
 import com.isyscore.os.dev.api.permission.service.PermissionService;
 import com.isyscore.os.dev.api.permission.service.impl.PermissionServiceImpl;
-import com.isyscore.robot.integration.properties.PermissionProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

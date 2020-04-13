@@ -48,7 +48,7 @@ public class ControllerAop {
                 BusinessException businessException = (BusinessException) e;
                 return Response.fail(businessException.getErrCode(), businessException.getMessage());
             } else {
-                return Response.fail(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+                return Response.fail(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage());
             }
         }
         return result;
@@ -76,7 +76,7 @@ public class ControllerAop {
                     MkValidators.validate(parameter);
                 } catch (MkCheckException e) {
                     String checkErr = "参数核查异常：" + MkValidators.getErrMsg();
-                    throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR.value(), checkErr);
+                    throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR.toString(), checkErr);
                 }
             }
         } else {
@@ -87,7 +87,7 @@ public class ControllerAop {
                     try {
                         MkValidators.validate(parameter);
                     } catch (MkCheckException e) {
-                        throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "参数核查异常：" + MkValidators.getErrMsg());
+                        throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR.toString(), "参数核查异常：" + MkValidators.getErrMsg());
                     }
                 }
             }
