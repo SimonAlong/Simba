@@ -13,14 +13,14 @@ public abstract class BaseResponseController {
     }
 
     public <T> Response<T> fail(HttpStatus status) {
-        return Response.fail(status.value(), status.getReasonPhrase());
+        return Response.fail(status.toString(), status.getReasonPhrase());
     }
 
     public <T> Response<T> fail(String errMsg) {
-        return Response.fail(HttpStatus.INTERNAL_SERVER_ERROR.value(), errMsg);
+        return Response.fail(HttpStatus.INTERNAL_SERVER_ERROR.toString(), errMsg);
     }
 
-    public <T> Response<T> fail(Integer errCode, String errMsg) {
+    public <T> Response<T> fail(String errCode, String errMsg) {
         return Response.fail(errCode, errMsg);
     }
 }
