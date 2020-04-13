@@ -1,0 +1,45 @@
+{
+  "appCode": "robot",
+  "appName": "脚手架测试系统",
+  "aclsList": [
+    {
+      "code": "firstCode",
+      "name": "一级菜单",
+      "seq": 1,
+      "status": 1,
+      "type": "1",
+      "hasAcl": true,
+      "aclModuleList": [
+        {
+          "code": "secondMenu",
+          "name": "二级菜单",
+          "seq": 1,
+          "status": 1,
+          "url": "OLM-1",
+          "type": "1",
+          "hasAcl": true,
+          "aclModuleList": [
+            {
+              "code": "51",
+              "name": "测试三级",
+              "seq": 1,
+              "status": 1,
+              "url": "test",
+              "type": "1",
+              "hasAcl": true
+            }
+          ]
+        },
+        {
+          "code": "10",
+          "name": "异常次数",
+          "seq": 2,
+          "status": 1,
+          "url": "OLM-1",
+          "type": "2",
+          "hasAcl": true
+        }
+      ]
+    }
+  ]
+}
