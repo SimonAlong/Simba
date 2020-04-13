@@ -13,7 +13,6 @@ import com.isyscore.os.sso.session.UserForm;
 import com.isyscore.robot.integration.web.vo.rsp.UserAuthRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -35,15 +34,15 @@ public class AuthHandleService {
     private static final String SID_STR = "X-Isyscore-Permission-Sid";
     @Autowired
     private PermissionService permissionService;
-    @Value("${debug.sid}")
-    private Integer debugSID;
 
     public UserAuthRsp getAuthOfUser() {
         UserForm currentUser = RequestUserHolder.getCurrentUser();
         IsyscoreHashMap coreMap = new IsyscoreHashMap();
         coreMap.put(SID_STR, currentUser.getToken());
-        if (null != debugSID) {
-            coreMap.put(SID_STR, debugSID);
+
+        String debugSid = System.getenv("debug.sid");
+        if (null != debugSid) {
+            coreMap.put(SID_STR, debugSid);
         }
 
         QueryUserAclRequestBuilder builder = new QueryUserAclRequestBuilder().setAppCode("robot").setHeaders(coreMap);
