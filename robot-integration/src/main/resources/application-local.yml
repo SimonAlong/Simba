@@ -41,8 +41,8 @@ cas:
   # 拦截访问地址规则，多个用英文逗号隔离
   urlPatterns: '*'
   # excludeUrlPatterns： /a/b/*，/c/d/* #不拦截访问地址规则
-  redis: # redis 连接配置
-    host: 127.0.0.1
+  redis:  # redis 连接配置
+    host: 10.30.30.25
     port: 6379
     password: Isysc0re
     database: 7

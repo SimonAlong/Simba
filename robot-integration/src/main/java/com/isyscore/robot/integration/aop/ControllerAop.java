@@ -68,19 +68,11 @@ public class ControllerAop {
             throw new BusinessException(e);
         }
 
-        // 函数添加注解，则核查函数中所有的参数
-        if (currentMethod.isAnnotationPresent(AutoCheck.class)) {
-            Object[] parameters = pjp.getArgs();
-            for (Object parameter : parameters) {
-                try {
-                    MkValidators.validate(parameter);
-                } catch (MkCheckException e) {
-                    String checkErr = "参数核查异常：" + MkValidators.getErrMsg();
-                    throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR.toString(), checkErr);
-                }
-            }
+        if (currentMethod.getDeclaringClass().isAnnotationPresent(AutoCheck.class)) {
+            doValidate(pjp);
+        } else if (currentMethod.isAnnotationPresent(AutoCheck.class)) {
+            doValidate(pjp);
         } else {
-            // 否则：查看修饰的参数是否有
             Parameter[] parameters = currentMethod.getParameters();
             for (Parameter parameter : parameters) {
                 if (parameter.isAnnotationPresent(AutoCheck.class)) {
@@ -90,6 +82,18 @@ public class ControllerAop {
                         throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR.toString(), "参数核查异常：" + MkValidators.getErrMsg());
                     }
                 }
+            }
+        }
+    }
+
+    private void doValidate(ProceedingJoinPoint pjp) {
+        Object[] parameters = pjp.getArgs();
+        for (Object parameter : parameters) {
+            try {
+                MkValidators.validate(parameter);
+            } catch (MkCheckException e) {
+                String checkErr = "参数核查异常：" + MkValidators.getErrMsg();
+                throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR.toString(), checkErr);
             }
         }
     }

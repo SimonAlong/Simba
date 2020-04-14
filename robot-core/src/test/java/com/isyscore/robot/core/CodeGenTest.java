@@ -81,10 +81,10 @@ public class CodeGenTest {
 
         /*============================================================================== 生成代码 ================================*/
         // 生成前端
-//        codeGen.generateFront();
+        codeGen.generateFront();
 
         // 生成后端
-        codeGen.generateBackend();
+//        codeGen.generateBackend();
     }
 
     @Test
