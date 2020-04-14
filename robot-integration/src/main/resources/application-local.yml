@@ -38,9 +38,13 @@ isyscore:
   registerAppUrl: http://192.168.10.248:6031/api/application/register
 
 cas:
-  # 拦截访问地址规则，多个用英文逗号隔离
-  urlPatterns: '*'
-  # excludeUrlPatterns： /a/b/*，/c/d/* #不拦截访问地址规则
+  app-code: robot
+  app-name: 脚手架集成测试系统
+  #拦截访问地址规则，多个用英文逗号隔离
+  urlPatterns: /robot/*
+  #不拦截访问地址规则
+#  excludeUrlPatterns:
+#    - /robot/auth/*
   redis:  # redis 连接配置
     host: 10.30.30.25
     port: 6379

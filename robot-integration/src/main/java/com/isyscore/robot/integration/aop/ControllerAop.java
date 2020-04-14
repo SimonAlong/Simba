@@ -41,7 +41,6 @@ public class ControllerAop {
             validate(pjp);
             result = pjp.proceed();
         } catch (Throwable e) {
-            outInfo.put("timeout", TimeRangeStrUtil.parseTime(System.currentTimeMillis() - start));
             outInfo.put("errMsg", e.getMessage());
             log.error("后端异常：" + outInfo.toString(), e);
             if (e instanceof BusinessException) {
@@ -50,6 +49,8 @@ public class ControllerAop {
             } else {
                 return Response.fail(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage());
             }
+        } finally {
+            outInfo.put("timeout", TimeRangeStrUtil.parseTime(System.currentTimeMillis() - start));
         }
         return result;
     }

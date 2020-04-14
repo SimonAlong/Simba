@@ -2,18 +2,19 @@ package com.isyscore.robot.integration.service;
 
 import com.alibaba.fastjson.JSON;
 import com.isyscore.common.exception.BusinessException;
-import com.isyscore.os.dev.api.domain.AclModuleLevelDomain;
-import com.isyscore.os.dev.api.domain.DataAuthAclDomain;
 import com.isyscore.os.dev.api.permission.model.builder.QueryUserAclRequestBuilder;
+import com.isyscore.os.dev.api.permission.model.domain.AclModuleLevelDomain;
+import com.isyscore.os.dev.api.permission.model.domain.DataAuthAclDomain;
+import com.isyscore.os.dev.api.permission.model.domain.MenuDomain;
 import com.isyscore.os.dev.api.permission.model.result.QueryUserAclResult;
 import com.isyscore.os.dev.api.permission.service.PermissionService;
 import com.isyscore.os.dev.util.IsyscoreHashMap;
 import com.isyscore.os.sso.session.RequestUserHolder;
 import com.isyscore.os.sso.session.UserForm;
+import com.isyscore.robot.integration.constant.ApplicationConstant;
 import com.isyscore.robot.integration.web.vo.rsp.UserAuthRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -28,8 +29,7 @@ import java.util.stream.Collectors;
  * @since 2020/4/13 4:12 PM
  */
 @Slf4j
-@Service
-public class AuthHandleService {
+public abstract class AbstractAuthService {
 
     private static final String SID_STR = "X-Isyscore-Permission-Sid";
     @Autowired
@@ -37,6 +37,9 @@ public class AuthHandleService {
 
     public UserAuthRsp getAuthOfUser() {
         UserForm currentUser = RequestUserHolder.getCurrentUser();
+        if (null == currentUser) {
+            return new UserAuthRsp();
+        }
         IsyscoreHashMap coreMap = new IsyscoreHashMap();
         coreMap.put(SID_STR, currentUser.getToken());
 
@@ -51,8 +54,7 @@ public class AuthHandleService {
             DataAuthAclDomain dataAuthAclDomain = JSON.parseObject(result.getResponse().getBody(), DataAuthAclDomain.class);
             if (null != dataAuthAclDomain) {
                 UserAuthRsp rsp = new UserAuthRsp();
-                rsp.setMenuAuthList(getCodeList(dataAuthAclDomain, 0));
-                rsp.setResourceAuthList(getCodeList(dataAuthAclDomain, 1));
+                rsp.setAuthCodeList(getCodeList(dataAuthAclDomain));
                 return rsp;
             } else {
                 log.error("数据解析异常：" + JSON.toJSONString(result.getResponse()));
@@ -66,40 +68,51 @@ public class AuthHandleService {
 
     /**
      * 获取对应的code集合
-     *
-     * @param menuOrResource 0：menu, 1：菜单
      */
-    private List<String> getCodeList(DataAuthAclDomain dataAuthAclDomain, Integer menuOrResource) {
+    private List<String> getCodeList(DataAuthAclDomain dataAuthAclDomain) {
         List<String> menuCodeList = new ArrayList<>();
         if (null == dataAuthAclDomain) {
             return menuCodeList;
         }
 
-        menuCodeList.addAll(doGetCodeList(dataAuthAclDomain.getAclsList(), menuOrResource));
+        menuCodeList.addAll(doGetCodeList(dataAuthAclDomain.getAclsList()));
         return menuCodeList;
     }
 
-    private List<String> doGetCodeList(List<AclModuleLevelDomain> aclList, Integer menuOrResource) {
+    private List<String> doGetCodeList(List<AclModuleLevelDomain> aclList) {
         if (CollectionUtils.isEmpty(aclList)) {
             return Collections.emptyList();
         }
 
         return aclList.stream().filter(e -> e.getStatus() == 1).flatMap(e -> {
             List<String> dataList = new ArrayList<>();
-            if(0 == menuOrResource){
-                // 1：表示当前code为菜单
-                if (e.getType() == 1) {
-                    dataList.add(e.getCode());
-                }
-            }else{
-                // 非1：表示当前code为非菜单类型的资源
-                if (e.getType() != 1) {
-                    dataList.add(e.getCode());
-                }
-            }
-
-            dataList.addAll(doGetCodeList(e.getAclModuleList(), menuOrResource));
+            dataList.add(e.getCode());
+            dataList.addAll(doGetCodeList(e.getAclModuleList()));
             return dataList.stream();
         }).collect(Collectors.toList());
     }
+
+    /**
+     * 获取前端菜单和资源的权限配置
+     * <p>
+     * 由于操作系统的权限部分暂时不支持菜单权限方面的配置，因此这里需要用户自己进行配置下
+     */
+    public List<MenuDomain> getAuthConfigOfMenu() {
+        List<MenuDomain> authList = new ArrayList<>();
+        MenuDomain auth = new MenuDomain();
+        auth.setAppCode(ApplicationConstant.APP_CODE);
+        auth.setAppName(ApplicationConstant.APP_NAME);
+
+        doAddAuth(auth);
+
+        authList.add(auth);
+        return authList;
+    }
+
+    /**
+     * 需要自己添加
+     *
+     * @param dataAuthAclDomain 前端权限
+     */
+    protected abstract void doAddAuth(MenuDomain dataAuthAclDomain);
 }

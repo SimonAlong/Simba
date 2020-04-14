@@ -14,11 +14,7 @@ import java.util.List;
 public class UserAuthRsp {
 
     /**
-     * 菜单权限对应的code集合
+     * 权限code集合
      */
-    private List<String> menuAuthList;
-    /**
-     * 资源（按钮或者链接等等操作资源）权限菜单对应的code集合
-     */
-    private List<String> resourceAuthList;
+    private List<String> authCodeList;
 }

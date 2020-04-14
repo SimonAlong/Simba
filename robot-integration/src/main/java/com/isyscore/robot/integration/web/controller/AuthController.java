@@ -1,15 +1,13 @@
 package com.isyscore.robot.integration.web.controller;
 
-import com.isyscore.robot.integration.service.AuthHandleService;
-import com.isyscore.robot.integration.util.FileUtil;
+import com.alibaba.fastjson.JSON;
+import com.isyscore.robot.integration.service.AbstractAuthService;
 import com.isyscore.robot.integration.web.vo.rsp.UserAuthRsp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.IOException;
 
 /**
  * @author shizi
@@ -20,18 +18,14 @@ import java.io.IOException;
 public class AuthController {
 
     @Autowired
-    private AuthHandleService authHandleService;
+    private AbstractAuthService authHandleService;
 
     /**
      * 给OS进行使用对应的菜单结构
      */
     @PostMapping("getAuthListForOs")
     public String getAuthList() {
-        try {
-            return FileUtil.readFromResource(this.getClass(), "/router/router.json");
-        } catch (IOException e) {
-            return null;
-        }
+        return JSON.toJSONString(authHandleService.getAuthConfigOfMenu());
     }
 
     /**
