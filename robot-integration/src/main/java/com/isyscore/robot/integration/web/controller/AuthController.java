@@ -2,6 +2,7 @@ package com.isyscore.robot.integration.web.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.isyscore.robot.integration.service.AbstractAuthService;
+import com.isyscore.robot.integration.web.vo.Response;
 import com.isyscore.robot.integration.web.vo.rsp.UserAuthRsp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RequestMapping("robot/auth")
 @RestController
-public class AuthController {
+public class AuthController extends BaseResponseController{
 
     @Autowired
     private AbstractAuthService authHandleService;
@@ -24,8 +25,8 @@ public class AuthController {
      * 给OS进行使用对应的菜单结构
      */
     @PostMapping("getAuthListForOs")
-    public String getAuthList() {
-        return JSON.toJSONString(authHandleService.getAuthConfigOfMenu());
+    public Response<String> getAuthList() {
+        return success(JSON.toJSONString(authHandleService.getAuthConfigOfMenu()));
     }
 
     /**
@@ -34,7 +35,7 @@ public class AuthController {
      * 用于在用户请求某个页面的时候，将对应的权限返回给前端
      */
     @GetMapping("getAuthOfUser")
-    public UserAuthRsp getAuthOfUser() {
-        return authHandleService.getAuthOfUser();
+    public Response<UserAuthRsp> getAuthOfUser() {
+        return success(authHandleService.getAuthOfUser());
     }
 }
