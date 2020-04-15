@@ -43,11 +43,6 @@ public abstract class AbstractAuthService {
         IsyscoreHashMap coreMap = new IsyscoreHashMap();
         coreMap.put(SID_STR, currentUser.getToken());
 
-        String debugSid = System.getenv("debug.sid");
-        if (null != debugSid) {
-            coreMap.put(SID_STR, debugSid);
-        }
-
         QueryUserAclRequestBuilder builder = new QueryUserAclRequestBuilder().setAppCode("robot").setHeaders(coreMap);
         QueryUserAclResult result = permissionService.queryUserAcl(builder);
         if (result.isSuccess()) {
@@ -61,7 +56,7 @@ public abstract class AbstractAuthService {
                 throw new BusinessException("数据解析异常");
             }
         } else {
-            log.error("获取用户权限异常：" + JSON.toJSONString(result.getResponse()));
+            log.error("获取用户权限异常：" + result.getResponse());
             throw new BusinessException("获取数据异常");
         }
     }

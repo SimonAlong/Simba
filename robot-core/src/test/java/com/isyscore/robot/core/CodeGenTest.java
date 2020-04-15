@@ -84,7 +84,7 @@ public class CodeGenTest {
         codeGen.generateFront();
 
         // 生成后端
-//        codeGen.generateBackend();
+        codeGen.generateBackend();
     }
 
     @Test
