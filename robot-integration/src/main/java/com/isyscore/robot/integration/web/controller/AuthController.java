@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author shizi
- * @since 2020/4/10 3:44 PM
+ * @author robot
  */
 @RequestMapping("robot/auth")
 @RestController
@@ -32,8 +31,8 @@ public class AuthController extends BaseResponseController {
     /**
      * 获取用户当前的权限
      * <p>
-     * 用于在用户请求某个页面的时候，将对应的权限返回给前端
-     */
+    * 用于在用户请求某个页面的时候，将对应的权限返回给前端
+    */
     @GetMapping("getAuthOfUser")
     public Response<UserAuthRsp> getAuthOfUser() {
         return success(authHandleService.getAuthOfUser());

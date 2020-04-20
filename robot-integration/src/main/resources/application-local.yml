@@ -1,5 +1,5 @@
 server:
-  port: 8094
+  port: 8084
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
@@ -16,6 +16,10 @@ spring:
       connection-test-query: SELECT 1
       maximum-pool-size: 10
       minimum-idle: 10
+log:
+  home: /home/jcun/logs
+  app: jcun
+  level: INFO
 
 isyscore:
   # API 网关地址：服务网关地址配置, IP 一般为本地 OS 实例部署所在的服务器 网络 IP

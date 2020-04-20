@@ -726,26 +726,31 @@ public class CodeGen {
     }
 
     private void generateAop(NeoMap dataMap) {
-        // ControllerAop.java
-        writeFile(dataMap, backendCodePath + "aop/ControllerAop.java", BACKEND_PRE + "controllerAop.ftl");
-
         // AutoCheck.java
-        writeFile(dataMap, backendCodePath + "aop/AutoCheck.java", BACKEND_PRE + "autoCheck.ftl");
+        writeFile(dataMap, backendCodePath + "aop/AutoCheck.java", BACKEND_PRE + "aop/AutoCheck.ftl");
+
+        // ControllerAop.java
+        writeFile(dataMap, backendCodePath + "aop/ControllerAop.java", BACKEND_PRE + "aop/ControllerAop.ftl");
     }
 
     private void generateConfig(NeoMap dataMap) {
         // DbConfiguration.java
-        writeFile(dataMap, backendCodePath + "config/DbConfiguration.java", BACKEND_PRE + "dbConfiguration.ftl");
+        writeFile(dataMap, backendCodePath + "config/DbConfiguration.java", BACKEND_PRE + "config/DbConfiguration.ftl");
+    }
+
+    private void generateConstant(NeoMap dataMap) {
+        // AppConstant.java
+        writeFile(dataMap, backendCodePath + "constant/AppConstant.java", BACKEND_PRE + "constant/AppConstant.ftl");
     }
 
     private void generateDao(NeoMap dataMap, String tableNameAfterPre) {
         // XxxDao.java
-        writeFile(dataMap, backendCodePath + "dao/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "Dao.java", BACKEND_PRE + "dao.ftl");
+        writeFile(dataMap, backendCodePath + "dao/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "Dao.java", BACKEND_PRE + "dao/Dao.ftl");
     }
 
     private void generateException(NeoMap dataMap) {
         // BusinessException.java
-        writeFile(dataMap, backendCodePath + "exception/BusinessException.java", BACKEND_PRE + "exception.ftl");
+        writeFile(dataMap, backendCodePath + "exception/BusinessException.java", BACKEND_PRE + "exception/BusinessException.ftl");
     }
 
     private void generateEntity() {
@@ -770,60 +775,53 @@ public class CodeGen {
     }
 
     private void generateService(NeoMap dataMap, String tableNameAfterPre) {
+        // AbstractAuthService.java
+        writeFile(dataMap, backendCodePath + "service/AbstractAuthService.java", BACKEND_PRE + "service/AbstractAuthService.ftl");
+
         // XxxService.java
-        writeFile(dataMap, backendCodePath + "service/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "Service.java", BACKEND_PRE + "service.ftl");
+        writeFile(dataMap, backendCodePath + "service/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "Service.java", BACKEND_PRE + "service/Service.ftl");
+
+        // DefaultAuthService.java
+        // todo
+        writeFile(dataMap, backendCodePath + "service/DefaultAuthService.java", BACKEND_PRE + "service/DefaultAuthService.ftl");
     }
 
     private void generateTransfer(NeoMap dataMap, String tableNameAfterPre) {
         // XxxTransfer
-        writeFile(dataMap, backendCodePath + "transfer/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "Transfer.java", BACKEND_PRE + "transfer.ftl");
+        writeFile(dataMap, backendCodePath + "transfer/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "Transfer.java", BACKEND_PRE + "transfer/Transfer.ftl");
     }
 
     private void generateWeb(NeoMap dataMap, String tableNameAfterPre) {
-        // baseResponseController
-        writeBaseResponseController(dataMap);
+        String tablePathName = StringConverter.underLineToBigCamel(tableNameAfterPre);
+        // BaseResponseController
+        writeFile(dataMap, backendCodePath + "web/controller/BaseResponseController.java", BACKEND_PRE + "web/controller/BaseResponseController.ftl");
         // XxxController
-        writeFile(dataMap, backendCodePath + "web/controller/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "Controller.java", BACKEND_PRE + "controller.ftl");
-        // loginController
-        writeFile(dataMap, backendCodePath + "web/controller/" + "LoginController.java", BACKEND_PRE + "loginController.ftl");
+        writeFile(dataMap, backendCodePath + "web/controller/" + tablePathName + "Controller.java", BACKEND_PRE + "web/controller/Controller.ftl");
+        // AuthController
+        writeFile(dataMap, backendCodePath + "web/controller/AuthController.java", BACKEND_PRE + "web/controller/AuthController.ftl");
 
         // vo: req
-        writeFile(dataMap, backendCodePath + "web/vo/req/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "InsertReq.java", BACKEND_PRE + "insertReq.ftl");
-        writeFile(dataMap, backendCodePath + "web/vo/req/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "QueryReq.java", BACKEND_PRE + "queryReq.ftl");
-        writeFile(dataMap, backendCodePath + "web/vo/req/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "UpdateReq.java", BACKEND_PRE + "updateReq.ftl");
-        // vo: loginReq
-        writeFile(dataMap, backendCodePath + "web/vo/req/LoginReq.java", BACKEND_PRE + "loginReq.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/req/" + tablePathName + "InsertReq.java", BACKEND_PRE + "web/vo/req/InsertReq.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/req/" + tablePathName + "QueryReq.java", BACKEND_PRE + "web/vo/req/QueryReq.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/req/" + tablePathName + "UpdateReq.java", BACKEND_PRE + "web/vo/req/UpdateReq.ftl");
 
         // vo: rsp
-        writeFile(dataMap, backendCodePath + "web/vo/rsp/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "QueryRsp.java", BACKEND_PRE + "queryRsp.ftl");
-        // vo: loginRsp
-        writeFile(dataMap, backendCodePath + "web/vo/rsp/LoginRsp.java", BACKEND_PRE + "loginRsp.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/rsp/" + tablePathName + "QueryRsp.java", BACKEND_PRE + "web/vo/rsp/QueryRsp.ftl");
+        // vo: UserAuthRsp
+        writeFile(dataMap, backendCodePath + "web/vo/rsp/UserAuthRsp.java", BACKEND_PRE + "web/vo/rsp/UserAuthRsp.ftl");
 
         // vo: Pager.java
-        writeFile(dataMap, backendCodePath + "web/vo/Pager.java", BACKEND_PRE + "pager.ftl");
+        writeFile(dataMap, backendCodePath + "web/vo/Pager.java", BACKEND_PRE + "web/vo/Pager.ftl");
+        // vo: PagerRsp.java
+        writeFile(dataMap, backendCodePath + "web/vo/PagerRsp.java", BACKEND_PRE + "web/vo/PagerRsp.ftl");
 
         // vo: Response.java
-        writeResponse(dataMap);
-    }
-
-    private void writeResponse(NeoMap dataMap) {
-        String adminConstantFullPath = backendCodePath + "constants/AdminConstant.java";
-        if (!FileUtil.exist(adminConstantFullPath)) {
-            writeFile(dataMap, backendCodePath + "web/vo/Response.java", BACKEND_PRE + "response.ftl");
-        }
-    }
-
-    private void writeBaseResponseController(NeoMap dataMap) {
-        String adminConstantFullPath = backendCodePath + "web/controller/BaseResponseController.java";
-        if (!FileUtil.exist(adminConstantFullPath)) {
-            // baseResponseController
-            writeFile(dataMap, adminConstantFullPath, BACKEND_PRE + "baseResponseController.ftl");
-        }
+        writeFile(dataMap, backendCodePath + "web/vo/Response.java", BACKEND_PRE + "web/vo/Response.ftl");
     }
 
     private void generateApplication(NeoMap dataMap) {
         // XxxApplication.java
-        writeFile(dataMap, backendCodePath + StringConverter.underLineToBigCamel(appName) + "Application.java", BACKEND_PRE + "applicationStart.ftl");
+        writeFile(dataMap, backendCodePath + StringConverter.underLineToBigCamel(appName) + "Application.java", BACKEND_PRE + "Application.ftl");
     }
 
     private void generateResources(NeoMap dataMap) {
@@ -858,6 +856,7 @@ public class CodeGen {
 
         generateAop(dataMap);
         generateConfig(dataMap);
+        generateConstant(dataMap);
         generateDao(dataMap, tableNameAfterPre);
         generateException(dataMap);
         generateEntity();

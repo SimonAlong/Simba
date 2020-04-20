@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 public abstract class BaseResponseController {
 
     public <T> Response<T> success(T body) {
-        return Response.success(body);
+    return Response.success(body);
     }
 
     public <T> Response<T> fail(HttpStatus status) {

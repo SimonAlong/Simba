@@ -26,8 +26,7 @@ import java.util.stream.Collectors;
 /**
  * 用户权限给前端的处理
  *
- * @author shizi
- * @since 2020/4/13 4:12 PM
+ * @author robot
  */
 @Slf4j
 public abstract class AbstractAuthService {
@@ -81,7 +80,7 @@ public abstract class AbstractAuthService {
         }
 
         return aclList.stream().filter(AclModuleLevelDomain::getHasAcl).flatMap(e -> {
-            List<String> dataList = new ArrayList<>();
+        List<String> dataList = new ArrayList<>();
             dataList.add(e.getCode());
             dataList.addAll(doGetCodeList(e.getAclModuleList()));
             dataList.addAll(e.getAclList().stream().filter(AclDomain::getHasAcl).map(AclDomain::getCode).collect(Collectors.toList()));

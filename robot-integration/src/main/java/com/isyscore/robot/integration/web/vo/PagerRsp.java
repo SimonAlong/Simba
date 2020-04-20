@@ -3,18 +3,17 @@ package com.isyscore.robot.integration.web.vo;
 import lombok.Data;
 
 /**
- * @author shizi
- * @since 2020/4/20 2:55 PM
+ * @author robot
  */
 @Data
 public class PagerRsp<T> {
 
     /**
-     * 分页数据
-     */
+    * 分页数据
+    */
     private T dataList;
     /**
-     * 总个数
-     */
+    * 总个数
+    */
     private Integer totalNum;
 }

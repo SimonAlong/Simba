@@ -39,14 +39,14 @@ public class CityService {
     }
 
     public PagerRsp<List<CityQueryRsp>> pageList(Pager<CityQueryReq> pageReq) {
-        PagerRsp<List<CityQueryRsp>> pagerRsp = new PagerRsp<>();
+    PagerRsp<List<CityQueryRsp>> pagerRsp = new PagerRsp<>();
 
         NeoMap searchMap = NeoMap.from(pageReq.getParam(), NeoMap.NamingChg.UNDERLINE);
         NeoPage page = NeoPage.of(pageReq.getPageNo(), pageReq.getPageSize());
 
-        List<CityQueryRsp> cityQueryRspList = dao.page(CityDO.class, searchMap, page).stream().map(CityTransfer::entityToQueryRsp).collect(Collectors.toList());
+        List<CityQueryRsp> queryRspList = dao.page(CityDO.class, searchMap, page).stream().map(CityTransfer::entityToQueryRsp).collect(Collectors.toList());
 
-        pagerRsp.setDataList(cityQueryRspList);
+        pagerRsp.setDataList(queryRspList);
         pagerRsp.setTotalNum(dao.count(pageReq.getParam()));
         return pagerRsp;
     }
