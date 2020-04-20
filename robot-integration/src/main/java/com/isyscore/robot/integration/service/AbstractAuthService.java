@@ -3,6 +3,7 @@ package com.isyscore.robot.integration.service;
 import com.alibaba.fastjson.JSON;
 import com.isyscore.common.exception.BusinessException;
 import com.isyscore.os.dev.api.permission.model.builder.QueryUserAclRequestBuilder;
+import com.isyscore.os.dev.api.permission.model.domain.AclDomain;
 import com.isyscore.os.dev.api.permission.model.domain.AclModuleLevelDomain;
 import com.isyscore.os.dev.api.permission.model.domain.DataAuthAclDomain;
 import com.isyscore.os.dev.api.permission.model.domain.MenuDomain;
@@ -79,10 +80,11 @@ public abstract class AbstractAuthService {
             return Collections.emptyList();
         }
 
-        return aclList.stream().filter(e -> e.getStatus() == 1).flatMap(e -> {
+        return aclList.stream().filter(AclModuleLevelDomain::getHasAcl).flatMap(e -> {
             List<String> dataList = new ArrayList<>();
             dataList.add(e.getCode());
             dataList.addAll(doGetCodeList(e.getAclModuleList()));
+            dataList.addAll(e.getAclList().stream().filter(AclDomain::getHasAcl).map(AclDomain::getCode).collect(Collectors.toList()));
             return dataList.stream();
         }).collect(Collectors.toList());
     }

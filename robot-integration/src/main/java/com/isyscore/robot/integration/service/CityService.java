@@ -41,7 +41,7 @@ public class CityService {
     }
 
     public List<CityQueryRsp> pageList(Pager<CityQueryReq> pageReq) {
-        return dao.page(NeoMap.from(pageReq.getParam(), NeoMap.NamingChg.UNDERLINE), NeoPage.of(pageReq.getPageIndex(), pageReq.getPageSize()))
+        return dao.page(NeoMap.from(pageReq.getParam(), NeoMap.NamingChg.UNDERLINE), NeoPage.of(pageReq.getPageNo(), pageReq.getPageSize()))
             .stream()
             .map(data -> data.as(CityDO.class))
             .map(CityTransfer::entityToQueryRsp)

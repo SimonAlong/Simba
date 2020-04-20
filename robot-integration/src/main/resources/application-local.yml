@@ -1,5 +1,5 @@
 server:
-  port: 8084
+  port: 8094
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
@@ -43,8 +43,8 @@ cas:
   #拦截访问地址规则，多个用英文逗号隔离
   urlPatterns: /robot/*
   #不拦截访问地址规则
-#  excludeUrlPatterns:
-#    - /robot/auth/*
+  excludeUrlPatterns:
+    - /robot/auth/*
   redis:  # redis 连接配置
     host: 10.30.30.25
     port: 6379

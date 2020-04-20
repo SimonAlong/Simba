@@ -51,7 +51,7 @@
         <dependency>
             <groupId>com.isyscore.os</groupId>
             <artifactId>isc-sso-support</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.2-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

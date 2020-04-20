@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RequestMapping("robot/auth")
 @RestController
-public class AuthController extends BaseResponseController{
+public class AuthController extends BaseResponseController {
 
     @Autowired
     private AbstractAuthService authHandleService;
@@ -25,8 +25,8 @@ public class AuthController extends BaseResponseController{
      * 给OS进行使用对应的菜单结构
      */
     @PostMapping("getAuthListForOs")
-    public Response<String> getAuthList() {
-        return success(JSON.toJSONString(authHandleService.getAuthConfigOfMenu()));
+    public String getAuthList() {
+        return JSON.toJSONString(authHandleService.getAuthConfigOfMenu());
     }
 
     /**
