@@ -2,7 +2,6 @@ package com.isyscore.robot.integration.dao;
 
 import com.isyscore.isc.neo.Neo;
 import com.isyscore.isc.neo.core.AbstractBizService;
-import com.isyscore.isc.neo.core.DbSync;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +15,7 @@ public class CityDao extends AbstractBizService {
     private Neo db;
 
     @Override
-    public DbSync getDb() {
+    public Neo getDb() {
         return db;
     }
 

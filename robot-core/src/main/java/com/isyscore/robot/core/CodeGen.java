@@ -797,8 +797,6 @@ public class CodeGen {
 
         // vo: Pager.java
         writeFile(dataMap, backendCodePath + "web/vo/Pager.java", BACKEND_PRE + "pager.ftl");
-        // vo: AccountInfo.java
-        writeFile(dataMap, backendCodePath + "web/vo/AccountInfo.java", BACKEND_PRE + "accountInfo.ftl");
 
         // vo: Response.java
         writeResponse(dataMap);
