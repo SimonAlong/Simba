@@ -6,6 +6,7 @@ import com.isyscore.robot.integration.dao.CityDao;
 import com.isyscore.robot.integration.transfer.CityTransfer;
 import com.isyscore.robot.integration.entity.CityDO;
 import com.isyscore.robot.integration.web.vo.Pager;
+import com.isyscore.robot.integration.web.vo.PagerRsp;
 import com.isyscore.robot.integration.web.vo.req.*;
 import com.isyscore.robot.integration.web.vo.rsp.CityQueryRsp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,15 +38,17 @@ public class CityService {
         return 1;
     }
 
-    public List<CityQueryRsp> pageList(Pager<CityQueryReq> pageReq) {
-        return dao.page(NeoMap.from(pageReq.getParam(), NeoMap.NamingChg.UNDERLINE), NeoPage.of(pageReq.getPageNo(), pageReq.getPageSize()))
+    public PagerRsp<List<CityQueryRsp>> pageList(Pager<CityQueryReq> pageReq) {
+        PagerRsp<List<CityQueryRsp>> pagerRsp = new PagerRsp<>();
+
+        List<CityQueryRsp> cityQueryRspList = dao.page(NeoMap.from(pageReq.getParam(), NeoMap.NamingChg.UNDERLINE), NeoPage.of(pageReq.getPageNo(), pageReq.getPageSize()))
             .stream()
             .map(data -> data.as(CityDO.class))
             .map(CityTransfer::entityToQueryRsp)
             .collect(Collectors.toList());
-    }
 
-    public Integer count(CityQueryReq pageReq) {
-        return dao.count(pageReq);
+        pagerRsp.setDataList(cityQueryRspList);
+        pagerRsp.setTotalNum(dao.count(pageReq.getParam()));
+        return pagerRsp;
     }
 }

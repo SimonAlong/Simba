@@ -3,6 +3,7 @@ package com.isyscore.robot.integration.web.controller;
 import com.isyscore.robot.integration.aop.AutoCheck;
 import com.isyscore.robot.integration.service.CityService;
 import com.isyscore.robot.integration.web.vo.Pager;
+import com.isyscore.robot.integration.web.vo.PagerRsp;
 import com.isyscore.robot.integration.web.vo.Response;
 import com.isyscore.robot.integration.web.vo.req.*;
 import com.isyscore.robot.integration.web.vo.rsp.CityQueryRsp;
@@ -37,13 +38,8 @@ public class CityController extends BaseResponseController {
         return success(cityservice.update(updateReq));
     }
 
-    @PostMapping("pageList")
-    public Response<List<CityQueryRsp>> pageList(@RequestBody Pager<CityQueryReq> pageReq) {
+    @PostMapping("getPage")
+    public Response<PagerRsp<List<CityQueryRsp>>> pageList(@RequestBody Pager<CityQueryReq> pageReq) {
         return success(cityservice.pageList(pageReq));
-    }
-
-    @PostMapping("count")
-    public Response<Integer> count(@RequestBody CityQueryReq countReq) {
-        return success(cityservice.count(countReq));
     }
 }
