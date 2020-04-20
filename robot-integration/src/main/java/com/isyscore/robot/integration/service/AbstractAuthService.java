@@ -12,7 +12,7 @@ import com.isyscore.os.dev.api.permission.service.PermissionService;
 import com.isyscore.os.dev.util.IsyscoreHashMap;
 import com.isyscore.os.sso.session.RequestUserHolder;
 import com.isyscore.os.sso.session.UserForm;
-import com.isyscore.robot.integration.constant.ApplicationConstant;
+import com.isyscore.robot.integration.constant.AppConstant;
 import com.isyscore.robot.integration.web.vo.rsp.UserAuthRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,8 +97,8 @@ public abstract class AbstractAuthService {
     public List<MenuDomain> getAuthConfigOfMenu() {
         List<MenuDomain> authList = new ArrayList<>();
         MenuDomain auth = new MenuDomain();
-        auth.setAppCode(ApplicationConstant.APP_CODE);
-        auth.setAppName(ApplicationConstant.APP_NAME);
+        auth.setAppCode(AppConstant.APP_CODE);
+        auth.setAppName(AppConstant.APP_NAME);
 
         doAddAuth(auth);
 
