@@ -1,8 +1,7 @@
 package com.isyscore.robot.integration.constant;
 
 /**
- * @author shizi
- * @since 2020/4/14 3:31 PM
+ * @author robot
  */
 public interface AppConstant {
 

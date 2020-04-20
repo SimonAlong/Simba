@@ -17,6 +17,7 @@ public class CodeGenTest {
         /*============================================================================ 公共配置（必填） =======================*/
         // 设置应用名字
         codeGen.setAppName("jcun");
+        codeGen.setAppNameCn("蒋村街道项目");
         // 设置数据库信息
         codeGen.setDbUrl("jdbc:mysql://localhost:3306/jcun?useUnicode=true&characterEncoding=UTF8&autoReconnect=true&useSSL=false");
         codeGen.setDbUserName("neo_test");

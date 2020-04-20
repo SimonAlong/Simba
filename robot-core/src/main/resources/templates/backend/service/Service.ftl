@@ -6,6 +6,7 @@ import ${packagePath}.dao.${tablePathName}Dao;
 import ${packagePath}.transfer.${tablePathName}Transfer;
 import ${packagePath}.entity.${tablePathName}DO;
 import ${packagePath}.web.vo.Pager;
+import ${packagePath}.web.vo.PagerRsp;
 import ${packagePath}.web.vo.req.*;
 import ${packagePath}.web.vo.rsp.${tablePathName}QueryRsp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,15 +38,16 @@ public class ${tablePathName}Service {
         return 1;
     }
 
-    public List<${tablePathName}QueryRsp> pageList(Pager<${tablePathName}QueryReq> pageReq) {
-        return dao.page(NeoMap.from(pageReq.getParam(), NeoMap.NamingChg.UNDERLINE), NeoPage.of(pageReq.getPageNo(), pageReq.getPageSize()))
-            .stream()
-            .map(data -> data.as(${tablePathName}DO.class))
-            .map(${tablePathName}Transfer::entityToQueryRsp)
-            .collect(Collectors.toList());
-    }
+    public PagerRsp<List<${tablePathName}QueryRsp>> pageList(Pager<${tablePathName}QueryReq> pageReq) {
+    PagerRsp<List<${tablePathName}QueryRsp>> pagerRsp = new PagerRsp<>();
 
-    public Integer count(${tablePathName}QueryReq pageReq) {
-        return dao.count(pageReq);
+        NeoMap searchMap = NeoMap.from(pageReq.getParam(), NeoMap.NamingChg.UNDERLINE);
+        NeoPage page = NeoPage.of(pageReq.getPageNo(), pageReq.getPageSize());
+
+        List<${tablePathName}QueryRsp> queryRspList = dao.page(${tablePathName}DO.class, searchMap, page).stream().map(${tablePathName}Transfer::entityToQueryRsp).collect(Collectors.toList());
+
+        pagerRsp.setDataList(queryRspList);
+        pagerRsp.setTotalNum(dao.count(pageReq.getParam()));
+        return pagerRsp;
     }
 }

@@ -40,6 +40,10 @@ public class CodeGen {
      */
     private String appName;
     /**
+     * 应用名英文
+     */
+    private String appNameCn;
+    /**
      * 不需要生成的表
      */
     private String dbUrl;
@@ -976,6 +980,7 @@ public class CodeGen {
         dataMap.put("tableName", tableName);
         dataMap.put("backendPort", backendPort);
         dataMap.put("appName", appName);
+        dataMap.put("appNameCn", appNameCn);
         dataMap.put("AppName", StringConverter.underLineToBigCamel(appName));
         String tableNameAfterPre = excludePreFix();
         dataMap.put("tablePathName", StringConverter.underLineToBigCamel(tableNameAfterPre));

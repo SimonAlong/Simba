@@ -2,8 +2,6 @@ package com.isyscore.robot.integration.web.vo;
 
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * @author shizi
  * @since 2020/4/20 2:55 PM
