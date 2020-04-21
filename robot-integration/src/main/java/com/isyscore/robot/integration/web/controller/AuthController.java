@@ -1,7 +1,7 @@
 package com.isyscore.robot.integration.web.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.isyscore.robot.integration.service.AbstractAuthService;
+import com.isyscore.robot.integration.service.auth.AuthService;
 import com.isyscore.robot.integration.web.vo.Response;
 import com.isyscore.robot.integration.web.vo.rsp.UserAuthRsp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController extends BaseResponseController {
 
     @Autowired
-    private AbstractAuthService authHandleService;
+    private AuthService authHandleService;
 
     /**
      * 给OS进行使用对应的菜单结构
