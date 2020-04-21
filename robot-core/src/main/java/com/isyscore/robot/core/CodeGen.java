@@ -745,7 +745,7 @@ public class CodeGen {
 
     private void generateDao(NeoMap dataMap, String tableNameAfterPre) {
         // XxxDao.java
-        writeFile(dataMap, backendCodePath + "dao/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "Dao.java", BACKEND_PRE + "dao/Dao.ftl");
+        writeFile(dataMap, backendCodePath + "dao/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "Dao.java", BACKEND_PRE + "dao/XxDao.ftl");
     }
 
     private void generateException(NeoMap dataMap) {
@@ -775,15 +775,17 @@ public class CodeGen {
     }
 
     private void generateService(NeoMap dataMap, String tableNameAfterPre) {
-        // AbstractAuthService.java
-        writeFile(dataMap, backendCodePath + "service/AbstractAuthService.java", BACKEND_PRE + "service/AbstractAuthService.ftl");
+        String tablePathName = StringConverter.underLineToBigCamel(tableNameAfterPre);
+        // XxService.java
+        writeFile(dataMap, backendCodePath + "service/" + tablePathName + "Service.java", BACKEND_PRE + "service/XxService.ftl");
 
-        // XxxService.java
-        writeFile(dataMap, backendCodePath + "service/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "Service.java", BACKEND_PRE + "service/Service.ftl");
-
-        // DefaultAuthService.java
-        // todo
-        writeFile(dataMap, backendCodePath + "service/DefaultAuthService.java", BACKEND_PRE + "service/DefaultAuthService.ftl");
+        // auth
+        // AuthService.ftl
+        writeFile(dataMap, backendCodePath + "service/auth/AuthService.java", BACKEND_PRE + "service/auth/AuthService.ftl");
+        // MenuAuthHandler.ftl
+        writeFile(dataMap, backendCodePath + "service/auth/MenuAuthHandler.java", BACKEND_PRE + "service/auth/MenuAuthHandler.ftl");
+        // XxMenuAuthHandler.ftl
+        writeFile(dataMap, backendCodePath + "service/auth/" + tablePathName + "MenuAuthHandler.java", BACKEND_PRE + "service/auth/XxMenuAuthHandler.ftl");
     }
 
     private void generateTransfer(NeoMap dataMap, String tableNameAfterPre) {
@@ -796,7 +798,7 @@ public class CodeGen {
         // BaseResponseController
         writeFile(dataMap, backendCodePath + "web/controller/BaseResponseController.java", BACKEND_PRE + "web/controller/BaseResponseController.ftl");
         // XxxController
-        writeFile(dataMap, backendCodePath + "web/controller/" + tablePathName + "Controller.java", BACKEND_PRE + "web/controller/Controller.ftl");
+        writeFile(dataMap, backendCodePath + "web/controller/" + tablePathName + "Controller.java", BACKEND_PRE + "web/controller/XxController.ftl");
         // AuthController
         writeFile(dataMap, backendCodePath + "web/controller/AuthController.java", BACKEND_PRE + "web/controller/AuthController.ftl");
 
@@ -995,12 +997,14 @@ public class CodeGen {
 
     private void configBackendBone(NeoMap dataMap) {
         dataMap.put("packagePath", packagePath);
+        dataMap.put("tableDesc", tableDesc);
         dataMap.put("user", System.getProperty("user.name"));
         dataMap.put("time", new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
     }
 
     private void configFrontBone(NeoMap dataMap) {
         dataMap.put("expandExist", 0);
+        dataMap.put("tableDesc", tableDesc);
         dataMap.put("tableInfo", TableInfo.of(StringConverter.underLineToSmallCamel(excludePreFix()), tableDesc));
     }
 

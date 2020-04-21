@@ -16,6 +16,10 @@ spring:
       connection-test-query: SELECT 1
       maximum-pool-size: 10
       minimum-idle: 10
+log:
+  home: /home/robot/logs
+  app: robot
+  level: INFO
 isyscore:
   # API 网关地址：服务网关地址配置, IP 一般为本地 OS 实例部署所在的服务器 网络 IP
   serverHost: http://10.30.30.25:9010/isc-api-gateway
@@ -38,7 +42,7 @@ isyscore:
 
 cas:
   app-code: robot
-  app-name: 脚手架集成测试系统
+  app-name: 集成测试系统
   #拦截访问地址规则，多个用英文逗号隔离
   urlPatterns: /robot/*
   #不拦截访问地址规则

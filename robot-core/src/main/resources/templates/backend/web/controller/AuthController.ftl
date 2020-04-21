@@ -1,7 +1,7 @@
 package ${packagePath}.web.controller;
 
 import com.alibaba.fastjson.JSON;
-import ${packagePath}.service.AbstractAuthService;
+import ${packagePath}.service.auth.AuthService;
 import ${packagePath}.web.vo.Response;
 import ${packagePath}.web.vo.rsp.UserAuthRsp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController extends BaseResponseController {
 
     @Autowired
-    private AbstractAuthService authHandleService;
+    private AuthService authHandleService;
 
     /**
      * 给OS进行使用对应的菜单结构
@@ -31,8 +31,8 @@ public class AuthController extends BaseResponseController {
     /**
      * 获取用户当前的权限
      * <p>
-    * 用于在用户请求某个页面的时候，将对应的权限返回给前端
-    */
+     * 用于在用户请求某个页面的时候，将对应的权限返回给前端
+     */
     @GetMapping("getAuthOfUser")
     public Response<UserAuthRsp> getAuthOfUser() {
         return success(authHandleService.getAuthOfUser());

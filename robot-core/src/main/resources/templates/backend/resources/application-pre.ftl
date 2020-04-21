@@ -16,6 +16,10 @@ spring:
       connection-test-query: SELECT 1
       maximum-pool-size: 10
       minimum-idle: 10
+log:
+  home: /home/${appName}/logs
+  app: ${appName}
+  level: INFO
 isyscore:
   # API 网关地址：服务网关地址配置, IP 一般为本地 OS 实例部署所在的服务器 网络 IP
   serverHost: http://10.30.30.25:9010/isc-api-gateway
@@ -31,19 +35,19 @@ isyscore:
   encryptType: RSA
   # 本地操作系统：实例 ID OSID 由平台分配(现阶段开放平台未公开发布, 可通过 UUID.random 生成): OSID 标记了每一个本地 OS 实例的唯一 性, 平台通过 OSID 对所有本地 OS 实例进行管理(包括版本, 升级, 其他服务等支持) 每个本地 OS 实例安装部署自动生成且仅生成一次 OSID.不可 修改与删除.
   # osId: 0
-  appCode: robot
-  appName: robot
+  appCode: ${appName}
+  appName: ${appName}
   isMainService: true
   registerAppUrl: http://192.168.10.248:6031/api/application/register
 
 cas:
-  app-code: robot
-  app-name: 脚手架集成测试系统
+  app-code: ${appName}
+  app-name: ${appNameCn}
   #拦截访问地址规则，多个用英文逗号隔离
-  urlPatterns: /robot/*
+  urlPatterns: /${appName}/*
   #不拦截访问地址规则
   excludeUrlPatterns:
-    - /robot/auth/*
+    - /${appName}/auth/*
   redis:  # redis 连接配置
     host: 10.30.30.25
     port: 6379

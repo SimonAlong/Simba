@@ -37,12 +37,12 @@ public class AuthService {
     private List<MenuAuthHandler> menuAuthHandlerList;
 
     /**
-     * 获取前端菜单和资源的权限配置
-     * <p>
-     * 由于操作系统的权限部分暂时不支持菜单权限方面的配置，因此这里需要用户自己进行配置下
-     */
+    * 获取前端菜单和资源的权限配置
+    * <p>
+    * 由于操作系统的权限部分暂时不支持菜单权限方面的配置，因此这里需要用户自己进行配置下
+    */
     public List<MenuDomain> getAuthConfigOfMenu() {
-        List<MenuDomain> authList = new ArrayList<>();
+    List<MenuDomain> authList = new ArrayList<>();
         MenuDomain auth = new MenuDomain();
         auth.setAppCode(AppConstant.APP_CODE);
         auth.setAppName(AppConstant.APP_NAME);
@@ -80,11 +80,11 @@ public class AuthService {
     }
 
     /**
-     * 获取对应的code集合
-     */
+    * 获取对应的code集合
+    */
     private List<String> getCodeList(DataAuthAclDomain dataAuthAclDomain) {
         List<String> menuCodeList = new ArrayList<>();
-        if (null == dataAuthAclDomain) {
+            if (null == dataAuthAclDomain) {
             return menuCodeList;
         }
 
@@ -94,10 +94,10 @@ public class AuthService {
 
     private List<String> doGetCodeList(List<AclModuleLevelDomain> aclList) {
         if (CollectionUtils.isEmpty(aclList)) {
-            return Collections.emptyList();
-        }
+        return Collections.emptyList();
+    }
 
-        return aclList.stream().filter(AclModuleLevelDomain::getHasAcl).flatMap(e -> {
+    return aclList.stream().filter(AclModuleLevelDomain::getHasAcl).flatMap(e -> {
         List<String> dataList = new ArrayList<>();
             dataList.add(e.getCode());
             dataList.addAll(doGetCodeList(e.getAclModuleList()));

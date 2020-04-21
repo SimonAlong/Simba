@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <property name="APP_NAME" value="${r'${APP_NAME}'}"/>
-    <property name="LOG_HOME" value="/home/${r'${APP_NAME}'}/logs"/>
+    <property name="LOG_HOME" value="${r'${log.home}'}"/>
     <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS}[${r'${APP_NAME}'}] [ %thread ] - [ %-5level ] [%X{traceId}] %p %c %M [ %logger{50} : %line ] - %msg%n"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
