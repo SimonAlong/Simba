@@ -39,7 +39,6 @@ isyscore:
   appName: robot
   isMainService: true
   registerAppUrl: http://192.168.10.248:6031/api/application/register
-
 cas:
   app-code: robot
   app-name: 集成测试系统

@@ -1,3 +1,9 @@
 spring:
   profiles:
     active: local
+auth:
+  api: /robot/auth/getAuthListForOs
+log:
+  home: /home/robot/logs
+  app: robot
+  level: INFO
