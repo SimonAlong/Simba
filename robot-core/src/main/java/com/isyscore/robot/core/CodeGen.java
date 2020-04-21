@@ -558,8 +558,8 @@ public class CodeGen {
             writeMenu(dataMap, frontCodePath + "/src/locales/zh-CN/menu.js");
         }
         // List
-        writeFile(dataMap, frontCodePath + "/src/pages/" + appName + "/" + StringConverter.underLineToSmallCamel(tableNameAfterPre) + "List.js", FRONT_PRE + "tableList.ftl");
-        writeFile(dataMap, frontCodePath + "/src/pages/" + appName + "/" + StringConverter.underLineToSmallCamel(tableNameAfterPre) + "List.less", FRONT_PRE + "tableList.less");
+        writeFile(dataMap, frontCodePath + "/src/pages/" + appName + "/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "List.js", FRONT_PRE + "tableList.ftl");
+        writeFile(dataMap, frontCodePath + "/src/pages/" + appName + "/" + StringConverter.underLineToBigCamel(tableNameAfterPre) + "List.less", FRONT_PRE + "tableList.less");
         // model
         writeFile(dataMap, frontCodePath + "/src/models/" + appName + "/" + StringConverter.underLineToSmallCamel(tableNameAfterPre) + "Model.js", FRONT_PRE + "tableModel.ftl");
         // api
