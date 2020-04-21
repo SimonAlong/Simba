@@ -1,4 +1,4 @@
-package com.isyscore.robot.integration;
+package ${packagePath};
 
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -6,5 +6,5 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @author robot
  */
 @SpringBootTest
-public class RobotApplicationTest {
+public class ${AppName}ApplicationTest {
 }

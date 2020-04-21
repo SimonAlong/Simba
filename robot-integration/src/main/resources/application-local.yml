@@ -1,5 +1,5 @@
 server:
-  port: 8084
+  port: 8074
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
@@ -16,10 +16,6 @@ spring:
       connection-test-query: SELECT 1
       maximum-pool-size: 10
       minimum-idle: 10
-log:
-  home: /home/robot/logs
-  app: robot
-  level: INFO
 isyscore:
   # API 网关地址：服务网关地址配置, IP 一般为本地 OS 实例部署所在的服务器 网络 IP
   serverHost: http://10.30.30.25:9010/isc-api-gateway
@@ -39,6 +35,7 @@ isyscore:
   appName: robot
   isMainService: true
   registerAppUrl: http://192.168.10.248:6031/api/application/register
+
 cas:
   app-code: robot
   app-name: 集成测试系统
