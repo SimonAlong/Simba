@@ -17,7 +17,7 @@ public class CityMenuAuthHandler implements MenuAuthHandler {
     public MenuAuthorityDomain getMenuAuth() {
         MenuAuthorityDomain domain = new MenuAuthorityDomain();
         domain.setCode("neo_cityList");
-        domain.setName("城市表");
+        domain.setName("城市");
         // 编号排序
         domain.setSeq(1);
         // 0：不可用，1：可用
@@ -37,7 +37,7 @@ public class CityMenuAuthHandler implements MenuAuthHandler {
         // 城市新增
         AclDomain domain1 = new AclDomain();
         domain1.setCode("neo_city_add");
-        domain1.setName("城市表新增");
+        domain1.setName("城市新增");
         domain1.setUrl("robot/neo_city/add");
         // 1：菜单，2：按钮，3：其他，不过对于脚手架默认的前端这里type都一样
         domain1.setType(2);
@@ -49,7 +49,7 @@ public class CityMenuAuthHandler implements MenuAuthHandler {
         // 按钮编辑
         AclDomain domain2 = new AclDomain();
         domain2.setCode("neo_city_edit");
-        domain2.setName("城市表编辑");
+        domain2.setName("城市编辑");
         domain2.setUrl("robot/neo_city/update");
         // 1：菜单，2：按钮，3：其他，不过对于脚手架默认的前端这里type都一样
         domain2.setType(2);

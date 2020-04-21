@@ -24,7 +24,7 @@ public class CodeGenTest {
         codeGen.setDbUserPassword("neo@Test123");
 
         // 后端端口号：本地直连设置的后端端口号
-        codeGen.setBackendPort("8084");
+        codeGen.setBackendPort("8074");
 
         // 设置表前缀过滤
         codeGen.setPreFix("neo_");
@@ -46,7 +46,7 @@ public class CodeGenTest {
 
         /*========= 要展示的表基本信息（必填） ========*/
         // 设置表的中文名，如果没有设置，则采用DB中的描述
-        codeGen.setTableDesc("城市表");
+        codeGen.setTableDesc("城市");
 
         /*=========== 表的属性信息（非必填） =======*/
         // 设置表的字段和中文文案对应，不填则采用注释，如果注释没有则采用列名
@@ -82,7 +82,7 @@ public class CodeGenTest {
 
         /*============================================================================== 生成代码 ================================*/
         // 生成前端
-        // codeGen.generateFront();
+        codeGen.generateFront();
 
         // 生成后端
         codeGen.generateBackend();

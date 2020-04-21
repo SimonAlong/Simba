@@ -520,7 +520,7 @@ public class CodeGen {
                 .append("List',\n")
                 .append("        icon: 'lock',\n")
                 .append("        // 直连阶段先删除，接入权限时候放开即可\n")
-                .append("        // authority: ['admin', '")
+                .append("        // authority: ['")
                 .append(tableInfo.getMiddle())
                 .append("List'],\n")
                 .append("        component: './")
@@ -564,9 +564,6 @@ public class CodeGen {
         writeFile(dataMap, frontCodePath + "/src/models/" + appName + "/" + StringConverter.underLineToSmallCamel(tableNameAfterPre) + "Model.js", FRONT_PRE + "tableModel.ftl");
         // api
         writeFile(dataMap, frontCodePath + "/src/services/" + appName + "/" + StringConverter.underLineToSmallCamel(tableNameAfterPre) + "Api.js", FRONT_PRE + "tableApi.ftl");
-
-        // loginApi
-        writeFile(dataMap, frontCodePath + "/src/services/api.js", FRONT_PRE + "loginApi.ftl");
 
         // config.js
         writeFileWithCover(dataMap, frontCodePath + "/config/config.js", FRONT_PRE + "frontConfig.ftl");

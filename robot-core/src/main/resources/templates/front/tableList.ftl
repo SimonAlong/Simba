@@ -22,6 +22,7 @@ import moment from 'moment';
 import styles from './${tablePathName}List.less';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import {getUserInfo} from "@/utils/userInfo";
+import { haveAuthority } from '@/utils/authority';
 
 const { RangePicker } = DatePicker;
 const EditableContext = React.createContext();
@@ -165,8 +166,9 @@ class EditableCell extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ ${tablePathNameLower}Model, loading}) => ({
+@connect(({ ${tablePathNameLower}Model, authModel, loading}) => ({
   ${tablePathNameLower}Model,
+  authModel,
   loading: loading.models.${tablePathNameLower}Model,
 }))
 // @Form.create() 是一个注解，就简化了xxx = Form.create(xxx);export xxx
@@ -222,12 +224,19 @@ class ${tablePathName}List extends PureComponent {
 
   // 界面初始化函数
   componentDidMount() {
-    const { location} = this.props;
-    localStorage.setItem('currentPath', location.pathname);
-    <#if appName!='portal'>localStorage.setItem('appName', "${appName}");</#if>
+    // 获取权限
+    this.getAuth();
 
     // 获取页面的总个数
     this.getPageData(1);
+  }
+
+  // 刷新用户界面的权限
+  getAuth() {
+    const {dispatch} = this.props;
+    dispatch({
+      type: 'authModel/getAuthOfUser',
+    });
   }
 
   getPageData(pageNo, searchParamInput) {
@@ -256,14 +265,7 @@ class ${tablePathName}List extends PureComponent {
 
     // 获取页面的总个数
     dispatch({
-      type: '${tablePathNameLower}Model/pageCount',
-      payload: {
-        searchParam: param,
-      },
-    });
-
-    dispatch({
-      type: '${tablePathNameLower}Model/pageList',
+      type: 'cityModel/getPage',
       payload: {
         pager: pagerFinal,
         searchParam: param,
