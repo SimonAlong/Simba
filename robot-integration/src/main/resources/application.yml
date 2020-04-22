@@ -7,3 +7,4 @@ log:
   home: /home/robot/logs
   app: robot
   level: INFO
+api-prefix: /robot
