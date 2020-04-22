@@ -8,5 +8,10 @@ import com.isyscore.isc.neo.NeoMap;
  */
 public interface ConfigContext {
 
+    /**
+     * 参数作为访客，读取子类的数据
+     *
+     * @param dataMap 访客
+     */
     void visit(NeoMap dataMap);
 }
