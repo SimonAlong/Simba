@@ -16,7 +16,6 @@
 
     <modules>
         <module>robot-core</module>
-        <module>robot-integration</module>
     </modules>
 
     <properties>
