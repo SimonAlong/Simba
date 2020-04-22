@@ -89,7 +89,7 @@ public class CodeGenTest {
         generator.addConfig(backendConfig);
 
         generator.loadConfigContext();
-        generator.generateFront();
+//        generator.generateFront();
         generator.generateBackend();
     }
 }
