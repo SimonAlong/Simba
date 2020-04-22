@@ -6,5 +6,8 @@ package com.isyscore.robot.core.xml.validate;
  */
 public interface Validator {
 
+    /**
+     * 核查对应的元素是否为当前类型
+     */
     void validate(String element);
 }
