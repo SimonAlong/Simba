@@ -77,6 +77,14 @@ public class CodeGenTest {
         // 设置："后端项目模块路径"，（如果后端还有对应的组件包，则也要将组件包放到最后）
         codeGen.setBackendModulePath("/Users/zhouzhenyong/project/isyscore/isc-robot/robot-integration");
 
+        // 设置：group
+        codeGen.setGroup("com.isyscore");
+        // 设置：artifact
+        codeGen.setArtifact("robot");
+        // 设置后端的名字
+        codeGen.setName("robot");
+        // 设置项目的描述
+        codeGen.setDescription("robot");
         // 设置："package包"
         codeGen.setBackendPackage("com.isyscore.robot.integration");
 
