@@ -35,10 +35,6 @@ public class CityInsertReq {
      */
     private String center;
     /**
-     * 状态：1新地址，0老地址
-     */
-    private Integer status;
-    /**
      * 创建人名字
      */
     private String createUserName;

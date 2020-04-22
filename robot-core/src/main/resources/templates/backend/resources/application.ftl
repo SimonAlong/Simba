@@ -7,3 +7,4 @@ log:
   home: /home/${appName}/logs
   app: ${appName}
   level: INFO
+api-prefix: /${appName}

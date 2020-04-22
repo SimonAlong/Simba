@@ -1,6 +1,10 @@
 package com.isyscore.robot.core;
 
 import com.isyscore.isc.neo.NeoMap;
+import com.isyscore.robot.core.config.BackendConfig;
+import com.isyscore.robot.core.config.CommonConfig;
+import com.isyscore.robot.core.config.FrontConfig;
+import com.isyscore.robot.core.config.TableConfig;
 import org.junit.Test;
 
 /**
@@ -10,47 +14,32 @@ import org.junit.Test;
 public class CodeGenTest {
 
     @Test
-    @SuppressWarnings("all")
-    public void generate1() {
-        CodeGen codeGen = new CodeGen();
+    public void generate2() {
+        CodeGenerator generator = new CodeGenerator();
 
-        /*============================================================================ 公共配置（必填） =======================*/
+        /*================================ 公共配置 ================================*/
+        CommonConfig commonConfig = new CommonConfig();
         // 设置应用名字
-        codeGen.setAppName("robot");
-        codeGen.setAppNameCn("集成测试系统");
+        commonConfig.setAppName("robot");
+        commonConfig.setAppNameCn("集成测试系统");
         // 设置数据库信息
-        codeGen.setDbUrl("jdbc:mysql://localhost:3306/neo");
-        codeGen.setDbUserName("neo_test");
-        codeGen.setDbUserPassword("neo@Test123");
-
+        commonConfig.setDbUrl("jdbc:mysql://localhost:3306/neo");
+        commonConfig.setDbUserName("neo_test");
+        commonConfig.setDbUserPassword("neo@Test123");
         // 后端端口号：本地直连设置的后端端口号
-        codeGen.setBackendPort("8074");
+        commonConfig.setBackendPort("8074");
 
+        /*================================ 展示的表配置 ================================*/
+        TableConfig tableConfig = new TableConfig();
         // 设置表前缀过滤
-        codeGen.setPreFix("neo_");
+        tableConfig.setPreFix("neo_");
         // 设置要输出的表
-        codeGen.setTableName("neo_city");
-
-        // 设置："新增弹窗"中展示的属性，对应后端的InsertReq
-        codeGen.setInsertFields("province_code", "city_code", "name", "create_time", "update_time", "center", "status");
-
-        // 设置："修改弹窗"中展示的属性，对应后端的UpdateReq
-        codeGen.setUpdateFields("id", "province_code", "city_code", "name", "create_time", "update_time", "center", "status");
-
-        // 设置："搜索框"中展示的属性，对应后端的Pager中的QueryReq
-        codeGen.setQueryFields("province_code", "city_code", "name");
-
-        /*=============================================================================== 前端代码配置 =======================*/
-        // 设置前端代码路径
-        codeGen.setFrontCodePath("/Users/zhouzhenyong/project/isyscore/isc-front-base");
-
-        /*========= 要展示的表基本信息（必填） ========*/
+        tableConfig.setTableName("neo_city");
         // 设置表的中文名，如果没有设置，则采用DB中的描述
-        codeGen.setTableDesc("城市");
-
+        tableConfig.setTableDesc("城市表");
         /*=========== 表的属性信息（非必填） =======*/
         // 设置表的字段和中文文案对应，不填则采用注释，如果注释没有则采用列名
-        codeGen.setFieldNameMap(NeoMap.of()
+        tableConfig.setFieldNameMap(NeoMap.of()
             .append("id", "主键id")
             .append("province_code", "省份编码")
             .append("city_code", "市编码")
@@ -59,117 +48,48 @@ public class CodeGenTest {
             .append("update_time", "更新时间")
             .append("center", "中心点经纬度")
             .append("status", "状态：1新地址，0老地址"));
-
+        // 设置："新增弹窗"中展示的属性，对应后端的InsertReq
+        tableConfig.setInsertFields("province_code", "city_code", "name", "create_time", "update_time", "center", "status");
+        // 设置："修改弹窗"中展示的属性，对应后端的UpdateReq
+        tableConfig.setUpdateFields("id", "province_code", "city_code", "name", "create_time", "update_time", "center", "status");
+        // 设置："搜索框"中展示的属性，对应后端的Pager中的QueryReq
+        tableConfig.setQueryFields("province_code", "city_code", "name");
         // 设置："不展示属性"，一旦设置界面上任何位置都不会展示（可不填）
-        codeGen.setExcludesFields("auth_user_name");
-
+        tableConfig.setExcludesFields("status");
         // 设置："修改弹窗"中展示但是不可编辑的属性，基于公共 setUpdateFieldsMap 中展示的属性进行禁用
-        codeGen.setUnEditFields("id", "name");
-
-        /*============= 界面表格展示信息 ===========*/
+        tableConfig.setUnEditFields("id", "name");
         // 设置："表格"中展示的属性（必填）
-        codeGen.setTableShowFieldsMap("province_code", "city_code", "name", "create_time");
-
+        tableConfig.setTableShowFieldsMap("province_code", "city_code", "name", "create_time");
         // 设置："表格扩展"中展示的属性（可不填）
-        codeGen.setTableExpandFieldsMap("id", "update_time", "center", "status");
+        tableConfig.setTableExpandFieldsMap("id", "update_time", "center", "status");
 
-        /*============================================================================== 后端代码生成器（非必填） ===================*/
+        /*================================ 前端配置 ================================*/
+        FrontConfig frontConfig = new FrontConfig();
+        // 设置前端代码路径
+        frontConfig.setFrontCodePath("/Users/zhouzhenyong/project/isyscore/isc-robot-front");
+
+        /*================================ 后端配置 ================================*/
+        BackendConfig backendConfig = new BackendConfig();
         // 设置："后端项目模块路径"，（如果后端还有对应的组件包，则也要将组件包放到最后）
-        codeGen.setBackendModulePath("/Users/zhouzhenyong/project/isyscore/isc-robot/robot-integration");
-
+        backendConfig.setBackendProjectPath("/Users/zhouzhenyong/project/isyscore/isc-robot/robot-integration");
         // 设置：group
-        codeGen.setGroup("com.isyscore");
+        backendConfig.setGroup("com.isyscore.robot");
         // 设置：artifact
-        codeGen.setArtifact("robot");
-        // 设置后端的名字
-        codeGen.setName("robot");
-        // 设置项目的描述
-        codeGen.setDescription("robot");
+        backendConfig.setArtifact("robot-integration");
+        // 设置：后端的名字
+        backendConfig.setName("robot");
+        // 设置：项目的描述
+        backendConfig.setDescription("脚手架继承测试项目");
         // 设置："package包"
-        codeGen.setBackendPackage("com.isyscore.robot.integration");
+        backendConfig.setPackagePath("com.isyscore.robot.integration");
 
-        /*============================================================================== 生成代码 ================================*/
-        // 生成前端
-        //codeGen.generateFront();
+        generator.addConfig(commonConfig);
+        generator.addConfig(tableConfig);
+        generator.addConfig(frontConfig);
+        generator.addConfig(backendConfig);
 
-        // 生成后端
-        codeGen.generateBackend();
-    }
-
-    @Test
-    public void generate2(){
-        CodeGen codeGen = new CodeGen();
-
-        /*============================================================================ 公共配置（必填） =======================*/
-        // 设置应用名字
-        codeGen.setAppName("robot");
-        // 设置数据库信息
-        codeGen.setDbUrl("jdbc:mysql://localhost:3306/neo");
-        codeGen.setDbUserName("neo_test");
-        codeGen.setDbUserPassword("neo@Test123");
-
-        // 后端端口号：本地直连设置的后端端口号
-        codeGen.setBackendPort("8084");
-
-        // 设置表前缀过滤
-        codeGen.setPreFix("ibo_");
-        // 设置要输出的表
-        codeGen.setTableName("ibo_business_city");
-
-        // 设置："新增弹窗"中展示的属性，对应后端的InsertReq
-        codeGen.setInsertFields("province_code", "city_code", "name", "create_time", "update_time", "center", "status");
-
-        // 设置："修改弹窗"中展示的属性，对应后端的UpdateReq
-        codeGen.setUpdateFields("id", "province_code", "city_code", "name", "create_time", "update_time", "center", "status");
-
-        // 设置："搜索框"中展示的属性，对应后端的Pager中的QueryReq
-        codeGen.setQueryFields("province_code", "city_code", "name");
-
-        /*=============================================================================== 前端代码配置 =======================*/
-        // 设置前端代码路径
-        codeGen.setFrontCodePath("/Users/zhouzhenyong/project/isyscore/isc-front-base");
-
-        /*========= 要展示的表基本信息（必填） ========*/
-        // 设置表的中文名，如果没有设置，则采用DB中的描述
-        codeGen.setTableDesc("业务城市表");
-
-        /*=========== 表的属性信息（非必填） =======*/
-        // 设置表的字段和中文文案对应，不填则采用注释，如果注释没有则采用列名
-        codeGen.setFieldNameMap(NeoMap.of()
-            .append("id", "主键id")
-            .append("province_code", "省份编码")
-            .append("city_code", "市编码")
-            .append("name", "名称")
-            .append("create_time", "创建时间")
-            .append("update_time", "更新时间")
-            .append("center", "中心点经纬度")
-            .append("status", "状态：1新地址，0老地址"));
-
-        // 设置："不展示属性"，一旦设置界面上任何位置都不会展示（可不填）
-        codeGen.setExcludesFields("status");
-
-        // 设置："修改弹窗"中展示但是不可编辑的属性，基于公共 setUpdateFieldsMap 中展示的属性进行禁用
-        codeGen.setUnEditFields("id", "name");
-
-        /*============= 界面表格展示信息 ===========*/
-        // 设置："表格"中展示的属性（必填）
-        codeGen.setTableShowFieldsMap("province_code", "city_code", "name", "create_time");
-
-        // 设置："表格扩展"中展示的属性（可不填）
-        codeGen.setTableExpandFieldsMap("id", "update_time", "center", "status");
-
-        /*============================================================================== 后端代码生成器（非必填） ===================*/
-        // 设置："后端项目模块路径"，（如果后端还有对应的组件包，则也要将组件包放到最后）
-        codeGen.setBackendModulePath("/Users/zhouzhenyong/project/isyscore/isc-robot/robot-integration");
-
-        // 设置："package包"
-        codeGen.setBackendPackage("com.isyscore.robot.integration");
-
-        /*============================================================================== 生成代码 ================================*/
-        // 生成前端
-        codeGen.generateFront();
-
-        // 生成后端
-        codeGen.generateBackend();
+        generator.loadConfigContext();
+        generator.generateFront();
+        generator.generateBackend();
     }
 }

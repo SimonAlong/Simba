@@ -39,10 +39,6 @@ public class CityUpdateReq {
      */
     private String center;
     /**
-     * 状态：1新地址，0老地址
-     */
-    private Integer status;
-    /**
      * 更新人名字
      */
     private String updateUserName;

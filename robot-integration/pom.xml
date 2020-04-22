@@ -11,6 +11,7 @@
 
     <groupId>com.isyscore.robot</groupId>
     <artifactId>robot-integration</artifactId>
+    <name>robot-integration</name>
     <packaging>jar</packaging>
 
     <version>1.0.0-SNAPSHOT</version>

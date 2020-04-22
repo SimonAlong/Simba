@@ -39,8 +39,4 @@ public class CityQueryRsp implements Serializable {
      * 中心点经纬度
      */
     private String center;
-    /**
-     * 状态：1新地址，0老地址
-     */
-    private Integer status;
 }
