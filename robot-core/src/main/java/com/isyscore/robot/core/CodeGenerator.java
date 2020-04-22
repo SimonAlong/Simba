@@ -30,6 +30,9 @@ public class CodeGenerator {
     private List<ConfigContext> baseConfigList = new ArrayList<>();
     private ConfigLoader configLoader = new ConfigLoader();
 
+    /**
+     * 载入配置上下文
+     */
     public void loadConfigContext() {
         configLoader.load(baseConfigList);
     }
