@@ -1,19 +1,23 @@
 package com.isyscore.robot.core.xml.validate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.isyscore.isc.neo.NeoMap;
+
+import java.util.*;
 
 /**
  * @author shizi
  * @since 2020/4/22 7:59 PM
  */
-public class AbstractElementValidator implements Validator{
+public class AbstractElementValidator implements Validator {
 
     protected List<String> fieldNameList = new ArrayList<>();
 
     protected AbstractElementValidator() {
         Arrays.asList(this.getClass().getDeclaredMethods()).forEach(e -> fieldNameList.add(e.getName()));
+
+        String className = this.getClass().getSimpleName();
+        String elementName = className.substring(0, className.length() - "Element".length());
+        Validators.put(NeoMap.NamingChg.BIGCAMEL.otherToSmallCamel(elementName), fieldNameList);
     }
 
     @Override

@@ -12,6 +12,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class RepositoryElement extends AbstractElementValidator {
 
+    private String uniqueVersion;
     private String releases;
     private String snapshots;
     private String id;
