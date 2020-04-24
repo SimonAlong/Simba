@@ -38,6 +38,14 @@ public class PomHandler {
         dependencies.add(dependencyElement);
     }
 
+    public void setProjectPath(String projectPath) {
+        if (projectPath.endsWith("/")) {
+            this.projectPath = projectPath;
+        } else {
+            this.projectPath = projectPath + "/";
+        }
+    }
+
     public void setArtifactId(String artifactId) {
         this.artifactId = artifactId;
         this.name = artifactId;
@@ -46,7 +54,7 @@ public class PomHandler {
     public void generate() {
         try {
             SAXReader reader = new SAXReader();
-            String pomFile = projectPath + "/pom.xml";
+            String pomFile = projectPath + "pom.xml";
             if (!FileUtil.exist(pomFile)) {
                 throw new RuntimeException("文件：" + pomFile + " 不存在");
             }
@@ -70,31 +78,53 @@ public class PomHandler {
         Element parent = root.element("parent");
         if (null != parentElement && null != parent) {
             String groupId = parentElement.getGroupId();
-            if(!StringUtils.isEmpty(groupId)){
+            if (!StringUtils.isEmpty(groupId)) {
                 parent.addElement("groupId").setText(groupId);
             }
 
             String artifactId = parentElement.getArtifactId();
-            if(!StringUtils.isEmpty(artifactId)){
+            if (!StringUtils.isEmpty(artifactId)) {
                 parent.addElement("artifactId").setText(artifactId);
             }
 
             String version = parentElement.getVersion();
-            if(!StringUtils.isEmpty(version)){
+            if (!StringUtils.isEmpty(version)) {
                 parent.addElement("version").setText(version);
             }
         }
     }
 
     /**
-     * 添加group, artifactId，version，name，description，对应的信息
+     * 添加 groupId, artifactId，version，name，description，对应的信息
      */
     private void addBaseInfo(Element root) {
-        // todo
+        root.element("groupId").setText(groupId);
+        root.element("artifactId").setText(artifactId);
+        root.element("version").setText(version);
+        root.element("name").setText(name);
+        root.element("description").setText(description);
     }
 
     private void addDependencies(Element root) {
-        // todo
+        Element dependenciesElement = root.element("dependencies");
+        dependencies.forEach(d -> {
+            Element dependencyElement = dependenciesElement.addElement("dependency");
+            dependencyElement.addElement("groupId").setText(d.getGroupId());
+            dependencyElement.addElement("artifactId").setText(d.getArtifactId());
+            dependencyElement.addElement("version").setText(d.getVersion());
+            if (!StringUtils.isEmpty(d.getClassifier())) {
+                dependencyElement.addElement("classifier").setText(d.getClassifier());
+            }
+            if (!StringUtils.isEmpty(d.getScope())) {
+                dependencyElement.addElement("scope").setText(d.getScope());
+            }
+            if (!StringUtils.isEmpty(d.getSystemPath())) {
+                dependencyElement.addElement("systemPath").setText(d.getSystemPath());
+            }
+            if (!StringUtils.isEmpty(d.getOptional())) {
+                dependencyElement.addElement("optional").setText(d.getOptional());
+            }
+        });
     }
 
     private void write(Document document) throws IOException {

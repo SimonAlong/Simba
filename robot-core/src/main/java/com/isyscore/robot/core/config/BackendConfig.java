@@ -47,6 +47,7 @@ public class BackendConfig implements ConfigContext {
             this.backendCodePath = projectPath + "/src/main/java/";
             this.backendTestPath = projectPath + "/src/test/java/";
             this.backendResourcesPath = projectPath + "/src/main/resources/";
+            this.projectPath = projectPath + "/";
         }
     }
 

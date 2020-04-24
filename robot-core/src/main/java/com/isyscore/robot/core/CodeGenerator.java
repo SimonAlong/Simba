@@ -343,6 +343,13 @@ public class CodeGenerator {
         writeFile(dataMap, backendTestPath + StringConverter.underLineToBigCamel(appName) + "ApplicationTest.java", BACKEND_RS_PATH + "test/ApplicationTest.ftl");
     }
 
+    private void generatePom(NeoMap dataMap){
+        String projectPath = dataMap.getString("projectPath");
+
+        // pom.xml
+        writeFile(dataMap, projectPath + "pom.xml", BACKEND_RS_PATH + "pom.ftl");
+    }
+
     private void generateBackend(NeoMap dataMap) {
         String tableNameAfterPre = dataMap.getString("tableNameAfterPre");
 
@@ -362,6 +369,9 @@ public class CodeGenerator {
 
         // 生成test文件
         generateTest(dataMap);
+
+        // 生成pom.xml文件
+        generatePom(dataMap);
     }
 
     public void generateFront() {
