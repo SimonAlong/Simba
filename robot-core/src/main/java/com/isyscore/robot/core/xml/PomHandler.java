@@ -1,0 +1,105 @@
+package com.isyscore.robot.core.xml;
+
+import com.isyscore.robot.core.util.FileUtil;
+import com.isyscore.robot.core.xml.element.DependencyElement;
+import com.isyscore.robot.core.xml.element.ParentElement;
+import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author shizi
+ * @since 2020/4/22 5:37 PM
+ */
+@Data
+public class PomHandler {
+
+    /**
+     * 后端代码的项目模块路径
+     */
+    private String projectPath;
+    private ParentElement parentElement;
+    private String groupId;
+    private String artifactId;
+    private String version = "1.0.0-SNAPSHOT";
+    private String name;
+    private String description;
+    private List<DependencyElement> dependencies = new ArrayList<>();
+
+    public void addDependency(DependencyElement dependencyElement) {
+        dependencies.add(dependencyElement);
+    }
+
+    public void setArtifactId(String artifactId) {
+        this.artifactId = artifactId;
+        this.name = artifactId;
+    }
+
+    public void generate() {
+        try {
+            SAXReader reader = new SAXReader();
+            String pomFile = projectPath + "/pom.xml";
+            if (!FileUtil.exist(pomFile)) {
+                throw new RuntimeException("文件：" + pomFile + " 不存在");
+            }
+            Document document = reader.read(new File(pomFile));
+            Element root = document.getRootElement();
+
+            addParent(root);
+            addBaseInfo(root);
+            addDependencies(root);
+
+            write(document);
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 添加parent依赖
+     */
+    private void addParent(Element root) {
+        Element parent = root.element("parent");
+        if (null != parentElement && null != parent) {
+            String groupId = parentElement.getGroupId();
+            if(!StringUtils.isEmpty(groupId)){
+                parent.addElement("groupId").setText(groupId);
+            }
+
+            String artifactId = parentElement.getArtifactId();
+            if(!StringUtils.isEmpty(artifactId)){
+                parent.addElement("artifactId").setText(artifactId);
+            }
+
+            String version = parentElement.getVersion();
+            if(!StringUtils.isEmpty(version)){
+                parent.addElement("version").setText(version);
+            }
+        }
+    }
+
+    /**
+     * 添加group, artifactId，version，name，description，对应的信息
+     */
+    private void addBaseInfo(Element root) {
+        // todo
+    }
+
+    private void addDependencies(Element root) {
+        // todo
+    }
+
+    private void write(Document document) throws IOException {
+        XMLWriter xmlWriter = new XMLWriter(new OutputStreamWriter(new FileOutputStream(new File(projectPath + "/pom.xml"))), OutputFormat.createPrettyPrint());
+        xmlWriter.write(document);
+        xmlWriter.close();
+    }
+}

@@ -3,6 +3,7 @@ package com.isyscore.robot.core.xml.element;
 import com.isyscore.robot.core.xml.validate.AbstractElementValidator;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * 解析标签 {@code <Dependency></Dependency>}
@@ -11,6 +12,7 @@ import lombok.EqualsAndHashCode;
  * @since 2020/4/22 6:27 PM
  */
 @Data
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 public class DependencyElement extends AbstractElementValidator {
 

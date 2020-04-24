@@ -5,6 +5,9 @@ import com.isyscore.robot.core.config.BackendConfig;
 import com.isyscore.robot.core.config.CommonConfig;
 import com.isyscore.robot.core.config.FrontConfig;
 import com.isyscore.robot.core.config.TableConfig;
+import com.isyscore.robot.core.xml.PomHandler;
+import com.isyscore.robot.core.xml.element.DependencyElement;
+import com.isyscore.robot.core.xml.element.ParentElement;
 import org.junit.Test;
 
 /**
@@ -14,7 +17,7 @@ import org.junit.Test;
 public class CodeGenTest {
 
     @Test
-    public void generate2() {
+    public void codeGenerateTest() {
         CodeGenerator generator = new CodeGenerator();
 
         /*================================ 公共配置 ================================*/
@@ -101,5 +104,39 @@ public class CodeGenTest {
         generator.loadConfigContext();
 //        generator.generateFront();
         generator.generateBackend();
+    }
+
+    @Test
+    public void pomGenerateTest() {
+        PomHandler pomHandler = new PomHandler();
+
+        ParentElement parentElement = new ParentElement();
+        parentElement.setGroupId("org.springframework.boot");
+        parentElement.setArtifactId("spring-boot-starter-parent");
+        parentElement.setGroupId("2.0.4.RELEASE");
+
+        DependencyElement neoDependency = new DependencyElement();
+        neoDependency.setGroupId("com.simonalong");
+        neoDependency.setArtifactId("neo");
+        neoDependency.setVersion("1.0.0-SNAPSHOT");
+
+
+        DependencyElement lombokDependency = new DependencyElement();
+        lombokDependency.setGroupId("org.projectlombok");
+        lombokDependency.setArtifactId("lombok");
+
+        // 配置Parent
+        pomHandler.setProjectPath("/Users/zhouzhenyong/project/isyscore/isc-robot/robot-integration");
+        pomHandler.setParentElement(parentElement);
+        pomHandler.setGroupId("com.isyscore.isc");
+        pomHandler.setArtifactId("robot");
+        pomHandler.setVersion("1.0.0-SNAPSHOT");
+        pomHandler.setDescription("集成测试系统");
+
+        // 添加依赖
+        pomHandler.addDependency(neoDependency);
+        pomHandler.addDependency(lombokDependency);
+
+        pomHandler.generate();
     }
 }
