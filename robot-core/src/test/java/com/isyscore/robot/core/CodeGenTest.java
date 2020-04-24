@@ -116,27 +116,16 @@ public class CodeGenTest {
         parentElement.setArtifactId("spring-boot-starter-parent");
         parentElement.setVersion("2.0.4.RELEASE");
 
-        DependencyElement neoDependency = new DependencyElement();
-        neoDependency.setGroupId("com.isyscore.neo");
-        neoDependency.setArtifactId("isc-neo");
-        neoDependency.setVersion("1.0.1-SNAPSHOT");
-
-
-        DependencyElement lombokDependency = new DependencyElement();
-        lombokDependency.setGroupId("org.projectlombok");
-        lombokDependency.setArtifactId("lombok");
-
         // 配置Parent
         pomHandler.setProjectPath(projectPath);
         pomHandler.setParentElement(parentElement);
         pomHandler.setGroupId("com.isyscore.isc");
-        pomHandler.setArtifactId("robot");
+        pomHandler.setArtifactId("robot-integration");
         pomHandler.setVersion("1.0.0-SNAPSHOT");
         pomHandler.setDescription("集成测试系统");
 
         // 添加依赖
-        pomHandler.addDependency(neoDependency);
-        pomHandler.addDependency(lombokDependency);
+        pomHandler.addDependency(DependencyElement.builder().groupId("org.codehaus.groovy").artifactId("groovy-all").version("3.0.3").build());
 
         pomHandler.generate();
     }

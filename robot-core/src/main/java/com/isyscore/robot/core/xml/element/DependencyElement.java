@@ -1,8 +1,7 @@
 package com.isyscore.robot.core.xml.element;
 
 import com.isyscore.robot.core.xml.validate.AbstractElementValidator;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 /**
@@ -11,9 +10,10 @@ import lombok.experimental.Accessors;
  * @author shizi
  * @since 2020/4/22 6:27 PM
  */
-@Data
-@Accessors(chain = true)
-@EqualsAndHashCode(callSuper = true)
+@Setter
+@Getter
+@Builder
+@EqualsAndHashCode(callSuper = true, of={"groupId", "artifactId"})
 public class DependencyElement extends AbstractElementValidator {
 
     private String groupId;

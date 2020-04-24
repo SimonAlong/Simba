@@ -12,8 +12,7 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author shizi
@@ -32,7 +31,11 @@ public class PomHandler {
     private String version = "1.0.0-SNAPSHOT";
     private String name;
     private String description;
-    private List<DependencyElement> dependencies = new ArrayList<>();
+    private Set<DependencyElement> dependencies = new LinkedHashSet<>();
+
+    public PomHandler() {
+        initDefaultDependency();
+    }
 
     public void addDependency(DependencyElement dependencyElement) {
         dependencies.add(dependencyElement);
@@ -144,4 +147,23 @@ public class PomHandler {
         xmlWriter.write(document);
         xmlWriter.close();
     }
+
+    private void initDefaultDependency() {
+        // 内部依赖项
+        dependencies.add(DependencyElement.builder().groupId("org.springframework.boot").artifactId("spring-boot-starter").build());
+        dependencies.add(DependencyElement.builder().groupId("org.springframework.boot").artifactId("spring-boot-starter-web").build());
+        dependencies.add(DependencyElement.builder().groupId("org.springframework.boot").artifactId("spring-boot-starter-aop").build());
+        dependencies.add(DependencyElement.builder().groupId("org.springframework.boot").artifactId("spring-boot-starter-test").build());
+        dependencies.add(DependencyElement.builder().groupId("org.springframework.boot").artifactId("spring-boot-starter-jdbc").build());
+        dependencies.add(DependencyElement.builder().groupId("org.springframework.boot").artifactId("spring-boot-starter-logging").build());
+
+        // 个人框架
+        dependencies.add(DependencyElement.builder().groupId("com.isyscore.mikilin").artifactId("isc-mikilin").version("1.0.0-SNAPSHOT").build());
+        dependencies.add(DependencyElement.builder().groupId("com.isyscore.neo").artifactId("isc-neo").version("1.0.1-SNAPSHOT").build());
+
+        // 公司内部依赖项
+        dependencies.add(DependencyElement.builder().groupId("com.isyscore").artifactId("isc-app-dev-permission").version("0.1.0-SNAPSHOT").build());
+        dependencies.add(DependencyElement.builder().groupId("com.isyscore.os").artifactId("isc-sso-support").version("0.2-SNAPSHOT").build());
+    }
+
 }
