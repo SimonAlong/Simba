@@ -67,7 +67,7 @@ public class PomHandler {
 
             write(document);
         } catch (Throwable e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getCause());
         }
     }
 
@@ -109,9 +109,15 @@ public class PomHandler {
         Element dependenciesElement = root.element("dependencies");
         dependencies.forEach(d -> {
             Element dependencyElement = dependenciesElement.addElement("dependency");
-            dependencyElement.addElement("groupId").setText(d.getGroupId());
-            dependencyElement.addElement("artifactId").setText(d.getArtifactId());
-            dependencyElement.addElement("version").setText(d.getVersion());
+            if (!StringUtils.isEmpty(d.getGroupId())) {
+                dependencyElement.addElement("groupId").setText(d.getGroupId());
+            }
+            if (!StringUtils.isEmpty(d.getArtifactId())) {
+                dependencyElement.addElement("artifactId").setText(d.getArtifactId());
+            }
+            if (!StringUtils.isEmpty(d.getVersion())) {
+                dependencyElement.addElement("version").setText(d.getVersion());
+            }
             if (!StringUtils.isEmpty(d.getClassifier())) {
                 dependencyElement.addElement("classifier").setText(d.getClassifier());
             }

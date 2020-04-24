@@ -104,21 +104,22 @@ public class CodeGenTest {
         generator.loadConfigContext();
 //        generator.generateFront();
         generator.generateBackend();
+
+        pomGenerate(backendConfig.getProjectPath());
     }
 
-    @Test
-    public void pomGenerateTest() {
+    public void pomGenerate(String projectPath) {
         PomHandler pomHandler = new PomHandler();
 
         ParentElement parentElement = new ParentElement();
         parentElement.setGroupId("org.springframework.boot");
         parentElement.setArtifactId("spring-boot-starter-parent");
-        parentElement.setGroupId("2.0.4.RELEASE");
+        parentElement.setVersion("2.0.4.RELEASE");
 
         DependencyElement neoDependency = new DependencyElement();
-        neoDependency.setGroupId("com.simonalong");
-        neoDependency.setArtifactId("neo");
-        neoDependency.setVersion("1.0.0-SNAPSHOT");
+        neoDependency.setGroupId("com.isyscore.neo");
+        neoDependency.setArtifactId("isc-neo");
+        neoDependency.setVersion("1.0.1-SNAPSHOT");
 
 
         DependencyElement lombokDependency = new DependencyElement();
@@ -126,7 +127,7 @@ public class CodeGenTest {
         lombokDependency.setArtifactId("lombok");
 
         // 配置Parent
-        pomHandler.setProjectPath("/Users/zhouzhenyong/project/isyscore/isc-robot/robot-integration");
+        pomHandler.setProjectPath(projectPath);
         pomHandler.setParentElement(parentElement);
         pomHandler.setGroupId("com.isyscore.isc");
         pomHandler.setArtifactId("robot");
@@ -138,5 +139,10 @@ public class CodeGenTest {
         pomHandler.addDependency(lombokDependency);
 
         pomHandler.generate();
+    }
+
+    @Test
+    public void pomGenerateTest(){
+        pomGenerate("/Users/zhouzhenyong/project/isyscore/isc-robot/robot-integration");
     }
 }
