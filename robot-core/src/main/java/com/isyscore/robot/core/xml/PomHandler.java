@@ -134,7 +134,13 @@ public class PomHandler {
     }
 
     private void write(Document document) throws IOException {
-        XMLWriter xmlWriter = new XMLWriter(new OutputStreamWriter(new FileOutputStream(new File(projectPath + "/pom.xml"))), OutputFormat.createPrettyPrint());
+        OutputFormat format = OutputFormat.createPrettyPrint();
+        format.setEncoding("UTF-8");
+        // 缩进设置为代码的缩进
+        format.setIndent("    ");
+        // 第二行空行
+        format.setNewLineAfterDeclaration(false);
+        XMLWriter xmlWriter = new XMLWriter(new OutputStreamWriter(new FileOutputStream(new File(projectPath + "/pom.xml"))), format);
         xmlWriter.write(document);
         xmlWriter.close();
     }
