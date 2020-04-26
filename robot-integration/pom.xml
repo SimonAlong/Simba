@@ -10,9 +10,13 @@
     <artifactId>robot-integration</artifactId>  
     <version>1.0.0-SNAPSHOT</version>  
     <name>robot-integration</name>  
-    <packaging>java</packaging>  
+    <packaging>jar</packaging>  
     <description>集成测试系统</description>  
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -46,16 +50,6 @@
             <groupId>com.isyscore.neo</groupId>
             <artifactId>isc-neo</artifactId>
             <version>1.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.isyscore</groupId>
-            <artifactId>isc-app-dev-permission</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.isyscore.os</groupId>
-            <artifactId>isc-sso-support</artifactId>
-            <version>0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>

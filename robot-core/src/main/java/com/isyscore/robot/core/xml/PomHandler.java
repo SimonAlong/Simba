@@ -149,6 +149,9 @@ public class PomHandler {
     }
 
     private void initDefaultDependency() {
+        // 基本依赖
+        dependencies.add(DependencyElement.builder().groupId("org.projectlombok").artifactId("lombok").build());
+
         // 内部依赖项
         dependencies.add(DependencyElement.builder().groupId("org.springframework.boot").artifactId("spring-boot-starter").build());
         dependencies.add(DependencyElement.builder().groupId("org.springframework.boot").artifactId("spring-boot-starter-web").build());
@@ -160,10 +163,6 @@ public class PomHandler {
         // 个人框架
         dependencies.add(DependencyElement.builder().groupId("com.isyscore.mikilin").artifactId("isc-mikilin").version("1.0.0-SNAPSHOT").build());
         dependencies.add(DependencyElement.builder().groupId("com.isyscore.neo").artifactId("isc-neo").version("1.0.1-SNAPSHOT").build());
-
-        // 公司内部依赖项
-        dependencies.add(DependencyElement.builder().groupId("com.isyscore").artifactId("isc-app-dev-permission").version("0.1.0-SNAPSHOT").build());
-        dependencies.add(DependencyElement.builder().groupId("com.isyscore.os").artifactId("isc-sso-support").version("0.2-SNAPSHOT").build());
     }
 
 }

@@ -264,14 +264,6 @@ public class CodeGenerator {
         String tablePathName = StringConverter.underLineToBigCamel(tableNameAfterPre);
         // XxService.java
         writeFile(dataMap, backendCodePath + "service/" + tablePathName + "Service.java", BACKEND_RS_PATH + "service/XxService.ftl");
-
-        // auth
-        // AuthService.ftl
-        writeFile(dataMap, backendCodePath + "service/auth/AuthService.java", BACKEND_RS_PATH + "service/auth/AuthService.ftl");
-        // MenuAuthHandler.ftl
-        writeFile(dataMap, backendCodePath + "service/auth/MenuAuthHandler.java", BACKEND_RS_PATH + "service/auth/MenuAuthHandler.ftl");
-        // XxMenuAuthHandler.ftl
-        writeFile(dataMap, backendCodePath + "service/auth/" + tablePathName + "MenuAuthHandler.java", BACKEND_RS_PATH + "service/auth/XxMenuAuthHandler.ftl");
     }
 
     private void generateTransfer(NeoMap dataMap, String tableNameAfterPre) {
@@ -287,8 +279,6 @@ public class CodeGenerator {
         writeFile(dataMap, backendCodePath + "web/controller/BaseResponseController.java", BACKEND_RS_PATH + "web/controller/BaseResponseController.ftl");
         // XxxController
         writeFile(dataMap, backendCodePath + "web/controller/" + tablePathName + "Controller.java", BACKEND_RS_PATH + "web/controller/XxController.ftl");
-        // AuthController
-        writeFile(dataMap, backendCodePath + "web/controller/AuthController.java", BACKEND_RS_PATH + "web/controller/AuthController.ftl");
 
         // vo: req
         writeFile(dataMap, backendCodePath + "web/vo/req/" + tablePathName + "InsertReq.java", BACKEND_RS_PATH + "web/vo/req/InsertReq.ftl");

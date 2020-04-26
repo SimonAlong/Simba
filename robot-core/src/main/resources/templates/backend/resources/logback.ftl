@@ -2,7 +2,7 @@
 <configuration>
     <property name="APP_NAME" value="${r'${APP_NAME}'}"/>
     <property name="LOG_HOME" value="${r'${log.home}'}"/>
-    <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS}[${r'${APP_NAME}'}] [ %thread ] - [ %-5level ] [%X{traceId}] %p %c %M [ %logger{50} : %line ] - %msg%n"/>
+    <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} ${r'${hostname}'} [${r'${APP_NAME}'}] [%X{traceId}] %p %c %M [%t@${r'${PID}'}] : %m%n"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -61,25 +61,6 @@
             <maxHistory>30</maxHistory>
         </rollingPolicy>
     </appender>
-
-    <appender name="API_MONITOR" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${r'${LOG_HOME}'}/app-monitor.log</file>
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
-        <encoder>
-            <pattern>${r'${PATTERN}'}</pattern>
-            <charset>UTF-8</charset>
-        </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${r'${LOG_HOME}'}/api-monitor.log.%d{yyyyMMdd}</fileNamePattern>
-            <maxHistory>30</maxHistory>
-        </rollingPolicy>
-    </appender>
-
-    <logger name="com.isyscore.boot.web.monitor.MonitorAspect" level="WARN" additivity="false">
-        <appender-ref ref="API_MONITOR"/>
-    </logger>
 
     <logger name="org.springframework" level="INFO" additivity="false"/>
 

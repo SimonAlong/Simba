@@ -8,7 +8,7 @@
     <artifactId/>
     <version/>
     <name/>
-    <packaging>java</packaging>
+    <packaging>jar</packaging>
 
     <description/>
 

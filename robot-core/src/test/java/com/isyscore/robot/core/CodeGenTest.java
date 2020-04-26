@@ -88,6 +88,7 @@ public class CodeGenTest {
         /*================================ 后端配置 ================================*/
         BackendConfig backendConfig = new BackendConfig();
         // 设置："后端项目模块路径"，（如果后端还有对应的组件包，则也要将组件包放到最后）
+//        backendConfig.setBackendProjectPath("/Users/zhouzhenyong/tem/project/robot-integration");
         backendConfig.setBackendProjectPath("/Users/zhouzhenyong/project/isyscore/isc-robot/robot-integration");
         // 设置：group
         backendConfig.setGroup("com.isyscore.robot");
@@ -111,12 +112,13 @@ public class CodeGenTest {
     public void pomGenerate(String projectPath) {
         PomHandler pomHandler = new PomHandler();
 
+        // 配置Parent
         ParentElement parentElement = new ParentElement();
         parentElement.setGroupId("org.springframework.boot");
         parentElement.setArtifactId("spring-boot-starter-parent");
         parentElement.setVersion("2.0.4.RELEASE");
 
-        // 配置Parent
+        // 配置项目
         pomHandler.setProjectPath(projectPath);
         pomHandler.setParentElement(parentElement);
         pomHandler.setGroupId("com.isyscore.isc");
