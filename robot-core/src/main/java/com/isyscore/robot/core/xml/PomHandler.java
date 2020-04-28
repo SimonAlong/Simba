@@ -80,19 +80,21 @@ public class PomHandler {
     private void addParent(Element root) {
         Element parent = root.element("parent");
         if (null != parentElement && null != parent) {
-            String groupId = parentElement.getGroupId();
-            if (!StringUtils.isEmpty(groupId)) {
-                parent.addElement("groupId").setText(groupId);
-            }
+            if (null == parent.getText()) {
+                String groupId = parentElement.getGroupId();
+                if (!StringUtils.isEmpty(groupId)) {
+                    parent.addElement("groupId").setText(groupId);
+                }
 
-            String artifactId = parentElement.getArtifactId();
-            if (!StringUtils.isEmpty(artifactId)) {
-                parent.addElement("artifactId").setText(artifactId);
-            }
+                String artifactId = parentElement.getArtifactId();
+                if (!StringUtils.isEmpty(artifactId)) {
+                    parent.addElement("artifactId").setText(artifactId);
+                }
 
-            String version = parentElement.getVersion();
-            if (!StringUtils.isEmpty(version)) {
-                parent.addElement("version").setText(version);
+                String version = parentElement.getVersion();
+                if (!StringUtils.isEmpty(version)) {
+                    parent.addElement("version").setText(version);
+                }
             }
         }
     }
