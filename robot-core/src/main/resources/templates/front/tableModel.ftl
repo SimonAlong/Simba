@@ -136,10 +136,17 @@ export default {
     },
 
     handleGetPageResult(state, action) {
-      console.log('${tablePathNameLower}Model.handleGetPageResult 返回的结果');
-      console.log(JSON.stringify(action));
+      // console.log('${tablePathNameLower}Model.handleGetPageResult 返回的结果');
+      // console.log(JSON.stringify(action));
 
       const pl = action.payload;
+
+      let tableList;
+      let totalNumber;
+      if (pl.response.data !== null) {
+        tableList = pl.response.data.dataList;
+        totalNumber = pl.response.data.totalNum;
+      }
 
       return {
         ...state,
@@ -147,8 +154,8 @@ export default {
           ...pl.pager,
           pageNo:pl.pager.pageNo
         },
-        tableList: pl.response.data.dataList,
-        totalNumber: pl.response.data.totalNum,
+        tableList,
+        totalNumber,
         searchParam: pl.searchParam,
         tableLoading: false
       };

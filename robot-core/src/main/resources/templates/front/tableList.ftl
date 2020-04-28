@@ -166,9 +166,8 @@ class EditableCell extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ ${tablePathNameLower}Model, authModel, loading}) => ({
+@connect(({ ${tablePathNameLower}Model, loading}) => ({
   ${tablePathNameLower}Model,
-  authModel,
   loading: loading.models.${tablePathNameLower}Model,
 }))
 // @Form.create() 是一个注解，就简化了xxx = Form.create(xxx);export xxx
@@ -224,19 +223,9 @@ class ${tablePathName}List extends PureComponent {
 
   // 界面初始化函数
   componentDidMount() {
-    // 获取权限
-    this.getAuth();
 
     // 获取页面的总个数
     this.getPageData(1);
-  }
-
-  // 刷新用户界面的权限
-  getAuth() {
-    const {dispatch} = this.props;
-    dispatch({
-      type: 'authModel/getAuthOfUser',
-    });
   }
 
   getPageData(pageNo, searchParamInput) {
@@ -259,9 +248,9 @@ class ${tablePathName}List extends PureComponent {
       };
     }
 
-    console.log("pager param");
-    console.log(JSON.stringify(pagerFinal));
-    console.log(JSON.stringify(param));
+    // console.log("pager param");
+    // console.log(JSON.stringify(pagerFinal));
+    // console.log(JSON.stringify(param));
 
     // 获取页面的总个数
     dispatch({
@@ -302,7 +291,7 @@ class ${tablePathName}List extends PureComponent {
       cancelText: '取消',
       onOk() {
         showLoading();
-        console.log('OK');
+        // console.log('OK');
         dispatch({
           type: '${tablePathNameLower}Model/delete',
           payload: {
@@ -311,7 +300,7 @@ class ${tablePathName}List extends PureComponent {
         });
       },
       onCancel() {
-        console.log('Cancel');
+        // console.log('Cancel');
       },
     });
   };
@@ -329,7 +318,7 @@ class ${tablePathName}List extends PureComponent {
   };
 
   showEditModal = record => {
-    console.log('点击编辑');
+    // console.log('点击编辑');
     this.setState({
       item: record,
       editModalVisible: true,
@@ -397,20 +386,20 @@ class ${tablePathName}List extends PureComponent {
       userName = userInfo.displayName;
     }
 
-    console.log('编辑修改');
-    console.log(JSON.stringify(fields));
-    console.log(JSON.stringify(item));
+    // console.log('编辑修改');
+    // console.log(JSON.stringify(fields));
+    // console.log(JSON.stringify(item));
 
     // 判断是否有修改，如果没有修改，则不向后端发起更新
     if (!this.contain(item, fields)) {
       this.setTableLoading();
-      console.log('有变化需要修改');
+      // console.log('有变化需要修改');
       const params = {
         ...Object.assign(item, fields),
         updateUserName: userName,
       };
 
-      console.log(JSON.stringify(params));
+      // console.log(JSON.stringify(params));
       dispatch({
         type: '${tablePathNameLower}Model/update',
         payload: params,
@@ -425,7 +414,7 @@ class ${tablePathName}List extends PureComponent {
 
     const { form } = this.props;
 
-    console.log('启动查询');
+    // console.log('启动查询');
     this.setTableLoading();
 
     form.validateFields((err, fieldsValue) => {
@@ -495,7 +484,7 @@ class ${tablePathName}List extends PureComponent {
   };
 
   onChange = page => {
-    console.log('页面索引修改');
+    // console.log('页面索引修改');
 
     this.getPageData(page);
   };

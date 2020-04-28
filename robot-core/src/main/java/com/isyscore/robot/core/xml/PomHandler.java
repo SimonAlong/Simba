@@ -80,7 +80,7 @@ public class PomHandler {
     private void addParent(Element root) {
         Element parent = root.element("parent");
         if (null != parentElement && null != parent) {
-            if (null == parent.getText()) {
+            if (StringUtils.isEmpty(parent.getText())) {
                 String groupId = parentElement.getGroupId();
                 if (!StringUtils.isEmpty(groupId)) {
                     parent.addElement("groupId").setText(groupId);

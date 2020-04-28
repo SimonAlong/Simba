@@ -203,6 +203,9 @@ public class CodeGenerator {
 
         // ControllerAop.java
         writeFile(dataMap, backendCodePath + "aop/ControllerAop.java", BACKEND_RS_PATH + "aop/ControllerAop.ftl");
+
+        // EnableAopLog.java
+        writeFile(dataMap, backendCodePath + "aop/EnableAopLog.java", BACKEND_RS_PATH + "aop/EnableAopLog.ftl");
     }
 
     private void generateConfig(NeoMap dataMap) {
