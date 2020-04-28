@@ -25,7 +25,7 @@ public class CityController extends BaseResponseController {
 
     @PutMapping("add")
     public Response<Integer> add(@RequestBody CityInsertReq insertReq) {
-    return success(cityservice.insert(insertReq));
+        return success(cityservice.insert(insertReq));
     }
 
     @DeleteMapping("delete/{id}")
