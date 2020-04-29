@@ -23,11 +23,11 @@ public class CodeGenTest {
         /*================================ 公共配置 ================================*/
         CommonConfig commonConfig = new CommonConfig();
         // 设置应用名字
-        commonConfig.setAppName("robot");
-        commonConfig.setAppNameCn("集成测试系统");
+        commonConfig.setAppName("transformer_admin");
+        commonConfig.setAppNameCn("脚手架平台");
 
         // 设置数据库信息
-        commonConfig.setDbUrl("jdbc:mysql://localhost:3306/neo");
+        commonConfig.setDbUrl("jdbc:mysql://localhost:3306/transformer");
         commonConfig.setDbUserName("neo_test");
         commonConfig.setDbUserPassword("neo@Test123");
 
@@ -38,44 +38,49 @@ public class CodeGenTest {
         /*================================ 展示的表配置 ================================*/
         TableConfig tableConfig = new TableConfig();
         // 设置表前缀过滤
-        tableConfig.setPreFix("neo_");
+        tableConfig.setPreFix("trans_");
         // 设置要输出的表
-        tableConfig.setTableName("neo_city");
+        tableConfig.setTableName("trans_project_maven_rel");
         // 设置表的中文名，如果没有设置，则采用DB中的描述
-        tableConfig.setTableDesc("城市表");
+        tableConfig.setTableDesc("项目拥有的maven列表");
+        String column = "app_id";
+
+//  create table `trans_table_config` (
+        //  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+        //  `table_name` varchar (64) NOT NULL default '' COMMENT '表名',
+        //  `table_create_sql` text NOT NULL COMMENT '表的创建语句',
+        //  `table_pre` varchar (16) NOT NULL default '' COMMENT '前缀',
+        //  `table_name_cn` varchar (64) NOT NULL default '' COMMENT '表名（中文）',
+        //
+        //  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+        //  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+        //  PRIMARY KEY (`id`)
+        //) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='表的配置表';
 
         /*=========== 表的属性信息（非必填） =======*/
         // 设置表的字段和中文文案对应，不填则采用注释，如果注释没有则采用列名
         tableConfig.setFieldNameMap(NeoMap.of()
             .append("id", "主键id")
-            .append("province_code", "省份编码")
-            .append("city_code", "市编码")
-            .append("name", "名称")
-            .append("create_time", "创建时间")
-            .append("update_time", "更新时间")
-            .append("center", "中心点经纬度")
-            .append("status", "状态：1新地址，0老地址"));
+//            .append("name", "展示状态")
+//            .append("table_name", "table_name")
+        );
+
+
 
         // 设置："新增弹窗"中展示的属性，对应后端的InsertReq
-        tableConfig.setInsertFields("province_code", "city_code", "name", "create_time", "update_time", "center", "status");
+        tableConfig.setInsertFields(column);
 
         // 设置："修改弹窗"中展示的属性，对应后端的UpdateReq
-        tableConfig.setUpdateFields("id", "province_code", "city_code", "name", "create_time", "update_time", "center", "status");
+        tableConfig.setUpdateFields("id", column);
 
         // 设置："搜索框"中展示的属性，对应后端的Pager中的QueryReq
-        tableConfig.setQueryFields("province_code", "city_code", "name");
-
-        // 设置："不展示属性"，一旦设置界面上任何位置都不会展示（可不填）
-        tableConfig.setExcludesFields("status");
-
-        // 设置："修改弹窗"中展示但是不可编辑的属性，基于公共 setUpdateFieldsMap 中展示的属性进行禁用
-        tableConfig.setUnEditFields("id", "name");
+        tableConfig.setQueryFields(column);
 
         // 设置："表格"中展示的属性（必填）
-        tableConfig.setTableShowFieldsMap("province_code", "city_code", "name", "create_time");
+        tableConfig.setTableShowFieldsMap(column);
 
         // 设置："表格扩展"中展示的属性（可不填）
-        tableConfig.setTableExpandFieldsMap("id", "update_time", "center", "status");
+        //tableConfig.setTableExpandFieldsMap("id", "update_time", "center", "status");
 
         generator.addConfig(tableConfig);
 
@@ -83,23 +88,23 @@ public class CodeGenTest {
         FrontConfig frontConfig = new FrontConfig();
         // 设置前端代码路径
         frontConfig.setFrontCodePath("/Users/zhouzhenyong/project/isyscore/isc-robot-front");
-//        generator.addConfig(frontConfig);
+        generator.addConfig(frontConfig);
 
         /*================================ 后端配置 ================================*/
         BackendConfig backendConfig = new BackendConfig();
         // 设置："后端项目模块路径"，（如果后端还有对应的组件包，则也要将组件包放到最后）
 //        backendConfig.setBackendProjectPath("/Users/zhouzhenyong/tem/project/robot-integration");
-        backendConfig.setBackendProjectPath("/Users/zhouzhenyong/project/isyscore/isc-robot/robot-integration");
+        backendConfig.setBackendProjectPath("/Users/zhouzhenyong/project/isyscore/isc-transformer/transformer-admin");
         // 设置：group
-        backendConfig.setGroup("com.isyscore.robot");
+        backendConfig.setGroup("com.isyscore.transformer");
         // 设置：artifact
-        backendConfig.setArtifact("robot-integration");
+        backendConfig.setArtifact("transformer-admin");
         // 设置：后端的名字
-        backendConfig.setName("robot");
+        backendConfig.setName("transformer-admin");
         // 设置：项目的描述
-        backendConfig.setDescription("脚手架继承测试项目");
+        backendConfig.setDescription("脚手架平台");
         // 设置："package包"
-        backendConfig.setPackagePath("com.isyscore.robot.integration");
+        backendConfig.setPackagePath("com.isyscore.transformer.admin");
         generator.addConfig(backendConfig);
 
         generator.loadConfigContext();
