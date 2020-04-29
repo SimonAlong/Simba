@@ -25,7 +25,7 @@ public class ${tablePathName}Controller extends BaseResponseController {
 
     @PutMapping("add")
     public Response<Integer> add(@RequestBody ${tablePathName}InsertReq insertReq) {
-    return success(${tablePathNameLower}service.insert(insertReq));
+        return success(${tablePathNameLower}service.insert(insertReq));
     }
 
     @DeleteMapping("delete/{id}")

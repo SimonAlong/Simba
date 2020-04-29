@@ -39,7 +39,7 @@ public class ${tablePathName}Service {
     }
 
     public PagerRsp<List<${tablePathName}QueryRsp>> pageList(Pager<${tablePathName}QueryReq> pageReq) {
-    PagerRsp<List<${tablePathName}QueryRsp>> pagerRsp = new PagerRsp<>();
+        PagerRsp<List<${tablePathName}QueryRsp>> pagerRsp = new PagerRsp<>();
 
         NeoMap searchMap = NeoMap.from(pageReq.getParam(), NeoMap.NamingChg.UNDERLINE);
         NeoPage page = NeoPage.of(pageReq.getPageNo(), pageReq.getPageSize());
