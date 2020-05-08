@@ -9,26 +9,26 @@
         <version>2.0.4.RELEASE</version>
     </parent>
 
-    <groupId>com.isyscore.robot</groupId>
-    <artifactId>isc-robot</artifactId>
+    <groupId>com.github.simonalong</groupId>
+    <artifactId>Simba</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
 
     <modules>
-        <module>robot-core</module>
+        <module>simba-core</module>
     </modules>
 
     <properties>
-        <isc.mikilin.version>1.0.0-SNAPSHOT</isc.mikilin.version>
-        <isc.neo.version>1.0.1-SNAPSHOT</isc.neo.version>
+        <mikilin.version>1.5.0</mikilin.version>
+        <neo.version>0.5.0</neo.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.isyscore.mikilin</groupId>
-                <artifactId>isc-mikilin</artifactId>
-                <version>${isc.mikilin.version}</version>
+                <groupId>com.github.simonalong</groupId>
+                <artifactId>mikilin</artifactId>
+                <version>${mikilin.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -39,9 +39,9 @@
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.isyscore.neo</groupId>
-            <artifactId>isc-neo</artifactId>
-            <version>${isc.neo.version}</version>
+            <groupId>com.github.simonalong</groupId>
+            <artifactId>neo</artifactId>
+            <version>${neo.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

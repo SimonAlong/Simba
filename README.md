@@ -1,12 +1,12 @@
-# isc-robot介绍
+# Simba
 该组件可以一键式生成整个前后端项目。其中前端为采用React的Ant Design Pro框架，后端为基本的springBoot项目。前端需要以ibo-front-base项目为模板进行创建新的业务前端项目。后端可以采用空项目即可。
 
 ## 快速入门
 ### 引入
 ```xml
 <dependency>
-  <groupId>com.isyscore.robot</groupId>
-  <artifactId>robot-core</artifactId>
+  <groupId>com.github.simonalong</groupId>
+  <artifactId>simba-core</artifactId>
   <!--使用时候请替换为具体的版本-->
   <version>${latest.release.version}</version>
 </dependency>
@@ -18,8 +18,8 @@
 1.该工具每次生成是一个库中的一个表，生成前端的一个页面，以及生成后端的：Controller、Service、Dao和Entity等等数据
 2.该工具生成的后端涉及到的框架：
 - web框架：spring-boot
-- Orm框架（自研）：ibo-neo
-- 核查框架（自研）：ibo-mikilin<br/>
+- Orm框架（自研）：neo
+- 核查框架（自研）：mikilin<br/>
 
 3.该工具生成的前端<br/>
 - 前端语言：React<br/>
@@ -27,7 +27,7 @@
 
 <br/>
 <br/>
-如果第一次使用，则先基于"ibo-front-base"为模板，创建自己的前端项目（具体方式可以将当前项目天下远程然后上传，或者新建项目然后拷贝）。如果是已经开发过不少的前端，也可以使用该框架，因为这个仅仅是一个工具
+如果第一次使用，则先基于"Simba-base-front"为模板，创建自己的前端项目（具体方式可以将当前项目天下远程然后上传，或者新建项目然后拷贝）。如果是已经开发过不少的前端，也可以使用该框架，因为这个仅仅是一个工具
 
 <br/>
 
@@ -64,7 +64,7 @@ public void genFront2() {
 
     /*=============================================================================== 前端代码配置 =======================*/
     // 设置前端代码路径
-    codeGen.setFrontCodePath("/Users/zhouzhenyong/project/isyscore/ibo-front-base");
+    codeGen.setFrontCodePath("/Users/zhouzhenyong/project/demo/simon-base-front");
 
     /*========= 要展示的表基本信息（必填） ========*/
     // 设置表的中文名，如果没有设置，则采用DB中的描述
@@ -97,10 +97,10 @@ public void genFront2() {
 
     /*============================================================================== 后端代码生成器（非必填） ===================*/
     // 设置："后端项目模块路径"，（如果后端还有对应的组件包，则也要将组件包放到最后）
-    codeGen.setBackendModulePath("/Users/zhouzhenyong/project/isyscore/isc-robot/robot-integration");
+    codeGen.setBackendModulePath("/Users/zhouzhenyong/project/private/Simba/simba-integration");
 
     // 设置："package包"
-    codeGen.setBackendPackage("com.isyscore.robot.integration");
+    codeGen.setBackendPackage("com.github.simonalong.integration");
 
     /*============================================================================== 生成代码 ================================*/
     // 生成前端
